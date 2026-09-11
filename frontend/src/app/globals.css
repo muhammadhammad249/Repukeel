@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FFFFFF;
+  --foreground: #111827;
+}
+
+html[data-theme="dark"] {
+  --background: #080E1C;
+  --foreground: #F4F6FB;
+  color-scheme: dark;
+}
+
+/* Legacy palette compatibility: preserve existing structure while applying the shared light theme. */
+[class*="bg-[#080e1c]"], [class*="bg-[#16223c]"], [class*="bg-[#0c1526]"] { background-color: #FFFFFF !important; }
+[class*="bg-[#080e1c]"], [class*="bg-[#16223c]"] { color: #111827; }
+[class*="border-[#22304d]"] { border-color: #E2E8F0 !important; }
+[class*="text-[#f4f6fb]"] { color: #111827 !important; }
+[class*="text-[#a9b3c9]"] { color: #64748B !important; }
+[class*="from-[#16223c]"], [class*="to-[#0c1526]"] { background-image: none !important; background-color: #FFFFFF !important; }
+.text-white:not(.bg-blue-600):not(.bg-blue-700) { color: #111827 !important; }
+.text-slate-200 { color: #334155 !important; }
+.text-slate-300 { color: #475569 !important; }
+.text-slate-400 { color: #64748B !important; }
+.prose-invert { --tw-prose-body: #475569; --tw-prose-headings: #111827; --tw-prose-links: #2563EB; }
+[style*="background:#080e1c"], [style*="background: #080e1c"], [style*="background-color:#080e1c"], [style*="background-color: #080e1c"] { background: #FFFFFF !important; }
+[style*="background:#0c1526"], [style*="background: #0c1526"], [style*="background-color:#0c1526"], [style*="background-color: #0c1526"] { background: #F8FAFC !important; }
+[style*="background:#16223c"], [style*="background: #16223c"], [style*="background-color:#16223c"], [style*="background-color: #16223c"] { background: #FFFFFF !important; }
+[style*="background-color:#0f1729"], [style*="background-color: #0f1729"], [style*="background-color:#111a2e"], [style*="background-color: #111a2e"] { background: #FFFFFF !important; }
+[style*="border:#22304d"], [style*="border: #22304d"], [style*="border-color:#22304d"], [style*="border-color: #22304d"] { border-color: #E2E8F0 !important; }
+[style*="color:#f4f6fb"], [style*="color: #f4f6fb"] { color: #111827 !important; }
+[style*="color:#a9b3c9"], [style*="color: #a9b3c9"] { color: #64748B !important; }
+[style*="linear-gradient(135deg, #16223c"], [style*="linear-gradient(145deg, #16223c"] { background: #FFFFFF !important; }
+
+/* Restore the original dark palette when the navbar theme control is enabled. */
+html[data-theme="dark"] [class*="bg-[#080e1c]"], html[data-theme="dark"] [class*="bg-[#16223c]"], html[data-theme="dark"] [class*="bg-[#0c1526]"] { background-color: #080E1C !important; }
+html[data-theme="dark"] [class*="bg-[#16223c]"] { background-color: #16223C !important; }
+html[data-theme="dark"] [class*="bg-[#0c1526]"] { background-color: #0C1526 !important; }
+html[data-theme="dark"] [class*="border-[#22304d]"] { border-color: #22304D !important; }
+html[data-theme="dark"] [class*="text-[#f4f6fb]"], html[data-theme="dark"] .text-white:not(.bg-blue-600):not(.bg-blue-700) { color: #F4F6FB !important; }
+html[data-theme="dark"] [class*="text-[#a9b3c9]"], html[data-theme="dark"] .text-slate-400 { color: #A9B3C9 !important; }
+html[data-theme="dark"] .text-slate-200 { color: #E2E8F0 !important; }
+html[data-theme="dark"] .text-slate-300 { color: #CBD5E1 !important; }
+html[data-theme="dark"] [style*="background:#080e1c"], html[data-theme="dark"] [style*="background: #080e1c"] { background: #080E1C !important; }
+html[data-theme="dark"] [style*="background:#0c1526"], html[data-theme="dark"] [style*="background: #0c1526"] { background: #0C1526 !important; }
+html[data-theme="dark"] [style*="background:#16223c"], html[data-theme="dark"] [style*="background: #16223c"] { background: #16223C !important; }
+html[data-theme="dark"] [style*="color:#f4f6fb"], html[data-theme="dark"] [style*="color: #f4f6fb"] { color: #F4F6FB !important; }
+html[data-theme="dark"] [style*="color:#a9b3c9"], html[data-theme="dark"] [style*="color: #a9b3c9"] { color: #A9B3C9 !important; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
