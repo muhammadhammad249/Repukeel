@@ -10,14 +10,31 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: [env.CLIENT_URL, 'http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        env.CLIENT_URL,
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+      ];
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Basic health check route
+// Root health check
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "OK", message: "RepuKeel API is running 🚀" });
+});
+
+// API health check
 app.get("/api/v1/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "RepuKeel API is running" });
 });

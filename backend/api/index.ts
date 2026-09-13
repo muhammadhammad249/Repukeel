@@ -1,15 +1,26 @@
+import type { IncomingMessage, ServerResponse } from "http";
 import app from "../src/app";
 import { connectDB } from "../src/config/db";
 
-// Connect to DB once (Vercel serverless cold start)
+// Reuse DB connection across Vercel serverless invocations
 let isConnected = false;
 
-const handler = async (req: import("http").IncomingMessage, res: import("http").ServerResponse) => {
+const handler = async (req: IncomingMessage, res: ServerResponse) => {
   if (!isConnected) {
-    await connectDB();
-    isConnected = true;
+    try {
+      await connectDB();
+      isConnected = true;
+    } catch (err) {
+      console.error("DB connection failed:", err);
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ error: "Database connection failed" }));
+      return;
+    }
   }
-  return app(req, res);
+
+  // Cast needed: Express app is a valid RequestListener
+  return (app as unknown as (req: IncomingMessage, res: ServerResponse) => void)(req, res);
 };
 
 export default handler;
