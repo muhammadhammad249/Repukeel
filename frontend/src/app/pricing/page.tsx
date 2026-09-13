@@ -1,5 +1,8 @@
+'use client';
+
 import Navbar from '../components/Navbar';
 import { Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface PricingPlan {
   id: string;
@@ -63,11 +66,18 @@ const pricingPlans: PricingPlan[] = [
       'Custom crawlers for niche leak sites',
     ],
     turnaround: 'Priority queue; 48-hour removal guarantee',
-    ctaLabel: 'Contact Sales',
+    ctaLabel: 'Get Started',
   },
 ];
 
 export default function PricingPage() {
+  const router = useRouter();
+
+  const handleSelect = (plan: PricingPlan) => {
+    const label = `${plan.name} — ${plan.price}${plan.priceSuffix}`;
+    router.push(`/checkout?plan=${encodeURIComponent(label)}`);
+  };
+
   return (
     <div className="min-h-screen bg-[#080e1c] text-[#f4f6fb] font-sans">
       <Navbar />
@@ -90,14 +100,14 @@ export default function PricingPage() {
           return (
             <div
               key={plan.id}
-              className="relative flex h-full flex-col rounded-xl border p-6 text-sm"
+              className="relative flex h-full flex-col rounded-xl border p-6 text-sm transition-transform duration-200 hover:-translate-y-1"
               style={
                 plan.popular
                   ? {
-                    borderColor: accent,
-                    backgroundColor: '#111a2e',
-                    boxShadow: `0 0 30px -10px ${accent}59`,
-                  }
+                      borderColor: accent,
+                      backgroundColor: '#111a2e',
+                      boxShadow: `0 0 30px -10px ${accent}59`,
+                    }
                   : { borderColor: 'rgba(255,255,255,0.1)', backgroundColor: '#0f1729' }
               }
             >
@@ -169,7 +179,7 @@ export default function PricingPage() {
               </div>
 
               {/* Turnaround */}
-              <div className="mb-1">
+              <div className="mb-1 flex-1">
                 <p
                   className="mb-1 text-[10px] font-semibold uppercase tracking-wide"
                   style={{ color: accent }}
@@ -179,17 +189,22 @@ export default function PricingPage() {
                 <p className="text-slate-200">{plan.turnaround}</p>
               </div>
 
-              <a
-                href="/request-free-analysis"
-                className="mt-6 block rounded-lg py-2.5 text-center text-sm font-semibold transition"
+              {/* CTA Button — always visible for all plans */}
+              <button
+                onClick={() => handleSelect(plan)}
+                className="mt-6 w-full rounded-lg py-3 text-center text-sm font-bold transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer"
                 style={
                   plan.popular
                     ? { backgroundColor: accent, color: '#0b0f1a' }
-                    : { border: '1px solid rgba(255,255,255,0.15)', color: '#ffffff' }
+                    : {
+                        backgroundColor: 'transparent',
+                        border: `2px solid ${accent}`,
+                        color: accent,
+                      }
                 }
               >
-                {plan.ctaLabel}
-              </a>
+                {plan.ctaLabel} →
+              </button>
             </div>
           );
         })}
