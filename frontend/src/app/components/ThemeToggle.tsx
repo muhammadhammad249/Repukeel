@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -10,10 +10,13 @@ function setTheme(theme: Theme) {
 }
 
 export default function ThemeToggle({ className = '' }: { className?: string }) {
-  const [theme, setCurrentTheme] = useState<Theme>(() => {
-    if (typeof document === 'undefined') return 'light';
-    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  });
+  const [mounted, setMounted] = useState(false);
+  const [theme, setCurrentTheme] = useState<Theme>('light');
+
+  useEffect(() => {
+    setMounted(true);
+    setCurrentTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  }, []);
 
   const toggleTheme = () => {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
@@ -22,6 +25,16 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
   };
 
   const isDark = theme === 'dark';
+
+  if (!mounted) {
+    return (
+      <button type="button" className={className} aria-label="Switch theme" title="Switch theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" style={{ opacity: 0 }}>
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <button

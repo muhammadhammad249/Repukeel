@@ -23,8 +23,21 @@ const SERVICES = [
   { icon: 'M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4zM9 12.5l2 2 4-4', title: 'Anti-Counterfeiting Protection', desc: 'Identify and eliminate counterfeit product listings on Amazon, eBay, Alibaba, and other e-commerce marketplaces globally.' },
 ];
 
+const SERVICE_CATEGORIES = [
+  { id: 'content-removal', label: 'Content Removal', icon: '🗑️', services: ['TikTok Content Removal', 'Travel & Hospitality Review Removal', 'Mugshot Removal & Suppression', 'Trustpilot Review Removal', 'BBB Review Removal', 'Ripoff Report Removal', 'Facebook Review Removal', 'Indeed Review Removal', 'Instagram Content Removal', 'Twitter / X Content Removal'] },
+  { id: 'dating-reputation', label: 'Dating Reputation', icon: '🔥', services: ['Leaked Photo Removal', 'Private Content Takedown', 'Dating Site Profile Removal', 'Adult Content Removal', 'OnlyFans Leaked Content Removal', 'Reddit Post Removal', 'Telegram Content Removal', 'Discord Content Removal'] },
+  { id: 'search-result-cleanup', label: 'Search Result Cleanup', icon: '🔍', services: ['Google Search Suppression', 'Bing Content Removal', 'Negative Link Removal', 'De-Indexing Service', 'Autocomplete Cleanup', 'Knowledge Panel Management', 'News Article Suppression', 'Mugshot De-Indexing'] },
+  { id: 'job-reputation', label: 'Job Reputation', icon: '👤', services: ['Glassdoor Review Removal', 'Indeed Review Management', 'LinkedIn Defamation Removal', 'Employment History Cleanup', 'Professional Profile Protection', 'Employer Review Removal', 'Background Check Cleanup', 'Career Reputation Management'] },
+  { id: 'monitoring-alerts', label: 'Monitoring & Alerts', icon: '📊', services: ['AI-Powered Brand Monitoring', 'Real-time Infringement Detection', 'Social Media Monitoring', 'Dark Web Monitoring', '24/7 Content Alerts', 'Trademark Monitoring', 'Review Alert System', 'Competitor Monitoring'] },
+  { id: 'reputation-management', label: 'Reputation Management', icon: '⭐', services: ['Online Reputation Management (ORM)', 'Defamatory Content Removal', 'Negative Article Suppression', 'Search Result Reputation Cleanup', 'Brand Image Restoration', 'Crisis Management', 'Review Management & Rating Improvement', 'Long-term Reputation Monitoring'] },
+  { id: 'reputation-audit', label: 'Reputation Audit', icon: '📋', services: ['Full Brand Reputation Audit', 'Search Engine Audit', 'Social Media Profile Audit', 'Review & Rating Audit', 'Content Threat Analysis', 'Competitive Reputation Benchmarking', 'Legal Risk Assessment', 'Free Case Evaluation'] },
+  { id: 'industries', label: 'Industries', icon: '🏢', services: ['Content Creators & Influencers', 'E-Commerce Brands', 'Healthcare & Medical Professionals', 'Legal & Law Firms', 'Real Estate Professionals', 'Restaurants & Hospitality', 'Educators & Online Coaches', 'Enterprises & Corporations'] },
+];
+
 export default function DMCAHomepage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [megaActiveId, setMegaActiveId] = useState('content-removal');
 
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? 'hidden' : '';
@@ -124,25 +137,27 @@ export default function DMCAHomepage() {
           position: sticky; top: 0; z-index: 1000;
           background: #2563EB;
           border-bottom: 1px solid #1D4ED8;
-          padding: 0 28px;
         }
         .header-inner {
           max-width: var(--max-w); margin: 0 auto;
-          height: 68px;
-          display: flex; align-items: center; justify-content: space-between; gap: 20px;
+          height: 64px;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0 28px;
+          box-sizing: border-box;
+          width: 100%;
         }
 
         /* Logo */
-        .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; min-width: 0; text-decoration: none; }
         .logo-icon-wrap {
-          width: 42px; height: 42px;
+          width: 40px; height: 40px; flex-shrink: 0;
           background: #FFFFFF; border-radius: var(--radius-sm);
-          display: flex; align-items: center; justify-content: center;
+          display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .logo-icon-wrap svg { width: 22px; height: 22px; }
-        .logo-text-wrap { line-height: 1.2; }
-        .logo-text-wrap .brand { font-size: 15px; font-weight: 800; color: #FFFFFF; letter-spacing: .6px; display: block; }
-        .logo-text-wrap .sub   { font-size: 10px; font-weight: 500; color: #DBEAFE; text-transform: uppercase; letter-spacing: 1.4px; display: block; }
+        .logo-text-wrap { line-height: 1.2; min-width: 0; }
+        .logo-text-wrap .brand { font-size: 15px; font-weight: 800; color: #FFFFFF; letter-spacing: .5px; display: block; white-space: nowrap; }
+        .logo-text-wrap .sub   { font-size: 9.5px; font-weight: 500; color: #DBEAFE; text-transform: uppercase; letter-spacing: 1.2px; display: block; white-space: nowrap; }
 
         /* Nav */
         .main-nav { display: flex; align-items: center; gap: 2px; }
@@ -167,8 +182,73 @@ export default function DMCAHomepage() {
         }
         .nav-pill svg { width: 12px; height: 12px; }
 
-        /* Header right */
-        .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+        /* ============================================
+           MEGA MENU (Services dropdown)
+        ============================================ */
+        .svc-mega-wrap { position: relative; }
+        .svc-mega-trigger {
+          font-size: 13px; font-weight: 500; color: #FFFFFF;
+          padding: 7px 13px; border-radius: 6px;
+          transition: color .15s; white-space: nowrap;
+          background: none; border: none; cursor: pointer; outline: none;
+          display: inline-flex; align-items: center; gap: 5px;
+          font-family: 'Poppins', sans-serif;
+        }
+        .svc-mega-trigger:hover { color: #DBEAFE; }
+        .svc-mega-trigger svg { transition: transform .2s; }
+        .svc-mega-trigger.open svg { transform: rotate(180deg); }
+        .svc-mega-menu {
+          position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+          width: 90vw; max-width: 860px;
+          background: #2563EB; border: 1px solid #1D4ED8;
+          border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+          display: flex; z-index: 9999; overflow: hidden;
+          animation: megaFadeIn .18s ease;
+        }
+        @keyframes megaFadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .svc-mega-sidebar {
+          width: 210px; flex-shrink: 0;
+          background: #1D4ED8; padding: 10px;
+          border-right: 1px solid #60A5FA;
+        }
+        .svc-mega-cat {
+          width: 100%; display: flex; align-items: center; gap: 9px;
+          padding: 9px 11px; margin-bottom: 3px; border-radius: 8px;
+          border: 1px solid transparent;
+          background: transparent; color: #DBEAFE;
+          font-size: 13px; font-weight: 500;
+          cursor: pointer; text-align: left; outline: none;
+          transition: background .15s, border-color .15s, color .15s;
+        }
+        .svc-mega-cat.active, .svc-mega-cat:hover {
+          border-color: #BFDBFE; background: #2563EB; color: #FFFFFF; font-weight: 700;
+        }
+        .svc-mega-body { flex: 1; padding: 18px; min-width: 0; }
+        .svc-mega-header {
+          display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+        }
+        .svc-mega-kicker { font-size: 10px; font-weight: 700; color: #DBEAFE; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .svc-mega-all { font-size: 11px; font-weight: 600; color: #DBEAFE; text-decoration: none; }
+        .svc-mega-all:hover { color: #FFFFFF; }
+        .svc-mega-active-row {
+          background: #1D4ED8; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+          display: flex; align-items: center; gap: 9px;
+        }
+        .svc-mega-items { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .svc-mega-item {
+          padding: 9px 13px; border-radius: 8px;
+          border: 1px solid #60A5FA; background: #2563EB;
+          color: #FFFFFF; font-size: 12px; font-weight: 500;
+          text-decoration: none; display: block;
+          transition: border-color .15s, color .15s;
+        }
+        .svc-mega-item:hover { border-color: #BFDBFE; color: #DBEAFE; }
+
+        /* Header right — desktop only */
+        .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .icon-btn {
           background: none; border: none; cursor: pointer; padding: 6px;
           color: #FFFFFF; border-radius: 6px; transition: color .15s;
@@ -179,7 +259,7 @@ export default function DMCAHomepage() {
         .login-link { font-size: 13px; font-weight: 600; color: #FFFFFF; }
         .login-link:hover { color: #DBEAFE; }
         .home-account-menu { position: relative; }
-        .account-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #BFDBFE; background: #1D4ED8; color: #FFFFFF; font: 700 12px 'Poppins', sans-serif; cursor: pointer; }
+        .account-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #BFDBFE; background: #1D4ED8; color: #FFFFFF; font: 700 12px 'Poppins', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .account-avatar:hover, .account-avatar:focus-visible { background: #2563EB; outline: none; box-shadow: 0 0 0 3px rgba(191,219,254,.45); }
         .account-menu-overlay { position: fixed; inset: 0; z-index: 1000; border: 0; background: transparent; cursor: default; }
         .account-dropdown { position: absolute; right: 0; top: 43px; z-index: 1001; min-width: 180px; padding: 8px; border: 1px solid #BFDBFE; border-radius: 10px; background: #FFFFFF; box-shadow: 0 12px 28px rgba(0,0,0,.2); }
@@ -187,27 +267,72 @@ export default function DMCAHomepage() {
         .account-dropdown button[role="menuitem"] { width: 100%; border: 0; border-radius: 6px; background: transparent; padding: 8px; color: #DC2626; cursor: pointer; font: 600 13px 'Poppins', sans-serif; text-align: left; }
         .account-dropdown button[role="menuitem"]:hover { background: #FEF2F2; }
 
-        /* Hamburger (mobile) */
+        /* Hamburger — standalone, mobile only */
         .hamburger {
           display: none; flex-direction: column; gap: 5px;
-          background: none; border: none; cursor: pointer; padding: 4px;
+          background: none; border: none; cursor: pointer; padding: 6px; flex-shrink: 0;
         }
-        .hamburger span { width: 22px; height: 2px; background: #FFFFFF; border-radius: 2px; }
+        .hamburger span { width: 22px; height: 2px; background: #FFFFFF; border-radius: 2px; display: block; }
 
-        /* Mobile drawer */
+        /* Mobile drawer — full panel */
         .mobile-drawer {
-          display: none; position: fixed; inset: 0;
-          background: rgba(37,99,235,.97); z-index: 2000;
-          flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+          position: fixed; inset: 0; z-index: 2000;
+          background: #1e3a8a;
+          flex-direction: column; align-items: stretch;
+          overflow-y: auto; overflow-x: hidden;
+          display: none;
         }
         .mobile-drawer.open { display: flex; }
-        .mobile-drawer a { font-size: 20px; font-weight: 600; color: var(--text); }
-        .mobile-drawer a:hover { color: var(--gold); }
-        .drawer-close {
-          position: absolute; top: 22px; right: 28px;
-          background: none; border: none; color: var(--text);
-          font-size: 30px; cursor: pointer; line-height: 1;
+        .drawer-header {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 16px 20px; background: #2563EB;
+          border-bottom: 1px solid #1D4ED8; flex-shrink: 0;
         }
+        .drawer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .drawer-logo-icon {
+          width: 36px; height: 36px; background: #FFFFFF; border-radius: 7px;
+          display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .drawer-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .drawer-brand { font-size: 15px; font-weight: 800; color: #FFFFFF; }
+        .drawer-close {
+          width: 36px; height: 36px; border-radius: 8px;
+          background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+          color: #FFFFFF; font-size: 18px; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .drawer-body { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+        .drawer-link {
+          font-size: 16px; font-weight: 600; color: #DBEAFE;
+          text-decoration: none; padding: 15px 24px;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          display: flex; align-items: center; gap: 12px;
+          transition: background .15s, color .15s;
+        }
+        .drawer-link:hover { background: rgba(255,255,255,0.08); color: #FFFFFF; }
+        .drawer-footer {
+          padding: 20px 24px 40px;
+          border-top: 1px solid rgba(255,255,255,0.12);
+          display: flex; flex-direction: column; gap: 16px; flex-shrink: 0;
+        }
+        .drawer-footer-row { display: flex; align-items: center; justify-content: space-between; }
+        .drawer-footer-label { font-size: 14px; font-weight: 500; color: #DBEAFE; }
+        .drawer-login-btn {
+          display: flex; align-items: center; justify-content: center;
+          width: 100%; padding: 13px 0; border-radius: 10px;
+          font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700;
+          cursor: pointer; border: none; text-decoration: none;
+          background: #FFFFFF; color: #2563EB; transition: background .15s;
+        }
+        .drawer-login-btn:hover { background: #DBEAFE; }
+        .drawer-theme-btn {
+          display: flex; align-items: center; justify-content: center;
+          width: 36px; height: 36px; padding: 6px;
+          border: 1px solid rgba(255,255,255,0.35); border-radius: 8px;
+          background: transparent; color: #FFFFFF;
+          cursor: pointer; transition: background .15s;
+        }
+        .drawer-theme-btn svg { width: 18px; height: 18px; }
 
         /* ============================================
            SECTION 2 — HERO
@@ -562,6 +687,15 @@ export default function DMCAHomepage() {
           .stats-grid { grid-template-columns: repeat(2, 1fr); }
           .svc-grid   { grid-template-columns: repeat(3, 1fr); }
         }
+        @media (max-width: 500px) {
+          .header-inner { padding: 0 14px; }
+          .logo-text-wrap .sub { display: none; }
+          .header-right { gap: 8px; }
+          .icon-btn { padding: 4px; }
+          .icon-btn svg { width: 18px; height: 18px; }
+          .account-avatar { width: 30px; height: 30px; font-size: 10px; }
+          .hamburger { padding: 4px; }
+        }
         @media (max-width: 640px) {
           .svc-grid   { grid-template-columns: repeat(2, 1fr); }
           .foot-grid  { grid-template-columns: 1fr; }
@@ -576,21 +710,42 @@ export default function DMCAHomepage() {
           .svc-grid { grid-template-columns: 1fr; }
           .sc-grid  { grid-template-columns: 1fr; }
           .why-stats{ grid-template-columns: 1fr; }
+          .hero-h1 { font-size: 30px; }
+          .hero-para { font-size: 14px; }
+          .hero-badge { font-size: 11px; padding: 6px 14px; }
+          .f-badge { padding: 10px 14px; }
         }
       `}} />
 
       {/* MOBILE DRAWER */}
-      <nav className={`mobile-drawer ${drawerOpen ? 'open' : ''}`} aria-label="Mobile navigation" role="dialog">
-        <button className="drawer-close" onClick={toggleDrawer} aria-label="Close menu">&times;</button>
-        <a href="/" onClick={toggleDrawer}>Home</a>
-        <a href="/protection" onClick={toggleDrawer}>Protection</a>
-        <a href="/services" onClick={toggleDrawer}>Services</a>
-        <a href="/scanner" onClick={toggleDrawer}>AI Scanner</a>
-        <a href="/about" onClick={toggleDrawer}>About Us</a>
-        <a href="/pricing" onClick={toggleDrawer}>Pricing</a>
-        <a href="/blogs" onClick={toggleDrawer}>Blog</a>
-        <a href="/contact" onClick={toggleDrawer}>Contact</a>
-        <a href="/login" className="btn btn-gold btn-sm mt-[10px]" onClick={toggleDrawer}>Login</a>
+      <nav className={`mobile-drawer ${drawerOpen ? 'open' : ''}`} aria-label="Mobile navigation" aria-modal="true" role="dialog">
+        {/* Drawer top bar */}
+        <div className="drawer-header">
+          <a href="/" className="drawer-logo" onClick={toggleDrawer}>
+            <div className="drawer-logo-icon">
+              <img src="/logo.jpg" alt="RepuKeel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <span className="drawer-brand">RepuKeel</span>
+          </a>
+          <button className="drawer-close" onClick={toggleDrawer} aria-label="Close menu">✕</button>
+        </div>
+        {/* Nav links */}
+        <div className="drawer-body">
+          <a href="/" className="drawer-link" onClick={toggleDrawer}><span>🏠</span> Home</a>
+          <a href="/protection" className="drawer-link" onClick={toggleDrawer}><span>🛡️</span> Protection</a>
+          <a href="/services" className="drawer-link" onClick={toggleDrawer}><span>⚙️</span> Services</a>
+          <a href="/scanner" className="drawer-link" onClick={toggleDrawer}><span>🔍</span> AI Scanner</a>
+          <a href="/about" className="drawer-link" onClick={toggleDrawer}><span>ℹ️</span> About Us</a>
+          <a href="/pricing" className="drawer-link" onClick={toggleDrawer}><span>💳</span> Pricing</a>
+          <a href="/blogs" className="drawer-link" onClick={toggleDrawer}><span>📝</span> Blog</a>
+          <a href="/contact" className="drawer-link" onClick={toggleDrawer}><span>📬</span> Contact</a>
+        </div>
+        {/* Footer: just a login link for quick access */}
+        <div className="drawer-footer">
+          <div>
+            <a href="/login" className="drawer-login-btn" onClick={toggleDrawer}>Login / Sign Up</a>
+          </div>
+        </div>
       </nav>
 
       {/* HEADER */}
@@ -614,7 +769,63 @@ export default function DMCAHomepage() {
               </svg>
               Protection
             </a>
-            <a href="/services">Services</a>
+            {/* Services with Mega Dropdown — hover triggered */}
+            <div
+              className="svc-mega-wrap"
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => setServicesOpen(false)}
+            >
+              <button className={`svc-mega-trigger${servicesOpen ? ' open' : ''}`}>
+                Services
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+
+              {servicesOpen && (
+                <div className="svc-mega-menu">
+                  {/* Left sidebar */}
+                  <div className="svc-mega-sidebar">
+                    {SERVICE_CATEGORIES.map(cat => (
+                      <button
+                        key={cat.id}
+                        className={`svc-mega-cat${megaActiveId === cat.id ? ' active' : ''}`}
+                        onMouseEnter={() => setMegaActiveId(cat.id)}
+                        onClick={() => { window.location.href = `/services#${cat.id}`; }}
+                      >
+                        <span style={{ fontSize: '14px' }}>{cat.icon}</span>
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Right content */}
+                  {(() => {
+                    const active = SERVICE_CATEGORIES.find(c => c.id === megaActiveId)!;
+                    return (
+                      <div className="svc-mega-body">
+                        <div className="svc-mega-header">
+                          <p className="svc-mega-kicker">Solutions for {active.label}</p>
+                          <a href="/services" className="svc-mega-all">View all →</a>
+                        </div>
+                        <div className="svc-mega-active-row">
+                          <span style={{ fontSize: '16px' }}>{active.icon}</span>
+                          <span style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{active.label}</span>
+                        </div>
+                        <div className="svc-mega-items">
+                          {active.services.map((svc, i) => {
+                            const slug = svc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                            return (
+                              <a key={i} href={`/services/${slug}`} className="svc-mega-item">{svc}</a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
             <a href="/scanner">AI Scanner</a>
             <a href="/about">About Us</a>
             <a href="/pricing">Pricing</a>
@@ -622,13 +833,16 @@ export default function DMCAHomepage() {
             <a href="/contact">Contact</a>
           </nav>
 
+          {/* Desktop icons — hidden on mobile */}
           <div className="header-right">
             <ThemeToggle className="icon-btn" />
             <AccountMenu loginClassName="login-link" menuClassName="home-account-menu" />
-            <button className="hamburger" aria-label="Open menu" onClick={toggleDrawer}>
-              <span></span><span></span><span></span>
-            </button>
           </div>
+
+          {/* Hamburger — standalone, mobile only, ALWAYS visible */}
+          <button className="hamburger" aria-label="Open navigation menu" aria-expanded={drawerOpen} onClick={toggleDrawer}>
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </header>
 
