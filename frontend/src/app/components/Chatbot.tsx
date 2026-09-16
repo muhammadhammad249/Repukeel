@@ -1,28 +1,118 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+
+// -----------------------------------------------------------------------------
+// TYPES & SCRIPT CONFIG
+// -----------------------------------------------------------------------------
+type StepType = 'choice' | 'text' | 'end';
+
+interface ScriptStep {
+  id: number;
+  botMessage: string;
+  type: StepType;
+  options?: string[]; // Only if type === 'choice'
+  key: string; // The key to store the answer under
+}
+
+const CONVERSATION_SCRIPT: ScriptStep[] = [
+  {
+    id: 1,
+    botMessage: "What type of issue are you facing?",
+    type: 'choice',
+    options: ["Copyright / DMCA Takedown", "Leaked Content Removal", "Brand Impersonation", "Trademark Issue", "Other"],
+    key: "category"
+  },
+  {
+    id: 2,
+    botMessage: "Got it. How does our team handle this category... What type of content is involved?",
+    type: 'choice',
+    options: ["Images", "Videos", "Written Content", "Software/App", "Other"],
+    key: "contentType"
+  },
+  {
+    id: 3,
+    botMessage: "Where is this unauthorized content appearing?",
+    type: 'choice',
+    options: ["Google Search", "Social Media", "A Specific Website", "File-Sharing/Leak Site", "Not Sure"],
+    key: "location"
+  },
+  {
+    id: 4,
+    botMessage: "Roughly how many pieces of content need to be removed?",
+    type: 'choice',
+    options: ["Just 1", "2-5", "6-20", "20+ / Not sure yet"],
+    key: "volume"
+  },
+  {
+    id: 5,
+    botMessage: "To connect you with the right specialist, I just need a few quick details.\n\nWhat's your full name?",
+    type: 'text',
+    key: "name"
+  },
+  {
+    id: 6,
+    botMessage: "What's the best email address to reach you?",
+    type: 'text',
+    key: "email"
+  },
+  {
+    id: 7,
+    botMessage: "And a phone number? Please include your country code (e.g. +1 for US).",
+    type: 'text',
+    key: "phone"
+  },
+  {
+    id: 8,
+    botMessage: "Please briefly describe the situation and include any relevant links for our team to review.",
+    type: 'text',
+    key: "description"
+  },
+  {
+    id: 9,
+    botMessage: "How quickly do you need this resolved?",
+    type: 'choice',
+    options: ["Immediately", "Within a week", "Just exploring options"],
+    key: "urgency"
+  },
+  {
+    id: 10,
+    botMessage: "How would you prefer we reach out?",
+    type: 'choice',
+    options: ["Email", "Phone Call", "Text"],
+    key: "contactPreference"
+  },
+  {
+    id: 11,
+    botMessage: "Thanks! Our team will review your case and reach out within a few hours during business hours.\n\nIf this is urgent, you can book a priority consultation below.",
+    type: 'end',
+    key: "end"
+  }
+];
 
 type Message = {
   id: string;
   role: 'bot' | 'user';
   text: string;
-  actionBtn?: { label: string; href: string };
+  stepId?: number; // Tracks which step this message belongs to
 };
 
+// -----------------------------------------------------------------------------
+// COMPONENT
+// -----------------------------------------------------------------------------
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'msg-1',
-      role: 'bot',
-      text: "Hi! I'm the RepuKeel website assistant. Ask me about services, pricing, protection requests, the client portal, AI Scanner, or strategy-call booking.",
-      actionBtn: { label: 'Try AI Scanner', href: '/scanner' }
-    }
-  ]);
-
+  // State Machine
+  const [currentStepId, setCurrentStepId] = useState<number>(1);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  
+  // Chat History
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -33,37 +123,96 @@ export default function Chatbot() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen, isTyping]);
 
-  const handleSend = (text: string) => {
-    if (!text.trim()) return;
+  // Initial load
+  useEffect(() => {
+    if (messages.length === 0) {
+      const firstStep = CONVERSATION_SCRIPT.find(s => s.id === 1)!;
+      setMessages([{ id: 'bot-1', role: 'bot', text: firstStep.botMessage, stepId: 1 }]);
+    }
+  }, [messages.length]);
+
+  const currentStep = CONVERSATION_SCRIPT.find(s => s.id === currentStepId);
+
+  const handleUserResponse = (text: string) => {
+    if (!text.trim() || !currentStep || currentStep.type === 'end') return;
 
     // Add user message
-    const userMsg: Message = { id: Date.now().toString(), role: 'user', text };
+    const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', text, stepId: currentStepId };
     setMessages(prev => [...prev, userMsg]);
+    
+    // Save answer
+    setAnswers(prev => ({ ...prev, [currentStep.key]: text }));
     setInputValue('');
-    setIsTyping(true);
-
-    // Mock bot response logic
-    setTimeout(() => {
-      let botResponseText = "Thank you for reaching out. Our support team will review your query. In the meantime, you can explore our services or book a strategy call.";
-      const lowerText = text.toLowerCase();
+    
+    // Advance step
+    const nextStepId = currentStepId + 1;
+    const nextStep = CONVERSATION_SCRIPT.find(s => s.id === nextStepId);
+    
+    if (nextStep) {
+      setCurrentStepId(nextStepId);
+      setIsTyping(true);
       
-      if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('much')) {
-        botResponseText = "Our Standard Protection starts at $149 per takedown, and Pro Monitoring is $499/month. You can view full details on our Pricing page.";
-      } else if (lowerText.includes('service') || lowerText.includes('offer')) {
-        botResponseText = "We offer DMCA Takedowns, AI Brand Monitoring, Trademark Defense, and Anti-Piracy Protection. Would you like to request a free analysis?";
-      } else if (lowerText.includes('scanner') || lowerText.includes('ai')) {
-        botResponseText = "Our AI Scanner continuously monitors the web for unauthorized use of your content. You can try it by clicking the button below.";
-      } else if (lowerText.includes('call') || lowerText.includes('book') || lowerText.includes('contact')) {
-        botResponseText = "You can book a strategy call with our experts by visiting our Contact page.";
-      }
+      // Simulate bot typing
+      setTimeout(() => {
+        setMessages(prev => [...prev, { id: `bot-${Date.now()}`, role: 'bot', text: nextStep.botMessage, stepId: nextStepId }]);
+        setIsTyping(false);
+        
+        // If it's the final step, log the payload
+        if (nextStep.type === 'end') {
+          console.log("LEAD CAPTURED:", { ...answers, [currentStep.key]: text });
+        }
+      }, 1000);
+    }
+  };
 
-      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'bot', text: botResponseText }]);
-      setIsTyping(false);
-    }, 1200);
+  const handleGoBack = () => {
+    if (currentStepId <= 1 || isTyping) return;
+    
+    const prevStepId = currentStepId - 1;
+    const prevStep = CONVERSATION_SCRIPT.find(s => s.id === prevStepId);
+    
+    if (prevStep) {
+      // Remove all messages from the current step and the user's answer from the previous step
+      setMessages(prev => {
+        // Keep everything up to the bot's question for prevStepId
+        const newHistory = prev.filter(m => {
+          if (m.stepId === undefined) return true;
+          if (m.stepId < prevStepId) return true;
+          if (m.stepId === prevStepId && m.role === 'bot') return true;
+          return false;
+        });
+        return newHistory;
+      });
+      
+      setCurrentStepId(prevStepId);
+    }
+  };
+
+  // Helper to render text with newlines and email links
+  const renderMessageText = (text: string, isUser: boolean) => {
+    const isEmail = (str: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
+    
+    return text.split('\n').map((line, i) => {
+      if (isUser && isEmail(line)) {
+        return (
+          <React.Fragment key={i}>
+            <a href={`mailto:${line}`} className="underline text-white hover:text-blue-100">{line}</a>
+            {i < text.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        );
+      }
+      return (
+        <React.Fragment key={i}>
+          {line}
+          {i < text.split('\n').length - 1 && <br />}
+        </React.Fragment>
+      );
+    });
   };
 
   return (
     <>
+      {/* 1. CLOSED STATE (DO NOT CHANGE) */}
       {!isOpen && (
         <button 
           onClick={() => setIsOpen(true)} 
@@ -82,101 +231,137 @@ export default function Chatbot() {
         </button>
       )}
 
+      {/* 2. OPEN STATE - PANEL */}
       {isOpen && (
-        <div style={{ 
-          position: 'fixed', bottom: '26px', right: '26px', zIndex: 1000, width: '360px', 
-          backgroundColor: '#0f172a', borderRadius: '12px', border: '1px solid #e0ac2f', 
-          overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', fontFamily: 'sans-serif',
-          display: 'flex', flexDirection: 'column', maxHeight: '80vh'
-        }}>
+        <div className="fixed bottom-[26px] right-[26px] z-[1000] w-[360px] md:w-[380px] bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col border border-gray-200" style={{ maxHeight: '80vh', height: '600px' }}>
+          
           {/* Header */}
-          <div style={{ backgroundColor: '#1e293b', padding: '16px', borderBottom: '2px solid #e0ac2f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ backgroundColor: '#e0ac2f', color: '#1e293b', borderRadius: '8px', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                  <circle cx="12" cy="5" r="2"></circle>
-                  <path d="M12 7v4"></path>
-                  <line x1="8" y1="16" x2="8.01" y2="16"></line>
-                  <line x1="16" y1="16" x2="16.01" y2="16"></line>
-                </svg>
-              </div>
+          <div className="bg-white border-b border-gray-100 p-4 flex items-center justify-between shrink-0 shadow-sm relative z-10">
+            <div className="flex items-center gap-3">
+              {/* Back Arrow */}
+              <button 
+                onClick={handleGoBack}
+                disabled={currentStepId <= 1 || isTyping}
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${currentStepId > 1 && !isTyping ? 'hover:bg-gray-100 text-gray-700 cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`}
+                aria-label="Go back"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              
               <div>
-                <h3 style={{ margin: 0, fontSize: '15px', color: '#fff', fontWeight: 800 }}>RepuKeel Assistant</h3>
-                <div style={{ fontSize: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px', fontWeight: 500 }}>
-                  <div style={{ width: '7px', height: '7px', backgroundColor: '#10b981', borderRadius: '50%' }}></div> Website support
+                <h3 className="m-0 text-[16px] text-gray-900 font-[800]">Confidential Assessment</h3>
+                <div className="text-[12px] text-green-500 flex items-center gap-1.5 mt-0.5 font-[600]">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Live Support
                 </div>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} style={{ backgroundColor: '#334155', color: '#fff', border: 'none', borderRadius: '6px', width: '30px', height: '30px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', outline: 'none' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            
+            {/* Expand/Collapse Right */}
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
           </div>
 
           {/* Chat Body */}
-          <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: '#0f172a', overflowY: 'auto', flexGrow: 1, minHeight: '220px' }}>
+          <div className="p-5 flex flex-col gap-4 bg-[#f8fafc] overflow-y-auto flex-grow scroll-smooth">
             {messages.map((msg) => (
-              <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
-                <div style={{ 
-                  backgroundColor: msg.role === 'user' ? '#e0ac2f' : '#1e293b', 
-                  color: msg.role === 'user' ? '#000' : '#f8fafc', 
-                  padding: '12px 16px', borderRadius: '12px', fontSize: '14px', lineHeight: '1.5', maxWidth: '85%' 
-                }}>
-                  <p style={{ margin: 0 }}>{msg.text}</p>
-                  {msg.actionBtn && (
-                    <a href={msg.actionBtn.href} style={{ display: 'inline-block', marginTop: '12px', backgroundColor: '#e0ac2f', color: '#000', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', textDecoration: 'none', fontSize: '13px' }}>
-                      {msg.actionBtn.label}
-                    </a>
-                  )}
+              <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} max-w-full`}>
+                <div 
+                  className={`px-4 py-3 text-[14.5px] leading-relaxed shadow-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-[#2b52c9] text-white rounded-[16px] rounded-tr-[4px] font-[600]' 
+                      : 'bg-white text-gray-800 rounded-[16px] rounded-tl-[4px] border border-gray-100'
+                  }`}
+                  style={{ maxWidth: '85%', wordBreak: 'break-word' }}
+                >
+                  <p className="m-0">{renderMessageText(msg.text, msg.role === 'user')}</p>
                 </div>
               </div>
             ))}
             
+            {/* Typing Indicator */}
             {isTyping && (
-              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <div style={{ backgroundColor: '#1e293b', padding: '12px 16px', borderRadius: '12px', display: 'flex', gap: '4px' }}>
-                  <div style={{ width: '6px', height: '6px', backgroundColor: '#94a3b8', borderRadius: '50%', animation: 'pulse 1.5s infinite' }}></div>
-                  <div style={{ width: '6px', height: '6px', backgroundColor: '#94a3b8', borderRadius: '50%', animation: 'pulse 1.5s infinite 0.2s' }}></div>
-                  <div style={{ width: '6px', height: '6px', backgroundColor: '#94a3b8', borderRadius: '50%', animation: 'pulse 1.5s infinite 0.4s' }}></div>
+              <div className="flex items-start">
+                <div className="bg-white border border-gray-100 px-4 py-4 rounded-[16px] rounded-tl-[4px] flex gap-1.5 shadow-sm">
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             )}
+            
+            {/* Option Pills */}
+            {!isTyping && currentStep?.type === 'choice' && currentStep.options && messages[messages.length-1]?.role === 'bot' && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {currentStep.options.map((opt, i) => (
+                  <button 
+                    key={i}
+                    onClick={() => handleUserResponse(opt)}
+                    className="bg-white border border-gray-200 text-gray-800 px-4 py-2.5 rounded-full text-[13.5px] font-[600] hover:bg-gray-50 hover:border-gray-300 transition-colors text-left"
+                    style={{ flex: currentStep.options!.length <= 3 || opt.length > 25 ? '1 1 100%' : '1 1 calc(50% - 4px)' }}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* End Step CTA */}
+            {!isTyping && currentStep?.type === 'end' && (
+              <div className="mt-2 w-full flex justify-center">
+                <Link 
+                  href="/contact" 
+                  onClick={() => setIsOpen(false)}
+                  className="bg-[#d9a52b] hover:bg-[#b8860f] text-black font-[800] px-6 py-3 rounded-xl shadow-md transition-colors w-full text-center"
+                >
+                  Book Strategy Call
+                </Link>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions & Input */}
-          <div style={{ padding: '16px', backgroundColor: '#0b1120', borderTop: '1px solid #1e293b', flexShrink: 0 }}>
-            {messages.length < 3 && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-                <button onClick={() => handleSend("What services do you offer?")} style={{ backgroundColor: 'transparent', border: '1px solid #e0ac2f', color: '#fff', padding: '10px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>What services do you offer?</button>
-                <button onClick={() => handleSend("How much does it cost?")} style={{ backgroundColor: 'transparent', border: '1px solid #e0ac2f', color: '#fff', padding: '10px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>How much does it cost?</button>
-                <button onClick={() => handleSend("Open the AI Scanner")} style={{ backgroundColor: 'transparent', border: '1px solid #e0ac2f', color: '#fff', padding: '10px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Open the AI Scanner</button>
-                <button onClick={() => handleSend("Book a strategy call")} style={{ backgroundColor: 'transparent', border: '1px solid #e0ac2f', color: '#fff', padding: '10px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>Book a strategy call</button>
-              </div>
-            )}
+          {/* Footer Input Area */}
+          <div className="bg-white border-t border-gray-100 p-3 flex items-center gap-2 shrink-0 relative">
+            {/* Left Icons */}
+            <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </button>
             
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input 
-                type="text" 
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
-                placeholder="Ask about this website..." 
-                style={{ flex: 1, backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', padding: '12px 14px', color: '#fff', fontSize: '14px', outline: 'none' }} 
-              />
-              <button onClick={() => handleSend(inputValue)} style={{ backgroundColor: '#e0ac2f', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', outline: 'none' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '16px', color: '#64748b', fontSize: '12px' }}>
-              <a href="/scanner" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748b', textDecoration: 'none' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> AI Scanner
-              </a>
-              <a href="/contact" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748b', textDecoration: 'none' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Book a call
-              </a>
-            </div>
+            {/* Input Field */}
+            <input 
+              type="text" 
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleUserResponse(inputValue)}
+              placeholder={currentStep?.type === 'choice' ? "Hit the buttons to respond" : currentStep?.type === 'end' ? "Chat ended" : "Enter your message..."} 
+              disabled={currentStep?.type === 'choice' || currentStep?.type === 'end' || isTyping}
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-300 focus:bg-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed" 
+            />
+            
+            {/* Send Button */}
+            <button 
+              onClick={() => handleUserResponse(inputValue)}
+              disabled={!inputValue.trim() || currentStep?.type === 'choice' || currentStep?.type === 'end' || isTyping}
+              className="w-10 h-10 flex items-center justify-center bg-[#2b52c9] text-white rounded-full hover:bg-[#20409a] transition-colors shrink-0 disabled:opacity-50 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 ml-0.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+            
+            {/* Overlapping Close Button */}
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#2b52c9] text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:bg-[#20409a] hover:scale-110 transition-transform z-50"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
           </div>
         </div>
       )}

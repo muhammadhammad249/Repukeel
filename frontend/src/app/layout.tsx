@@ -60,7 +60,7 @@ export default function RootLayout({
           {/* WhatsApp FAB */}
           <a 
             href="https://wa.me/923358687629" 
-            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(37,211,102,0.5)] transition-transform hover:scale-105 bg-[#25d366] text-white relative z-10" 
+            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(37,211,102,0.5)] transition-transform hover:scale-105 bg-[#25d366] text-white relative z-10 animate-bounce" 
             target="_blank" 
             rel="noopener noreferrer" 
             aria-label="Chat on WhatsApp"

@@ -65,7 +65,7 @@ export default function Navbar() {
   return (
     <>
       {isNavigating && <div className="nav-progress-bar"></div>}
-      <header className="sticky top-0 z-[1000] bg-white border-b border-[#eee] h-[68px] flex items-center justify-center">
+      <header className="sticky top-0 z-[1000] bg-white border-b border-[#eee] border-t-[6px] border-t-[#2c3138] shadow-[0_8px_30px_rgba(0,0,0,0.4)] h-[68px] flex items-center justify-center">
         <div className="w-full max-w-[1280px] px-[28px] flex items-center justify-between">
           
           {/* Logo */}
@@ -105,7 +105,7 @@ export default function Navbar() {
                       className={`flex items-center gap-1 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
                         isActive || servicesDropdownOpen
                           ? 'text-[var(--gold)] border-[var(--gold)]' 
-                          : 'text-[#333333] border-transparent hover:text-[var(--gold)]'
+                          : 'text-black border-transparent hover:text-[var(--gold)]'
                       }`}
                     >
                       {link.name}
@@ -134,7 +134,7 @@ export default function Navbar() {
                   className={`text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
                     isActive 
                       ? 'text-[var(--gold)] border-[var(--gold)]' 
-                      : 'text-[#333333] border-transparent hover:text-[var(--gold)]'
+                      : 'text-black border-transparent hover:text-[var(--gold)]'
                   }`}
                 >
                   {link.name}
@@ -147,7 +147,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
             <AccountMenu 
-              loginClassName="text-[14px] font-[600] text-[#333333] hover:text-[var(--gold)] transition-colors cursor-pointer" 
+              loginClassName="text-[14px] font-[600] text-black hover:text-[var(--gold)] transition-colors cursor-pointer" 
               menuClassName="" 
             />
           </div>

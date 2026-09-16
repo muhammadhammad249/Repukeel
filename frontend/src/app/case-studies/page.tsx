@@ -1,5 +1,3 @@
-import Navbar from '../components/Navbar';
-
 export default function CaseStudiesPage() {
   const cases = [
     { tag: "Leaked Content", title: "Adult Creator: 847 URLs Removed in 72 Hours", desc: "A content creator found their private content distributed across 12 unauthorized platforms. Our team issued parallel DMCA notices and achieved complete removal within 72 hours.", stats: ["847 URLs", "12 Platforms", "72 Hours", "100% Removed"] },
@@ -9,11 +7,10 @@ export default function CaseStudiesPage() {
 
   return (
     <div className="min-h-screen bg-[#080e1c] text-[#f4f6fb] font-sans pb-24">
-      <Navbar />
       {/* Header */}
       <div className="pt-24 pb-16 px-6 text-center max-w-4xl mx-auto">
         <p className="text-xs font-bold text-[#e0ac2f] uppercase tracking-[2px] mb-3">Case Studies</p>
-        <h1 className="text-[clamp(32px,4vw,48px)] font-extrabold leading-[1.2] mb-6">Real Results. Real Protection.</h1>
+        <h1 className="text-[clamp(32px,4vw,48px)] font-extrabold leading-[1.2] mb-6 !text-white">Real Results. Real Protection.</h1>
         <p className="text-[15px] text-[#a9b3c9] leading-relaxed max-w-2xl mx-auto">
           See how RepuKeel has helped creators and brands worldwide recover their stolen assets and protect their digital footprint.
         </p>
@@ -28,7 +25,7 @@ export default function CaseStudiesPage() {
                   <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[rgba(224,172,47,0.1)] text-[#e0ac2f] mb-6">
                     {c.tag}
                   </span>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-[#e0ac2f] transition-colors">{c.title}</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 !text-white group-hover:!text-[#e0ac2f] transition-colors">{c.title}</h2>
                   <p className="text-[#a9b3c9] text-[15px] leading-relaxed mb-6">{c.desc}</p>
                   <a href="/protection" className="text-[#e0ac2f] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
                     Get Similar Results &rarr;

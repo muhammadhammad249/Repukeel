@@ -22,12 +22,12 @@ export default function ServicesPage() {
             <div className="pill-badge mb-6">
               Professional DMCA Services
             </div>
-            <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-[var(--text-heading)]">
+            <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-black">
               Complete<br/>
               <span className="text-[var(--gold)]">DMCA Protection</span><br/>
               For Your Content
             </h1>
-            <p className="text-[17px] text-[var(--text-body)] mb-8 max-w-xl">
+            <p className="text-[17px] text-black mb-8 max-w-xl">
               We offer comprehensive copyright protection and digital asset security solutions designed for creators, businesses, and enterprises worldwide.
             </p>
             
@@ -68,11 +68,11 @@ export default function ServicesPage() {
             {/* Outer floating text badges */}
             <div className="absolute top-24 -right-4 bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '0.5s' }}>
               <span className="text-[16px] font-[800] text-blue-600 leading-none">24h</span>
-              <span className="text-[10px] font-[600] text-[var(--text-body)] uppercase tracking-wide">Response</span>
+              <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Response</span>
             </div>
             <div className="absolute bottom-10 left-0 bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '1.5s' }}>
               <span className="text-[16px] font-[800] text-[var(--green)] leading-none">280+</span>
-              <span className="text-[10px] font-[600] text-[var(--text-body)] uppercase tracking-wide">Success</span>
+              <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Success</span>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function ServicesPage() {
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-4xl font-[800] mb-4">Platform-Specific Takedowns</h2>
-            <p className="text-[16px] text-[var(--text-body)]">We hold deep expertise with the legal channels of all major platforms.</p>
+            <p className="text-[16px] text-black">We hold deep expertise with the legal channels of all major platforms.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -130,7 +130,7 @@ export default function ServicesPage() {
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center gap-3">
               <div className="text-3xl">{item.icon}</div>
-              <h4 className="text-[16px] font-[700] text-[var(--text-heading)]">{item.title}</h4>
+              <h4 className="text-[16px] font-[700] text-black">{item.title}</h4>
             </div>
           ))}
         </div>
@@ -161,7 +161,7 @@ export default function ServicesPage() {
             ].map((t, i) => (
               <div key={i} className="bg-[var(--bg-soft)] border border-[var(--border-light)] rounded-2xl p-8 flex flex-col">
                 <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
-                <p className="italic text-[15px] text-[var(--text-body)] mb-8 flex-1">
+                <p className="italic text-[15px] text-black mb-8 flex-1">
                   "The Repukeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service."
                 </p>
                 <div className="flex items-center gap-3 mt-auto">
@@ -169,8 +169,8 @@ export default function ServicesPage() {
                     {t.name[0]}
                   </div>
                   <div>
-                    <h4 className="text-[15px] font-[700] text-[var(--text-heading)]">{t.name}</h4>
-                    <p className="text-[12px] text-[var(--text-body)]">{t.role}</p>
+                    <h4 className="text-[15px] font-[700] text-black">{t.name}</h4>
+                    <p className="text-[12px] text-black">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function ServicesPage() {
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-4xl font-[800] mb-4">Who We Serve</h2>
-            <p className="text-[16px] text-[var(--text-body)]">Tailored protection solutions for every industry.</p>
+            <p className="text-[16px] text-black">Tailored protection solutions for every industry.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -214,7 +214,7 @@ export default function ServicesPage() {
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-6 ${ws.color}`}>
                   {ws.icon}
                 </div>
-                <h4 className="text-[17px] font-[700] text-[var(--text-heading)] mb-2">{ws.title}</h4>
+                <h4 className="text-[17px] font-[700] text-black mb-2">{ws.title}</h4>
               </div>
             ))}
           </div>
@@ -236,14 +236,14 @@ export default function ServicesPage() {
             ].map((faq, i) => (
               <div key={i} className="bg-white border border-[var(--border-light)] rounded-xl overflow-hidden">
                 <button 
-                  className="w-full px-6 py-5 text-left flex justify-between items-center font-[700] text-[var(--text-heading)] hover:bg-gray-50"
+                  className="w-full px-6 py-5 text-left flex justify-between items-center font-[700] text-black hover:bg-gray-50"
                   onClick={() => toggleFaq(i)}
                 >
                   {faq.q}
                   <span className={`transform transition-transform text-[var(--gold)] ${openFaq === i ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {openFaq === i && (
-                  <div className="px-6 pb-5 text-[15px] text-[var(--text-body)]">
+                  <div className="px-6 pb-5 text-[15px] text-black">
                     {faq.a}
                   </div>
                 )}

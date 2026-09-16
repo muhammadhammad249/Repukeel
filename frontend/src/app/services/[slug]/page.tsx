@@ -14,10 +14,10 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
           <div className="pill-badge mb-6">
             <span className="text-[var(--gold)]">★</span> Specialized Service
           </div>
-          <h1 className="text-4xl md:text-5xl font-[800] tracking-tight mb-4 text-[var(--text-heading)]">
+          <h1 className="text-4xl md:text-5xl font-[800] tracking-tight mb-4 text-black">
             {serviceName} <span className="text-[var(--gold)]">Protection</span>
           </h1>
-          <p className="text-[17px] text-[var(--text-body)]">
+          <p className="text-[17px] text-black">
             Professional resolution and removal of unauthorized content tailored specifically for this platform and use-case.
           </p>
         </div>
@@ -28,13 +28,13 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
         
         {/* Main Content Area */}
         <div className="lg:col-span-3 bg-white border border-[var(--border-light)] rounded-2xl p-8 md:p-12 shadow-sm">
-          <div className="prose max-w-none text-[var(--text-body)]">
-            <h2 className="text-[24px] font-[800] text-[var(--text-heading)] mb-4">Overview</h2>
+          <div className="prose max-w-none text-black">
+            <h2 className="text-[24px] font-[800] text-black mb-4">Overview</h2>
             <p className="mb-6 leading-relaxed">
               When your digital assets or personal brand are compromised, immediate action is necessary. Our team utilizes advanced detection algorithms alongside established legal channels to ensure swift removal of infringing content.
             </p>
 
-            <h3 className="text-[20px] font-[700] text-[var(--text-heading)] mb-3 mt-8">The Process</h3>
+            <h3 className="text-[20px] font-[700] text-black mb-3 mt-8">The Process</h3>
             <ul className="flex flex-col gap-3 mb-6 list-disc pl-5">
               <li className="pl-2"><strong>Initial Assessment:</strong> We analyze the infringing URLs and determine the optimal legal strategy.</li>
               <li className="pl-2"><strong>Notice Drafting:</strong> Our legal team prepares compliant DMCA or platform-specific takedown notices.</li>
@@ -43,13 +43,13 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
             </ul>
 
             <div className="bg-[var(--bg-soft)] rounded-xl p-6 border-l-4 border-[var(--gold)] my-8">
-              <h4 className="text-[16px] font-[700] text-[var(--text-heading)] mb-2">Why this matters</h4>
+              <h4 className="text-[16px] font-[700] text-black mb-2">Why this matters</h4>
               <p className="text-[14px]">
                 Ignoring unauthorized content can severely damage your brand's reputation and lead to significant revenue loss. Acting quickly minimizes the exposure and demonstrates that you actively enforce your intellectual property rights.
               </p>
             </div>
             
-            <h3 className="text-[20px] font-[700] text-[var(--text-heading)] mb-3 mt-8">What You Need to Provide</h3>
+            <h3 className="text-[20px] font-[700] text-black mb-3 mt-8">What You Need to Provide</h3>
             <p className="mb-4">To start a case, please prepare:</p>
             <ul className="flex flex-col gap-3 mb-8 list-disc pl-5">
               <li className="pl-2">Links to the original, copyrighted material.</li>
@@ -64,7 +64,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
         {/* Sidebar */}
         <div className="lg:col-span-1 flex flex-col gap-6 sticky top-24">
           <div className="bg-white border border-[var(--border-light)] rounded-2xl p-6 shadow-sm">
-            <h3 className="text-[18px] font-[800] text-[var(--text-heading)] mb-4 pb-2 border-b border-[var(--border-light)]">Other Services</h3>
+            <h3 className="text-[18px] font-[800] text-black mb-4 pb-2 border-b border-[var(--border-light)]">Other Services</h3>
             <ul className="flex flex-col gap-3">
               {[
                 'Google Search Suppression',
@@ -76,7 +76,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 <li key={svc}>
                   <Link 
                     href={`/services/${svc.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="text-[14px] font-[600] text-[var(--text-body)] hover:text-[var(--gold)] transition-colors"
+                    className="text-[14px] font-[600] text-black hover:text-[var(--gold)] transition-colors"
                   >
                     {svc}
                   </Link>

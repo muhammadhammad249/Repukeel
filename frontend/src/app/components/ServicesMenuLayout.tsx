@@ -16,8 +16,9 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 w-full">
-      {/* Left Sidebar Tabs */}
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex flex-col lg:flex-row gap-8 w-full">
+        {/* Left Sidebar Tabs */}
       <div className="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-2">
         {categoriesData.map(cat => {
           const isActive = activeCatId === cat.id;
@@ -25,13 +26,13 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
             <button
               key={cat.id}
               onClick={() => setActiveCatId(cat.id)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left font-[700] text-[14px] transition-all relative ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left font-[800] text-[14px] transition-all duration-200 relative ${
                 isActive 
-                  ? 'bg-white text-[var(--text-heading)] shadow-[0_4px_20px_rgba(0,0,0,0.05)] z-10' 
-                  : 'bg-transparent text-[var(--text-body)] hover:bg-[rgba(255,255,255,0.5)]'
+                  ? 'bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.05)] z-10' 
+                  : 'bg-transparent text-black hover:bg-gray-300 hover:translate-x-1 hover:shadow-md'
               }`}
             >
-              <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px]">
+              <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px] text-black">
                 {cat.icon}
               </div>
               <span>{cat.label}</span>
@@ -46,15 +47,15 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
 
       {/* Right Main Content */}
       <div className="flex-1 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative z-0">
-        <h3 className="text-[13px] font-[800] text-blue-700 uppercase tracking-widest mb-4">
+        <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
           Solutions for {activeCategory.label}
         </h3>
         
         <div className="w-full bg-[#20409a] rounded-xl p-4 mb-6 flex items-center gap-3 text-white shadow-lg">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg">
+          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg text-white">
             {activeCategory.icon}
           </div>
-          <h2 className="text-[18px] font-[700]">{activeCategory.label}</h2>
+          <h2 className="text-[18px] font-[900] text-white">{activeCategory.label}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -63,10 +64,10 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
               <Link 
                 href="/contact" 
                 onClick={handleLinkClick}
-                className="bg-[#f8f9fc] hover:bg-[#eff2f9] transition-colors rounded-xl p-4 font-[700] text-[14px] text-[var(--text-heading)] flex items-center justify-between group border border-[rgba(0,0,0,0.02)] shadow-sm"
+                className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-4 font-[800] text-[14px] text-black flex items-center justify-between group border border-gray-200 shadow-sm"
               >
                 <span>{sol.title}</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </Link>
               
               {/* Nested Sub-items (like Google Review Removal) */}
@@ -77,10 +78,10 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
                       key={j}
                       href="/contact"
                       onClick={handleLinkClick}
-                      className="bg-[#f8f9fc] hover:bg-[#eff2f9] transition-colors rounded-xl p-3 font-[600] text-[13px] text-[var(--text-body)] flex items-center justify-between group shadow-sm border border-[rgba(0,0,0,0.02)]"
+                      className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-3 font-[700] text-[13px] text-black flex items-center justify-between group shadow-sm border border-gray-200"
                     >
                       <span>{sub}</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </Link>
                   ))}
                 </div>
@@ -89,6 +90,21 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
           ))}
         </div>
       </div>
+    </div>
+    
+    {/* New Bottom Banner */}
+    <div className="w-full bg-white border-t border-[var(--border-light)] mt-2 pt-6 pb-2 px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <h3 className="text-[18px] md:text-[20px] font-[900] text-black">
+        Need Different Solutions?
+      </h3>
+      <Link 
+        href="/contact" 
+        onClick={handleLinkClick}
+        className="bg-[#20409a] hover:bg-[#1a337a] text-white px-8 py-3 rounded text-[14px] font-[800] transition-colors shadow-sm tracking-wider"
+      >
+        CONTACT US
+      </Link>
+    </div>
     </div>
   );
 }

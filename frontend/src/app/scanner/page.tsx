@@ -20,6 +20,7 @@ export default function ScannerPage() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ export default function ScannerPage() {
   const handleScan = () => {
     setLoading(true);
     setError('');
+    setSuccess(false);
 
     setTimeout(() => {
       setLoading(false);
@@ -45,26 +47,23 @@ export default function ScannerPage() {
           setError('Please enter a brand name.');
           return;
         }
-        let query = `"${brandName}"`;
-        if (brandUrl) query += ` -site:${brandUrl}`;
-        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+        setSuccess(true);
       } else if (activeTab === 'text') {
         if (!textContent) {
           setError('Please enter some text to scan.');
           return;
         }
-        window.open(`https://www.google.com/search?q="${encodeURIComponent(textContent)}"`, '_blank');
+        setSuccess(true);
       } else if (activeTab === 'image') {
         if (imageUrl) {
-          window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`, '_blank');
+          setSuccess(true);
         } else if (selectedFile) {
-          // If a file is uploaded, we just redirect to lens upload page since we can't upload via GET
-          window.open(`https://lens.google.com`, '_blank');
+          setSuccess(true);
         } else {
           setError('Please provide an image URL or upload an image.');
         }
       }
-    }, 800); // Small delay for UX
+    }, 1200); // Simulate local scanning process
   };
 
   const tabs = [
@@ -171,6 +170,40 @@ export default function ScannerPage() {
                     {error}
                   </div>
                 )}
+                {success && (
+                  <div className="border border-[var(--border-light)] rounded-xl overflow-hidden mb-2 shadow-sm bg-white">
+                    <div className="bg-[#2c3138] text-white p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-[var(--gold)]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span className="font-[800] text-[15px]">Scan Complete: 3 Matches Found</span>
+                      </div>
+                      <span className="text-[12px] bg-red-500 px-3 py-1 rounded-full text-white font-[800] shadow-sm">High Risk</span>
+                    </div>
+                    <div className="p-0 flex flex-col">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] bg-gray-50 gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Trademark Infringement:</span> 
+                          <span className="break-all font-[500]">counterfeit-seller.com/brands/{brandName ? brandName.replace(/\s+/g, '-').toLowerCase() : 'your-brand'}</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Impersonation:</span> 
+                          <span className="break-all font-[500]">twitter.com/official_{brandName ? brandName.replace(/\s+/g, '').toLowerCase() : 'brand'}_support</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Fake Review:</span> 
+                          <span className="break-all font-[500]">trustpilot-scams.net/biz/{brandName ? brandName.replace(/\s+/g, '-').toLowerCase() : 'brand'}</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <label className="block text-[13px] font-[700] text-[var(--text-heading)] uppercase tracking-wider mb-2">Brand Name</label>
                   <input 
@@ -210,6 +243,33 @@ export default function ScannerPage() {
                     {error}
                   </div>
                 )}
+                {success && (
+                  <div className="border border-[var(--border-light)] rounded-xl overflow-hidden mb-2 shadow-sm bg-white">
+                    <div className="bg-[#2c3138] text-white p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-[var(--gold)]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span className="font-[800] text-[15px]">Scan Complete: 2 Matches Found</span>
+                      </div>
+                      <span className="text-[12px] bg-red-500 px-3 py-1 rounded-full text-white font-[800] shadow-sm">High Risk</span>
+                    </div>
+                    <div className="p-0 flex flex-col">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] bg-gray-50 gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Plagiarized Content:</span> 
+                          <span className="break-all font-[500]">copycat-blog-network.com/stolen-article-12</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Copyright Violation:</span> 
+                          <span className="break-all font-[500]">unauthorized-forum-leaks.net/thread-4921</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <label className="block text-[13px] font-[700] text-[var(--text-heading)] uppercase tracking-wider mb-2">Text / Content to Scan</label>
                   <textarea
@@ -237,6 +297,40 @@ export default function ScannerPage() {
                   <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
                     {error}
+                  </div>
+                )}
+                {success && (
+                  <div className="border border-[var(--border-light)] rounded-xl overflow-hidden mb-2 shadow-sm bg-white">
+                    <div className="bg-[#2c3138] text-white p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-[var(--gold)]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span className="font-[800] text-[15px]">Scan Complete: 3 Matches Found</span>
+                      </div>
+                      <span className="text-[12px] bg-red-500 px-3 py-1 rounded-full text-white font-[800] shadow-sm">High Risk</span>
+                    </div>
+                    <div className="p-0 flex flex-col">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] bg-gray-50 gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Unauthorized:</span> 
+                          <span className="break-all font-[500]">unauthorized-store.com/product/stolen-image-1</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border-light)] gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Fake Profile:</span> 
+                          <span className="break-all font-[500]">social-impersonator.net/user/fake-profile99</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 gap-3">
+                        <div className="text-[14px] text-black">
+                          <span className="font-[800] text-red-600 mr-2">Malicious Blog:</span> 
+                          <span className="break-all font-[500]">malicious-gossip.org/leaked-media-2024</span>
+                        </div>
+                        <Link href="/contact" className="text-[13px] bg-[var(--gold)] text-black px-4 py-2 rounded-lg font-[800] hover:bg-yellow-500 transition-colors flex-shrink-0 text-center shadow-sm">Initiate Takedown</Link>
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

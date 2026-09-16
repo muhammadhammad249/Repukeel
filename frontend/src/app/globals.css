@@ -11,8 +11,8 @@
   --gold:         #d9a52b;   /* primary accent */
   --gold-lt:      #f0c85a;   /* gold gradient lighter stop */
   --gold-dk:      #b8860f;   /* gold gradient darker stop */
-  --text-heading: #0f1b33;   /* near-black navy for headings on light bg */
-  --text-body:    #5b6478;   /* muted gray-blue for paragraphs */
+  --text-heading: #000000;   /* pure black for headings */
+  --text-body:    #000000;   /* pure black for paragraphs */
   --text-on-navy: #f4f6fb;   /* light text on navy backgrounds */
   --text-muted-navy: #9aa4c0;/* muted text on navy backgrounds */
   --green:        #22c55e;
@@ -280,6 +280,9 @@ a {
 /* Force utility colors to beat base typography */
 .text-white {
   color: #ffffff !important;
+}
+.text-black {
+  color: #000000 !important;
 }
 .text-\[var\(--text-on-navy\)\] {
   color: var(--text-on-navy) !important;
