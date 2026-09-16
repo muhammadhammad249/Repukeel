@@ -65,15 +65,20 @@ export default function Chatbot() {
   return (
     <>
       {!isOpen && (
-        <button onClick={() => setIsOpen(true)} className="fab fab-bot" aria-label="Open chat support" style={{ border: '2px solid #e0ac2f', background: '#16223c', cursor: 'pointer', outline: 'none' }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#e0ac2f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ width: '22px', height: '22px' }}>
+        <button 
+          onClick={() => setIsOpen(true)} 
+          className="w-[60px] h-[60px] rounded-full flex items-center justify-center bg-[#0f172a] border-[3px] border-[var(--gold)] shadow-lg transition-transform hover:scale-105 relative z-10" 
+          aria-label="Open chat support"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="w-[30px] h-[30px]">
             <rect x="3" y="11" width="18" height="10" rx="2"></rect>
             <circle cx="12" cy="5" r="2"></circle>
             <path d="M12 7v4"></path>
             <line x1="8" y1="16" x2="8.01" y2="16"></line>
             <line x1="16" y1="16" x2="16.01" y2="16"></line>
           </svg>
-          <span className="fab-notif" aria-label="1 notification">1</span>
+          {/* Notification Bubble */}
+          <span className="absolute -top-1 -right-1 w-[22px] h-[22px] rounded-full bg-[#ef4444] text-white text-[13px] font-[800] flex items-center justify-center border-[3px] border-white shadow-sm leading-none pt-[1px]">1</span>
         </button>
       )}
 

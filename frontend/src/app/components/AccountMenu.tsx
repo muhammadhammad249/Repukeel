@@ -38,9 +38,52 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     router.push('/login');
   };
 
-  return <div className={menuClassName}>
-    <button type="button" className="account-avatar" aria-label="Open account menu" aria-expanded={isOpen} onClick={() => setIsOpen((open) => !open)}>{initials}</button>
-    {isOpen && <><button type="button" className="account-menu-overlay" aria-label="Close account menu" onClick={() => setIsOpen(false)} />
-      <div className="account-dropdown" role="menu"><p className="account-name">{name}</p><button type="button" role="menuitem" onClick={logout}>Logout</button></div></>}
-  </div>;
+  return (
+    <div className={`relative ${menuClassName}`}>
+      <button 
+        type="button" 
+        className="w-[40px] h-[40px] rounded-full bg-[var(--gold)] text-[var(--bg-navy)] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105" 
+        aria-label="Open account menu" 
+        aria-expanded={isOpen} 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {initials}
+      </button>
+      
+      {isOpen && (
+        <>
+          <button 
+            type="button" 
+            className="fixed inset-0 w-full h-full cursor-default z-[90]" 
+            aria-label="Close account menu" 
+            onClick={() => setIsOpen(false)} 
+          />
+          <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-[var(--border-light)] overflow-hidden z-[100] transform transition-all">
+            <div className="px-4 py-3 border-b border-[var(--border-light)] bg-gray-50">
+              <p className="text-[14px] font-[700] text-[var(--text-heading)] truncate">{name}</p>
+              <p className="text-[12px] font-[500] text-[var(--text-body)] truncate">{user.email}</p>
+            </div>
+            <div className="p-2" role="menu">
+              <button 
+                type="button" 
+                role="menuitem" 
+                onClick={() => { setIsOpen(false); router.push('/dashboard'); }}
+                className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[var(--text-heading)] rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Dashboard
+              </button>
+              <button 
+                type="button" 
+                role="menuitem" 
+                onClick={logout}
+                className="w-full text-left px-3 py-2 mt-1 text-[14px] font-[600] text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }

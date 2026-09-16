@@ -1,6 +1,5 @@
 import { blogs } from "../data";
 import { notFound } from "next/navigation";
-import Navbar from "../../components/Navbar";
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -13,7 +12,6 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="min-h-screen bg-[#080e1c]">
-      <Navbar />
       <div className="container mx-auto px-4 py-24 max-w-3xl">
       <a href="/blogs" className="text-[#e0ac2f] hover:underline text-sm mb-8 inline-block">&larr; Back to Blog</a>
       <h1 className="text-4xl font-extrabold mb-6 text-white leading-tight">{blog.title}</h1>

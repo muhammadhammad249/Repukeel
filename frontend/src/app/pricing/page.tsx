@@ -1,9 +1,24 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import BlueCtaBand from '../components/BlueCtaBand';
 
 export default function PricingPage() {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem('authToken'));
+  }, []);
+
+  const handlePlanClick = (plan: string) => {
+    if (isLoggedIn) {
+      router.push(`/checkout?plan=${plan}`);
+    } else {
+      router.push(`/signup?plan=${plan}`);
+    }
+  };
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
       
@@ -117,7 +132,7 @@ export default function PricingPage() {
                 <p className="text-[var(--text-body)]">Standard takedown queue</p>
               </div>
             </div>
-            <Link href="/contact" className="btn btn-outline-dark w-full text-center">Choose Basic</Link>
+            <button onClick={() => handlePlanClick('Basic')} className="btn btn-outline-dark w-full text-center">Choose Basic</button>
           </div>
 
           {/* Professional Plan (Highlighted) */}
@@ -145,7 +160,7 @@ export default function PricingPage() {
                 <p className="text-blue-100">Priority queue, 48-hour removal guarantee</p>
               </div>
             </div>
-            <Link href="/contact" className="btn btn-gold-solid w-full text-center">Choose Professional</Link>
+            <button onClick={() => handlePlanClick('Professional')} className="btn btn-gold-solid w-full text-center">Choose Professional</button>
           </div>
 
           {/* Enterprise Plan */}
@@ -170,7 +185,7 @@ export default function PricingPage() {
                 <p className="text-[var(--text-body)]">Priority queue; 48-hour removal guarantee</p>
               </div>
             </div>
-            <Link href="/contact" className="btn btn-outline-dark w-full text-center">Contact Sales</Link>
+            <button onClick={() => handlePlanClick('Enterprise')} className="btn btn-outline-dark w-full text-center">Choose Enterprise</button>
           </div>
 
         </div>

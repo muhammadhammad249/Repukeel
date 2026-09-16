@@ -1,11 +1,60 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Admin bypass
+      if (email === 'admin@repukeel.com' && password === 'admin123') {
+        localStorage.setItem('authToken', 'admin_token');
+        router.push('/dashboard/admin');
+        return;
+      }
+      
+      // Check for registered user
+      const savedUserStr = localStorage.getItem('registeredUser');
+      if (savedUserStr) {
+        try {
+          const parsedUser = JSON.parse(savedUserStr);
+          if (parsedUser.email === email && parsedUser.password === password) {
+            localStorage.setItem('authToken', 'user_token');
+            router.push('/');
+            return;
+          } else if (parsedUser.email === email) {
+            setError('Incorrect password. Please try again.');
+            return;
+          }
+        } catch (e) {
+          console.error('Error parsing stored user data');
+        }
+      }
+      
+      // Not registered or completely incorrect email
+      setError('You are not registered yet. Please Sign Up first to continue.');
+    }, 1500);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
@@ -25,9 +74,16 @@ export default function LoginPage() {
 
           <div className="max-w-[420px] w-full mx-auto mt-12">
             <h1 className="text-[40px] font-[900] text-[#0a192f] mb-2">Welcome Back</h1>
-            <p className="text-[15px] text-gray-500 mb-10">Please enter your credentials to access your account</p>
+            <p className="text-[15px] text-gray-500 mb-8">Please enter your credentials to access your account</p>
 
-            <form className="flex flex-col gap-6">
+            {error && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 mb-6 flex items-center gap-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                {error}
+              </div>
+            )}
+
+            <form className="flex flex-col gap-6" onSubmit={handleLogin}>
               <div className="flex flex-col gap-2">
                 <label className="text-[14px] font-[700] text-[#0a192f]">Email Address</label>
                 <div className="relative">
@@ -76,9 +132,25 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <button type="submit" className="w-full h-[52px] bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[16px] rounded-[12px] flex items-center justify-center gap-2 mt-4 transition-colors shadow-lg shadow-[#d4af37]/20">
-                Sign In
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[20px] h-[20px]"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full h-[52px] bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[16px] rounded-[12px] flex items-center justify-center gap-2 mt-4 transition-colors shadow-lg shadow-[#d4af37]/20 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Signing In...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[20px] h-[20px]"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </>
+                )}
               </button>
             </form>
 

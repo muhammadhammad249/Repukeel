@@ -1,16 +1,40 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { blogs as rawBlogs } from './data';
 
 export default function BlogsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
   // Dummy data (empty for now to show the empty state requested)
-  const blogs: any[] = [];
-  
-  const categories = ['All', 'Copyright Law', 'Platform Updates', 'Case Studies', 'Creator Tips'];
-  const tags = ['DMCA', 'Piracy', 'OnlyFans', 'Google', 'Defamation', 'Social Media'];
+  const categories = ['All', 'Reputation Management', 'DMCA', 'Brand Protection', 'Social Media', 'Reviews'];
+  const tags = ['DMCA', 'Piracy', 'OnlyFans', 'Google', 'Defamation', 'Social Media', 'Trustpilot'];
+
+  // Map the raw blogs from data.ts into the format needed for the UI
+  const allBlogs = rawBlogs.map((b, i) => {
+    let category = 'Reputation Management';
+    if (b.title.includes('DMCA')) category = 'DMCA';
+    else if (b.title.includes('OnlyFans') || b.title.includes('Social Media') || b.title.includes('Impersonating')) category = 'Social Media';
+    else if (b.title.includes('Brand & IP')) category = 'Brand Protection';
+    else if (b.title.includes('Review')) category = 'Reviews';
+
+    return {
+      id: i + 1,
+      title: b.title,
+      slug: b.slug,
+      category,
+      excerpt: b.meta, // Using meta description as the excerpt for the card
+      date: `Sep ${15 - i}, 2026`, // Generates some recent dates
+      tag: category
+    };
+  });
+
+  const blogs = allBlogs.filter(blog => {
+    const matchesSearch = blog.title.toLowerCase().includes(searchQuery.toLowerCase()) || blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCat = activeCategory === 'All' || blog.category === activeCategory;
+    return matchesSearch && matchesCat;
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
@@ -82,7 +106,17 @@ export default function BlogsPage() {
         <div className="lg:col-span-3">
           {blogs.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Blog cards would map here */}
+              {blogs.map(blog => (
+                <div key={blog.id} className="bg-white border border-[var(--border-light)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="text-[12px] font-[700] text-[var(--gold)] uppercase tracking-wider mb-2">{blog.category}</div>
+                  <h3 className="text-[18px] font-[800] text-[var(--text-heading)] mb-3">{blog.title}</h3>
+                  <p className="text-[14px] text-[var(--text-body)] mb-4">{blog.excerpt}</p>
+                  <div className="flex items-center justify-between mt-auto">
+                    <span className="text-[12px] text-[var(--text-muted-navy)] font-[600]">{blog.date}</span>
+                    <Link href={`/blogs/${blog.slug}`} className="text-[13px] font-[700] text-[var(--bg-navy)] hover:text-[var(--gold)] transition-colors">Read more &rarr;</Link>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="relative overflow-hidden bg-[#111d40] border border-[rgba(217,165,43,0.3)] rounded-2xl p-16 flex flex-col items-center justify-center text-center shadow-[0_0_40px_rgba(217,165,43,0.12)]">

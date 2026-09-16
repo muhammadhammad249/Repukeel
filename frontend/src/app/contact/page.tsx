@@ -1,8 +1,41 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import BlueCtaBand from '../components/BlueCtaBand';
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    reason: '',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.reason || !formData.message) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    setLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+      setFormData({ firstName: '', lastName: '', email: '', reason: '', message: '' });
+    }, 1500);
+  };
   return (
     <div className="flex flex-col min-h-screen">
       
@@ -89,26 +122,42 @@ export default function ContactPage() {
             <h2 className="text-3xl font-[800] mb-2">Send us a message</h2>
             <p className="text-[15px] text-[var(--text-body)] mb-8">Fill out the form below and an account manager will be in touch within 24 hours.</p>
             
-            <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {success ? (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center flex flex-col items-center mb-8">
+                <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <h3 className="text-[20px] font-[800] text-green-800 mb-2">Message Sent Successfully!</h3>
+                <p className="text-[15px] text-green-700">Thank you for reaching out. An account manager will review your inquiry and get back to you shortly.</p>
+                <button onClick={() => setSuccess(false)} className="mt-6 text-[14px] font-[600] text-green-700 hover:text-green-800 underline">Send another message</button>
+              </div>
+            ) : (
+              <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                {error && (
+                  <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    {error}
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">First Name *</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
+                  <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
                 </div>
                 <div>
                   <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Last Name *</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
+                  <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
                 </div>
               </div>
               
               <div>
                 <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Email Address *</label>
-                <input type="email" className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)]" required />
               </div>
 
               <div>
                 <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Reason for Inquiry *</label>
-                <select className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] text-[var(--text-body)]" required defaultValue="">
+                <select name="reason" value={formData.reason} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] text-[var(--text-body)]" required>
                   <option value="" disabled>Select an option</option>
                   <option value="dmca">New DMCA Takedown</option>
                   <option value="monitoring">Brand Monitoring Services</option>
@@ -119,11 +168,26 @@ export default function ContactPage() {
               
               <div>
                 <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Message *</label>
-                <textarea rows={5} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] resize-none" placeholder="Provide details about your case or inquiry..." required></textarea>
+                <textarea name="message" value={formData.message} onChange={handleInputChange} rows={5} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] resize-none" placeholder="Provide details about your case or inquiry..." required></textarea>
               </div>
               
-              <button type="submit" className="btn btn-navy-solid w-max text-[16px]">Send Message</button>
+              <button 
+                type="submit" 
+                className="btn btn-navy-solid w-max text-[16px] disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </>
+                ) : 'Send Message'}
+              </button>
             </form>
+            )}
           </div>
 
           {/* Right: Side Panel (Spans 2 cols) */}

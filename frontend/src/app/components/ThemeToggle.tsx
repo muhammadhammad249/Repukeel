@@ -6,6 +6,11 @@ type Theme = 'light' | 'dark';
 
 function setTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
   localStorage.setItem('theme', theme);
 }
 

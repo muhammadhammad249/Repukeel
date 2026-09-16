@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (
@@ -51,93 +52,103 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="relative flex justify-center lg:justify-end lg:mt-4" style={{ perspective: '1200px' }}>
+          {/* Right Column exactly matching original dmca html structure */}
+          <div className="relative h-[480px] w-full mt-12 lg:mt-0 flex items-center justify-center">
             <style>{`
-              @keyframes float3d {
-                0% { transform: translateY(0) rotateX(1deg) rotateY(-2deg); }
-                50% { transform: translateY(-12px) rotateX(-1deg) rotateY(2deg); }
-                100% { transform: translateY(0) rotateX(1deg) rotateY(-2deg); }
+              @keyframes spin-slow {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
               }
-              .animate-float3d {
-                animation: float3d 8s ease-in-out infinite;
-                transform-style: preserve-3d;
+              @keyframes spin-slow-reverse {
+                from { transform: translate(-50%, -50%) rotate(360deg); }
+                to { transform: translate(-50%, -50%) rotate(0deg); }
               }
+              @keyframes bob-1 {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+              }
+              @keyframes bob-2 {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-12px); }
+              }
+              @keyframes bob-3 {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+              }
+              @keyframes scroll-dot {
+                0% { transform: translate(-50%, 0); opacity: 1; }
+                100% { transform: translate(-50%, 12px); opacity: 0; }
+              }
+              .anim-spin-bg-1 { animation: spin-slow 45s linear infinite; }
+              .anim-spin-bg-2 { animation: spin-slow-reverse 60s linear infinite; }
+              .anim-spin-bg-3 { animation: spin-slow 50s linear infinite; }
+              .anim-spin-blobs { animation: spin-slow 38s linear infinite; }
+              
+              .anim-bob-1 { animation: bob-1 4s ease-in-out infinite; }
+              .anim-bob-2 { animation: bob-2 3.5s ease-in-out infinite 0.5s; }
+              .anim-bob-3 { animation: bob-3 4.5s ease-in-out infinite 1s; }
+              .anim-scroll-dot { animation: scroll-dot 1.5s ease-out infinite; }
             `}</style>
             
-            {/* Background SVG curved dotted lines */}
-            <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] pointer-events-none opacity-40 z-0" viewBox="0 0 400 400">
-              <path d="M-50 250 Q 200 150 450 250" fill="none" stroke="#dca12b" strokeWidth="1" strokeDasharray="4 4" />
-              <path d="M0 350 Q 200 200 400 400" fill="none" stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 4" />
-              <circle cx="80" cy="225" r="3" fill="#dca12b" />
-              <circle cx="320" cy="225" r="3" fill="#dca12b" />
-              <circle cx="150" cy="290" r="3" fill="#9ca3af" />
-            </svg>
+            {/* Background Dashed Rings & Dots */}
+            <div className="absolute top-1/2 left-1/2 w-[340px] h-[340px] border border-dashed border-[#dca12b] opacity-20 rounded-full anim-spin-bg-1 z-0 pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 w-[420px] h-[420px] border border-dashed border-[#9ca3af] opacity-25 rounded-full anim-spin-bg-2 z-0 pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] border border-dashed border-[#dca12b] opacity-15 rounded-full anim-spin-bg-3 z-0 pointer-events-none"></div>
 
-            {/* Completely exact positioning container */}
-            <div className="relative w-full max-w-[420px] aspect-square animate-float3d z-10 mx-auto lg:mr-8 mt-12 lg:mt-0">
-              
-              {/* Standalone floating pills (left side) */}
-              <div className="absolute top-[20%] -left-[15%] w-[32px] h-[85px] bg-[#22c55e] rounded-full rotate-[-15deg] shadow-lg z-0"></div>
-              <div className="absolute top-[60%] -left-[5%] w-[32px] h-[85px] bg-[#3b82f6] rounded-full shadow-lg z-0"></div>
-              
-              {/* Scattered dots */}
-              <div className="absolute top-[5%] left-[25%] w-3 h-3 bg-[#dca12b] rounded-full opacity-70"></div>
-              <div className="absolute top-[20%] right-[10%] w-2 h-2 bg-[#dca12b] rounded-full opacity-60"></div>
-              <div className="absolute bottom-[30%] left-[20%] w-2.5 h-2.5 bg-[#dca12b] rounded-full opacity-90"></div>
-              <div className="absolute bottom-[-15%] left-[10%] w-3 h-3 bg-[#dca12b] rounded-full opacity-70"></div>
-              <div className="absolute top-[35%] right-[-15%] w-3 h-3 bg-[#dca12b] rounded-full"></div>
+            {/* Scattered dots (static or slight drift, keeping them static for simplicity as requested "texture") */}
+            <div className="absolute top-[15%] left-[25%] w-2 h-2 bg-[#dca12b] rounded-full opacity-60 z-0"></div>
+            <div className="absolute top-[35%] right-[15%] w-1.5 h-1.5 bg-[#dca12b] rounded-full opacity-50 z-0"></div>
+            <div className="absolute bottom-[20%] right-[25%] w-2.5 h-2.5 bg-[#dca12b] rounded-full opacity-70 z-0"></div>
+            <div className="absolute bottom-[10%] left-[30%] w-1.5 h-1.5 bg-[#dca12b] rounded-full opacity-60 z-0"></div>
 
-              {/* Main White Card */}
-              <div className="absolute inset-4 bg-white rounded-[40px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.15)] flex items-center justify-center z-10 border border-gray-50">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#dca12b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[38%] h-[38%] drop-shadow-sm">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  <path d="M9 12l2 2 4-4" strokeWidth="3"/>
-                </svg>
-              </div>
+            {/* Orbiting Blobs Group */}
+            <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] anim-spin-blobs z-10 pointer-events-none">
+              {/* Blue pill top */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35px] h-[60px] bg-[#3b82f6] rounded-full shadow-lg"></div>
+              {/* Orange pill right */}
+              <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-[60px] h-[35px] bg-[#f59e0b] rounded-full shadow-lg"></div>
+              {/* Green pill bottom */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[35px] h-[60px] bg-[#22c55e] rounded-full shadow-lg"></div>
+              {/* Purple pill left */}
+              <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-[60px] h-[35px] bg-[#a855f7] rounded-full shadow-lg"></div>
+            </div>
 
-              {/* Top Right: Gold Rating Badge + Purple Pill */}
-              <div className="absolute top-[5%] -right-[10%] z-20">
-                {/* Purple pill tucked behind */}
-                <div className="absolute -top-[15px] -left-[30px] w-[28px] h-[75px] bg-[#a855f7] rounded-full rotate-[45deg] -z-10 shadow-md"></div>
-                
-                {/* Gold Card */}
-                <div className="bg-[#dca12b] rounded-[24px] p-5 shadow-2xl flex flex-col items-center justify-center w-[110px] h-[135px] text-white">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <div className="flex items-center gap-0.5">
-                    <span className="text-[28px] font-[900] leading-none tracking-tight">4.9</span>
-                    <span className="text-[20px] font-[900] leading-none">★</span>
-                  </div>
-                  <span className="text-[13px] font-[600] tracking-wide mt-1">Rating</span>
-                </div>
-              </div>
-              
-              {/* Bottom Right: Blue Response Badge + Orange Pill */}
-              <div className="absolute bottom-[10%] -right-[15%] z-20">
-                {/* Orange pill tucked behind left side */}
-                <div className="absolute bottom-[10px] -left-[45px] w-[50px] h-[22px] bg-[#f59e0b] rounded-full rotate-[-10deg] -z-10 shadow-md"></div>
-                
-                {/* Blue Card */}
-                <div className="bg-[#3675f5] rounded-[24px] p-5 shadow-2xl flex flex-col items-center justify-center w-[110px] h-[135px] text-white">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                  <span className="text-[28px] font-[900] leading-none tracking-tight">24h</span>
-                  <span className="text-[13px] font-[600] tracking-wide mt-1">Response</span>
-                </div>
-              </div>
+            {/* Main White Card (PERFECTLY STILL) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[295px] bg-white rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.1)] flex items-center justify-center z-15 pointer-events-none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#dca12b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[130px] h-[130px]">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M9 12l2 2 4-4" strokeWidth="2"/>
+              </svg>
+            </div>
 
-              {/* Bottom Left: Huge Green Success Badge */}
-              <div className="absolute -bottom-[8%] -left-[12%] z-20">
-                {/* Green Card */}
-                <div className="bg-[#1cb954] rounded-[28px] p-6 shadow-2xl flex flex-col items-start justify-center w-[145px] h-[165px] text-white relative">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-4"><path d="M22 7L13.5 15.5 8.5 10.5 2 17M16 7h6v6"/></svg>
-                  <span className="text-[34px] font-[900] leading-none tracking-tight">280+</span>
-                  <span className="text-[15px] font-[600] tracking-wide mt-1">Success</span>
-                  
-                  {/* Little green blob floating top right corner */}
-                  <div className="absolute -top-[12px] -right-[12px] w-[45px] h-[45px] bg-[#1cb954] rounded-full shadow-lg"></div>
-                </div>
+            {/* Floating Stat Badges (Highest Z-Index) */}
+            {/* Top Right: Gold Rating Badge */}
+            <div className="absolute top-[8%] right-[5%] z-20 shadow-[0_10px_24px_rgba(0,0,0,0.15)] bg-[#dca12b] rounded-[18px] py-[14px] px-[20px] text-center text-white w-[110px] anim-bob-1 pointer-events-none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-6 h-6 mb-1 mx-auto"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span className="block text-[24px] font-[800] leading-[1.1]">4.9<span className="text-[16px]">★</span></span>
+              <span className="block text-[12px] font-[600] mt-[2px]">Rating</span>
+            </div>
+
+            {/* Bottom Right: Blue Response Badge */}
+            <div className="absolute bottom-[30%] -right-[3%] z-20 shadow-[0_10px_24px_rgba(0,0,0,0.15)] bg-[#3b82f6] rounded-[18px] py-[14px] px-[20px] text-center text-white w-[110px] anim-bob-2 pointer-events-none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-6 h-6 mb-1 mx-auto"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span className="block text-[24px] font-[800] leading-[1.1]">24h</span>
+              <span className="block text-[12px] font-[600] mt-[2px]">Response</span>
+            </div>
+
+            {/* Bottom Left: Green Success Badge */}
+            <div className="absolute bottom-[5%] left-[8%] z-20 shadow-[0_10px_24px_rgba(0,0,0,0.15)] bg-[#22c55e] rounded-[18px] py-[16px] px-[20px] text-left text-white w-[120px] anim-bob-3 pointer-events-none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-6 h-6 mb-2"><path d="M22 7L13.5 15.5 8.5 10.5 2 17M16 7h6v6"/></svg>
+              <span className="block text-[26px] font-[800] leading-[1.1]">280+</span>
+              <span className="block text-[12px] font-[600] mt-[2px]">Success</span>
+            </div>
+            
+            {/* Scroll Hint */}
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+              <span className="text-[11px] font-[600] text-[#9ca3af] uppercase tracking-wider">Scroll to explore</span>
+              <div className="w-[20px] h-[32px] rounded-full border-2 border-[#d1d5db] relative">
+                <div className="absolute top-[4px] left-1/2 -translate-x-1/2 w-[4px] h-[4px] bg-[#9ca3af] rounded-full anim-scroll-dot"></div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -160,66 +171,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= PROFESSIONAL DMCA SECTION ================= */}
-      <section className="w-full bg-white py-24">
-        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl font-[800] mb-6">Professional DMCA<br/>Takedown Service</h2>
-            <div className="w-16 h-1 bg-[var(--gold)] mb-8"></div>
-            <p className="text-[16px] text-[var(--text-body)] mb-6">
-              We are a dedicated DMCA takedown service committed to protecting your digital content from copyright infringement, piracy, and unauthorized use.
-            </p>
-            <div className="flex flex-col gap-6 mb-10">
-              {[
-                { title: 'Fast & Effective Takedowns', desc: 'Quick removal of stolen content from all platforms within 24 to 48 hours.' },
-                { title: 'Complete Copyright Protection', desc: 'Full spectrum protection for your intellectual property across every platform and jurisdiction.' },
-                { title: 'Legal Support', desc: 'Expert legal assistance and ongoing monitoring to protect your rights long-term.' }
-              ].map((ft, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] flex items-center justify-center text-[var(--gold)] flex-shrink-0">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/></svg>
-                  </div>
-                  <div>
-                    <h4 className="text-[17px] font-[700] text-[var(--text-heading)] mb-1">{ft.title}</h4>
-                    <p className="text-[14px] text-[var(--text-body)] leading-relaxed">{ft.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Link href="/protection" className="btn btn-gold-solid">Start Protecting Now</Link>
-          </div>
+      {/* ================= PROTECT YOUR IP SECTION (Redesigned) ================= */}
+      <section className="relative w-full bg-white py-24 overflow-hidden">
+        {/* Faint Dotted Grid Background */}
+        <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+        
+        {/* Floating Empty Gold Rings */}
+        <div className="absolute top-[10%] left-[5%] w-[120px] h-[120px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
+        <div className="absolute top-[25%] left-[25%] w-[80px] h-[80px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
+        <div className="absolute top-[15%] right-[20%] w-[150px] h-[150px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-[100px] h-[100px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] left-[30%] w-[200px] h-[200px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
+
+        <div className="container relative z-10 flex flex-col items-center text-center">
           
-          <div className="relative grid grid-cols-2 gap-4">
+          <div className="inline-flex items-center gap-2 bg-white border border-[#e5e7eb] rounded-full px-4 py-2 text-[14px] font-[600] text-[var(--text-heading)] mb-8 shadow-sm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            Ready to Transform Your Business?
+          </div>
+
+          <h2 className="text-4xl md:text-5xl font-[800] mb-6 text-[var(--text-heading)]">
+            Protect Your <span className="text-[var(--gold)] relative inline-block">
+              Intellectual Property
+              <div className="absolute bottom-[-4px] left-0 w-full h-[3px] bg-[var(--gold)]"></div>
+            </span> Today
+          </h2>
+          
+          <p className="text-[17px] text-[var(--text-body)] mb-12 max-w-3xl leading-relaxed">
+            Your online presence is valuable&mdash;do not let copyright infringement, content theft, or piracy threaten your brand. We provide expert DMCA takedown solutions to remove stolen content quickly and legally.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
             {[
-              { n: '98%', l: 'Client Satisfaction' },
-              { n: '24-48h', l: 'Average Takedown' },
-              { n: '50+', l: 'Countries Served' },
-              { n: '280+', l: 'Cases Solved' }
-            ].map((stat, i) => (
-              <div key={i} className="card-navy text-center p-6 flex flex-col items-center gap-3">
-                <span className="text-3xl font-[800] text-[var(--gold)]">{stat.n}</span>
-                <span className="text-[13px] font-[500] text-[var(--text-on-navy)] leading-tight">{stat.l}</span>
+              'Fast & Effective Takedowns',
+              'Complete Copyright & Brand Protection',
+              'Legal Support & Ongoing Monitoring'
+            ].map((ft, i) => (
+              <div key={i} className="bg-white border border-[#f3f4f6] rounded-xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center justify-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--gold)] flex-shrink-0"></div>
+                <span className="font-[600] text-[15px] text-[var(--text-heading)]">{ft}</span>
               </div>
             ))}
-            
-            {/* Overlay Quote Card */}
-            <div className="w-[100%] mt-6 bg-white border border-[var(--gold)] rounded-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] z-10 text-center relative overflow-hidden">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1" className="w-16 h-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"><path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/></svg>
-              <p className="italic text-[15px] font-[500] text-[var(--text-heading)] relative z-10">"Your content is valuable&mdash;let us help you protect it."</p>
-              <p className="text-[12px] font-[700] text-[var(--text-body)] mt-2 uppercase tracking-wide relative z-10">Repukeel Team</p>
-            </div>
           </div>
+
         </div>
       </section>
 
       {/* ================= SERVICES SECTION ================= */}
       <section id="services" className="w-full bg-white py-24 border-t border-[var(--border-light)]">
         <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-2xl mx-auto mb-16"
+          >
             <span className="text-[13px] font-[700] text-[var(--gold)] uppercase tracking-widest mb-2 block">Our Services</span>
             <h2 className="text-4xl font-[800] mb-4">Increase sales with our brand protection solutions</h2>
             <p className="text-[16px] text-[var(--text-body)]">Achieve comprehensive visibility of online threats with round-the-clock monitoring and enforcement.</p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {/* Rendering 6 sample cards for layout matching */}
@@ -231,76 +242,150 @@ export default function Home() {
               { title: 'Brand Impersonation', desc: 'Detect and remove fake accounts & profiles.' },
               { title: 'Fake Review Removal', desc: 'Swiftly dispute and remove defamatory reviews.' }
             ].map((svc, i) => (
-              <div key={i} className="card-light flex flex-col">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="card-light flex flex-col"
+              >
                 <div className="icon-box-light mb-6">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 2v20M5 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM19 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM5 7h14M8 3h8"/></svg>
                 </div>
                 <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{svc.title}</h4>
                 <p className="text-[14px] text-[var(--text-body)]">{svc.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          <div className="flex justify-center gap-4">
-            <Link href="/contact" className="btn btn-navy-solid">CONTACT SALES</Link>
-            <Link href="/contact" className="btn btn-gold-solid">REQUEST A DEMO</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 4 SIMPLE STEPS ================= */}
-      <section className="w-full bg-[var(--bg-soft)] py-24">
-        <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-4xl font-[800] mb-4">How We Protect You in 4 Simple Steps</h2>
-            <p className="text-[16px] text-[var(--text-body)]">Our streamlined process ensures rapid resolution of copyright infringements.</p>
+          <div className="flex justify-center gap-4 mb-16">
+            <Link href="/contact" className="btn btn-navy-solid uppercase text-[14px] font-[600] px-8 py-3 rounded-lg">CONTACT SALES</Link>
+            <Link href="/contact" className="btn btn-gold-solid uppercase text-[14px] font-[600] px-8 py-3 rounded-lg">REQUEST A DEMO</Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[
-              { n: '01', title: 'Contact Us', desc: 'Submit your case details securely through our portal.' },
-              { n: '02', title: 'We Scan & Identify', desc: 'Our AI scans the web for all infringing content.' },
-              { n: '03', title: 'Action Filed', desc: 'Legal DMCA takedown notices are immediately drafted and sent.' },
-              { n: '04', title: 'Confirmed', desc: 'Content is successfully removed and continuously monitored.' }
-            ].map((step, i) => (
-              <div key={i} className="relative p-6 flex flex-col items-center">
-                <div className="text-[100px] font-[900] text-[var(--gold)] opacity-10 absolute top-0 left-1/2 -translate-x-1/2 -z-10 leading-none">{step.n}</div>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--bg-navy)] to-[var(--gold)] mb-6 flex items-center justify-center text-white shadow-lg">
-                  <span className="font-[700] text-xl">{i+1}</span>
+          {/* New Google Reviews Card */}
+          <div className="flex justify-center">
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8 max-w-[600px] w-full flex flex-col sm:flex-row items-center sm:items-start gap-8">
+              
+              {/* Left Side: Rating */}
+              <div className="flex flex-col items-center sm:items-start">
+                <div className="flex gap-1 mb-2">
+                  {[1,2,3,4,5].map(s => (
+                    <svg key={s} viewBox="0 0 24 24" fill="#10b981" className="w-6 h-6"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ))}
                 </div>
-                <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{step.title}</h4>
-                <p className="text-[14px] text-[var(--text-body)]">{step.desc}</p>
+                <div className="text-[28px] font-[900] text-[#0f172a] leading-none mb-1">
+                  4.96 <span className="text-[20px]">out 5</span>
+                </div>
+                <div className="text-[14px] text-gray-500 mb-4">25 Reviews</div>
+                <a href="#" className="bg-[#0f172a] text-white text-[12px] font-[700] px-4 py-1.5 rounded-md uppercase tracking-wide">REVIEWS</a>
               </div>
+
+              {/* Divider */}
+              <div className="hidden sm:block w-[1px] bg-gray-200 self-stretch"></div>
+
+              {/* Right Side: Google branding */}
+              <div className="flex flex-col text-center sm:text-left justify-center pt-2">
+                <div className="text-[20px] font-[800] text-[#0f172a] mb-2">Google</div>
+                <p className="text-[13px] text-gray-500 max-w-[250px]">Review of the Trusted Copyright Removal program</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ================= 4 SIMPLE STEPS (Redesigned) ================= */}
+      <section className="w-full bg-[#f4f6f8] py-24">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto mb-20"
+          >
+            <h2 className="text-4xl md:text-5xl font-[800] mb-4 text-[var(--text-heading)]">
+              How We Protect You in <span className="text-[var(--gold)]">4 Simple Steps</span>
+            </h2>
+            <p className="text-[17px] text-gray-500">
+              From your first message to full resolution &mdash; a clear, fast, and reliable process every time.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center px-4">
+            {[
+              { n: '01', title: 'Contact Us', desc: 'Reach out with a brief description of your situation. No lengthy forms — just tell us what is happening and we take it from there.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /> },
+              { n: '02', title: 'We Scan Everything', desc: 'Our AI and expert team scan hundreds of platforms to find every instance of the problem before any action is taken.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /> },
+              { n: '03', title: 'Takedowns Filed', desc: 'Notices and platform reports are filed simultaneously across all identified sources — same day, no delays.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /> },
+              { n: '04', title: 'Confirmed & Monitored', desc: 'Every removal is verified and documented. Ongoing monitoring catches any re-uploads automatically.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /> }
+            ].map((step, i) => (
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                className="flex flex-col items-center group"
+              >
+                {/* Icon Box */}
+                <div className="w-[85px] h-[85px] rounded-[24px] bg-gradient-to-br from-[#2a3547] to-[#1a2333] shadow-[0_15px_30px_rgba(0,0,0,0.15)] flex items-center justify-center mb-8 relative border-b-2 border-r-2 border-[#1a2333]/50">
+                   {/* subtle inner gold glow */}
+                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-tr from-transparent via-transparent to-[var(--gold)] opacity-30"></div>
+                   <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" className="w-8 h-8 relative z-10">{step.icon}</svg>
+                </div>
+                
+                {/* Large Gold Number */}
+                <div className="text-[52px] font-[900] text-[var(--gold)] leading-none mb-4">{step.n}</div>
+                
+                {/* Title */}
+                <h4 className="text-[19px] font-[800] text-[var(--text-heading)] mb-4">{step.title}</h4>
+                
+                {/* Description */}
+                <p className="text-[14px] text-gray-500 leading-relaxed max-w-[260px] mx-auto">{step.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= WHY CHOOSE US ================= */}
-      <section className="w-full bg-white py-24">
-        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl font-[800] mb-8">Why Thousands Choose Repukeel</h2>
+      {/* ================= WHY CHOOSE US (Redesigned) ================= */}
+      <section className="w-full bg-[#f8f9fa] py-24">
+        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16">
+          
+          {/* Left Column */}
+          <div className="flex flex-col">
+            <h2 className="text-4xl md:text-[42px] font-[900] mb-6 leading-[1.1] text-[#0f172a] tracking-tight">
+              Why Thousands Choose<br/>
+              <span className="text-[var(--gold)]">Repukeel</span>
+            </h2>
+            <p className="text-[16px] text-gray-500 mb-10 max-w-[500px] leading-relaxed">
+              We are not a generic legal service or a slow law firm. We are a specialized team that moves fast, knows every platform inside out, and does not stop until the problem is fully resolved.
+            </p>
+
             <div className="flex flex-col gap-4">
               {[
-                { title: 'Same-Day Action', desc: 'We act instantly to limit damage.' },
-                { title: 'Global Coverage', desc: 'Takedowns issued in every jurisdiction.' },
-                { title: '100% Confidential', desc: 'Your privacy is fully protected.' },
-                { title: 'Proven Results', desc: 'Unmatched 99% success rate across platforms.' }
+                { title: 'Same-Day Action', desc: 'Most notices are filed within hours of receiving your case — not days or weeks.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /> },
+                { title: 'Global Coverage', desc: 'We work across 150+ countries and every major platform, including the dark web.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
+                { title: '100% Confidential', desc: 'Your identity and all case details are handled with strict confidentiality. We never disclose client information.', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /> }
               ].map((feat, i) => (
-                <div key={i} className="card-light !p-6 flex items-center gap-6">
-                  <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] flex items-center justify-center text-[var(--gold)] flex-shrink-0">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><path d="M20 6L9 17l-5-5"/></svg>
+                <div key={i} className="bg-white border border-gray-100 rounded-xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-start gap-5">
+                  <div className="w-12 h-12 rounded-[12px] bg-[rgba(217,165,43,0.1)] flex items-center justify-center text-[var(--gold)] flex-shrink-0 mt-1">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">{feat.icon}</svg>
                   </div>
                   <div>
-                    <h4 className="text-[17px] font-[700] text-[var(--text-heading)]">{feat.title}</h4>
-                    <p className="text-[14px] text-[var(--text-body)]">{feat.desc}</p>
+                    <h4 className="text-[17px] font-[800] text-[#0f172a] mb-1">{feat.title}</h4>
+                    <p className="text-[14px] text-gray-500 leading-relaxed">{feat.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6">
+
+          {/* Right Column (Stats Grid) */}
+          <div className="grid grid-cols-2 gap-4 lg:gap-6 lg:mt-8">
             {[
               { n: '2K+', l: 'DMCA Takedowns Filed' },
               { n: '24hrs', l: 'Avg Removal Time' },
@@ -309,12 +394,13 @@ export default function Home() {
               { n: '150+', l: 'Countries Served' },
               { n: '7+', l: 'Years of Experience' }
             ].map((stat, i) => (
-              <div key={i} className="bg-white border border-[var(--border-light)] rounded-2xl p-6 text-center shadow-sm">
-                <div className="text-3xl font-[800] text-[var(--gold)] mb-1">{stat.n}</div>
-                <div className="text-[13px] font-[600] text-[var(--text-heading)] uppercase tracking-wide">{stat.l}</div>
+              <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 lg:p-8 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col justify-center items-center h-full min-h-[140px]">
+                <div className="text-[32px] lg:text-[40px] font-[900] text-[var(--gold)] mb-2 leading-none">{stat.n}</div>
+                <div className="text-[12px] font-[500] text-gray-500">{stat.l}</div>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
@@ -322,7 +408,7 @@ export default function Home() {
       <section className="w-full bg-[var(--bg-navy)] py-24">
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-4xl font-[800] text-white mb-4">Trusted by Creators Worldwide</h2>
+            <h2 className="text-4xl font-[800] mb-4" style={{ color: '#ffffff' }}>Trusted by Creators Worldwide</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -333,7 +419,7 @@ export default function Home() {
             ].map((t, i) => (
               <div key={i} className="bg-[#111a36] border border-[var(--border-navy)] rounded-2xl p-8 flex flex-col">
                 <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
-                <p className="italic text-[15px] text-[var(--text-on-navy)] mb-8 flex-1">
+                <p className="italic text-[15px] mb-8 flex-1" style={{ color: '#f4f6fb' }}>
                   "Absolutely incredible service. They took down stolen copies of my course videos within 24 hours. Highly recommended!"
                 </p>
                 <div className="flex items-center gap-3 mt-auto">
@@ -341,8 +427,8 @@ export default function Home() {
                     {t.name[0]}
                   </div>
                   <div>
-                    <h4 className="text-[15px] font-[700] text-white">{t.name}</h4>
-                    <p className="text-[12px] text-[var(--text-muted-navy)]">{t.role}</p>
+                    <h4 className="text-[15px] font-[700]" style={{ color: '#ffffff' }}>{t.name}</h4>
+                    <p className="text-[12px]" style={{ color: '#9aa4c0' }}>{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -351,36 +437,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= FAQ ================= */}
+      {/* ================= FAQ (Redesigned) ================= */}
       <section className="w-full bg-white py-24">
-        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-4xl font-[800] mb-6">Got Questions?<br/>We Have Answers.</h2>
-            <p className="text-[16px] text-[var(--text-body)] mb-8">
-              Everything you need to know about our DMCA takedown process and brand protection services.
+        <div className="container grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-16">
+          
+          {/* Left Column */}
+          <div className="flex flex-col">
+            <h2 className="text-4xl md:text-[52px] font-[900] mb-6 leading-[1.05] text-[#0f172a] tracking-tight">
+              Got Questions? <span className="text-[var(--gold)] block">We Have Answers.</span>
+            </h2>
+            
+            <p className="text-[17px] text-gray-500 mb-10 max-w-[450px] leading-relaxed">
+              Most people come to us with questions before they commit. Here are the ones we hear most often.
             </p>
-            <ul className="flex flex-col gap-4 mb-10">
-              {['100% Legal & Compliant', 'Transparent Process', 'Dedicated Account Manager', 'No Hidden Fees'].map((chk, i) => (
-                <li key={i} className="flex items-center gap-3 font-[600] text-[var(--text-heading)]">
-                  <span className="text-[var(--gold)]">✓</span> {chk}
+            
+            <ul className="flex flex-col gap-5 mb-12">
+              {[
+                '24/7 Support Available',
+                'Free initial consultation',
+                'No long-term commitment required',
+                'Results-driven pricing'
+              ].map((chk, i) => (
+                <li key={i} className="flex items-center gap-4 text-[16px] text-gray-600 font-[400]">
+                  <div className="w-6 h-6 rounded-full border border-[var(--gold)] flex items-center justify-center text-[var(--gold)] flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  {chk}
                 </li>
               ))}
             </ul>
-            <Link href="/contact" className="btn btn-navy-solid">Contact Our Team</Link>
+            
+            <div>
+              <Link href="/contact" className="inline-flex items-center gap-3 bg-[#0a1128] text-white px-8 py-3.5 rounded-[12px] font-[700] text-[15px] hover:bg-[#1a233a] transition-colors shadow-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                Contact Our Team
+              </Link>
+            </div>
           </div>
+
+          {/* Right Column (FAQ Cards) */}
           <div className="flex flex-col gap-4">
             {[
-              { q: 'How long does a takedown take?', a: 'Most standard DMCA takedowns are processed and resolved within 24 to 48 hours depending on the platform.' },
-              { q: 'What information do you need?', a: 'We simply need a link to your original content and links to where it has been stolen or copied.' },
-              { q: 'Do you work internationally?', a: 'Yes, we issue takedown notices globally and cover all major international hosting providers.' },
-              { q: 'What happens if the content comes back?', a: 'Our continuous monitoring plans ensure that if the content is re-uploaded, we automatically strike it down again.' }
+              { q: 'What is a DMCA takedown?', a: 'A DMCA takedown is a formal legal notice filed with a platform or hosting provider under the Digital Millennium Copyright Act, requiring them to remove content that infringes your copyright. Most major platforms globally comply with DMCA notices.' },
+              { q: 'How quickly does content get removed?', a: 'Most content is removed within 24 to 72 hours of a valid notice being filed. Search engine de-indexing takes 24 to 96 hours. We track every case until it is fully resolved.' },
+              { q: 'Do you handle reputation damage as well as copyright?', a: 'Yes. We offer full Online Reputation Management services including removal of defamatory articles, fake review campaigns, and negative content suppression alongside our copyright enforcement services.' },
+              { q: 'Is your service confidential?', a: 'Completely. Your identity and all case details are handled with strict confidentiality. We never share our client list publicly without explicit permission.' }
             ].map((faq, i) => (
-              <div key={i} className="bg-[var(--bg-soft)] rounded-2xl p-6">
-                <h4 className="text-[16px] font-[700] text-[var(--text-heading)] mb-2">{faq.q}</h4>
-                <p className="text-[14px] text-[var(--text-body)]">{faq.a}</p>
+              <div key={i} className="bg-[#f8f9fa] border border-gray-100 rounded-2xl p-8">
+                <h4 className="text-[16px] font-[800] text-[#0f172a] mb-3">{faq.q}</h4>
+                <p className="text-[14.5px] text-gray-500 leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 

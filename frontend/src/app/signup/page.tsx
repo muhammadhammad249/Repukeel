@@ -5,16 +5,35 @@ import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
   const router = useRouter();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    if (!firstName || !lastName || !email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
     setLoading(true);
-    // Dummy logic
+    // Simulate API registration
     setTimeout(() => {
-      localStorage.setItem('authToken', 'dummy_token');
-      router.push('/dashboard');
-    }, 1000);
+      setLoading(false);
+      localStorage.setItem('registeredUser', JSON.stringify({ email, password, firstName, lastName }));
+      alert('Registration successful! Please log in with your new credentials.');
+      router.push('/login');
+    }, 1500);
   };
 
   return (
@@ -25,9 +44,16 @@ export default function SignupPage() {
         <div className="max-w-md w-full mx-auto">
           
           <h1 className="text-3xl font-[800] text-[var(--text-heading)] mb-2">Create an Account</h1>
-          <p className="text-[15px] text-[var(--text-body)] mb-8">
+          <p className="text-[15px] text-[var(--text-body)] mb-6">
             Join Repukeel to start protecting your intellectual property today.
           </p>
+
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 mb-6 flex items-center gap-2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-4">
@@ -35,6 +61,8 @@ export default function SignupPage() {
                 <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">First Name</label>
                 <input 
                   type="text" 
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
                   placeholder="John"
                   required 
@@ -44,6 +72,8 @@ export default function SignupPage() {
                 <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Last Name</label>
                 <input 
                   type="text" 
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
                   placeholder="Doe"
                   required 
@@ -55,6 +85,8 @@ export default function SignupPage() {
               <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Email Address</label>
               <input 
                 type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
                 placeholder="you@example.com"
                 required 
@@ -65,6 +97,8 @@ export default function SignupPage() {
               <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Password</label>
               <input 
                 type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
                 placeholder="••••••••"
                 required 
@@ -73,10 +107,18 @@ export default function SignupPage() {
 
             <button 
               type="submit" 
-              className="btn btn-gold-solid w-full mt-2 py-3.5 text-[15px]"
+              className="btn btn-gold-solid w-full mt-2 py-3.5 text-[15px] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               disabled={loading}
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-[#0a192f]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating account...
+                </>
+              ) : 'Create Account'}
             </button>
           </form>
 

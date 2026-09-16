@@ -46,22 +46,32 @@ function CheckoutContent() {
                 </div>
               </label>
 
-              <label className={`block p-5 border-2 rounded-xl cursor-pointer transition-colors ${method === 'paypal' ? 'border-[#e0ac2f] bg-[#e0ac2f]/10' : 'border-[#22304d] hover:border-slate-500'}`}>
+              <label className={`block p-5 border-2 rounded-xl cursor-pointer transition-colors ${method === 'easypaisa' ? 'border-[#e0ac2f] bg-[#e0ac2f]/10' : 'border-[#22304d] hover:border-slate-500'}`}>
                 <div className="flex items-center gap-4">
-                  <input type="radio" name="method" value="paypal" checked={method === 'paypal'} onChange={() => setMethod('paypal')} className="w-5 h-5 accent-[#e0ac2f]" />
+                  <input type="radio" name="method" value="easypaisa" checked={method === 'easypaisa'} onChange={() => setMethod('easypaisa')} className="w-5 h-5 accent-[#e0ac2f]" />
                   <div>
-                    <div className="text-white font-bold text-lg">PayPal</div>
-                    <div className="text-sm text-slate-400">Fast and secure checkout</div>
+                    <div className="text-white font-bold text-lg">EasyPaisa</div>
+                    <div className="text-sm text-slate-400">Direct mobile wallet transfer</div>
                   </div>
                 </div>
               </label>
 
-              <label className={`block p-5 border-2 rounded-xl cursor-pointer transition-colors ${method === 'crypto' ? 'border-[#e0ac2f] bg-[#e0ac2f]/10' : 'border-[#22304d] hover:border-slate-500'}`}>
+              <label className={`block p-5 border-2 rounded-xl cursor-pointer transition-colors ${method === 'jazzcash' ? 'border-[#e0ac2f] bg-[#e0ac2f]/10' : 'border-[#22304d] hover:border-slate-500'}`}>
                 <div className="flex items-center gap-4">
-                  <input type="radio" name="method" value="crypto" checked={method === 'crypto'} onChange={() => setMethod('crypto')} className="w-5 h-5 accent-[#e0ac2f]" />
+                  <input type="radio" name="method" value="jazzcash" checked={method === 'jazzcash'} onChange={() => setMethod('jazzcash')} className="w-5 h-5 accent-[#e0ac2f]" />
                   <div>
-                    <div className="text-white font-bold text-lg">Cryptocurrency</div>
-                    <div className="text-sm text-slate-400">Bitcoin, Ethereum, USDT</div>
+                    <div className="text-white font-bold text-lg">JazzCash</div>
+                    <div className="text-sm text-slate-400">Direct mobile wallet transfer</div>
+                  </div>
+                </div>
+              </label>
+
+              <label className={`block p-5 border-2 rounded-xl cursor-pointer transition-colors ${method === 'bank' ? 'border-[#e0ac2f] bg-[#e0ac2f]/10' : 'border-[#22304d] hover:border-slate-500'}`}>
+                <div className="flex items-center gap-4">
+                  <input type="radio" name="method" value="bank" checked={method === 'bank'} onChange={() => setMethod('bank')} className="w-5 h-5 accent-[#e0ac2f]" />
+                  <div>
+                    <div className="text-white font-bold text-lg">Bank Transfer</div>
+                    <div className="text-sm text-slate-400">Direct deposit to our bank account</div>
                   </div>
                 </div>
               </label>
@@ -103,17 +113,19 @@ function CheckoutContent() {
               </div>
             )}
 
-            {method === 'paypal' && (
+            {['easypaisa', 'jazzcash', 'bank'].includes(method) && (
               <div className="bg-[#080e1c] border border-[#22304d] rounded-xl p-8 text-center mb-8">
-                <p className="text-slate-300 mb-4">You will be securely redirected to PayPal to complete your purchase.</p>
-                <div className="inline-block px-4 py-2 bg-slate-800 rounded-lg text-slate-400">PayPal Account Validation</div>
-              </div>
-            )}
-
-            {method === 'crypto' && (
-              <div className="bg-[#080e1c] border border-[#22304d] rounded-xl p-8 text-center mb-8">
-                <p className="text-slate-300 mb-4">Send payment to the generated wallet address below.</p>
-                <div className="p-4 bg-slate-800 rounded-lg text-sm text-slate-400 break-all border border-slate-700">0x71C...3aF1</div>
+                <p className="text-slate-300 mb-4">
+                  Transfer the total amount via <span className="font-bold text-white capitalize">{method}</span> to the following account:
+                </p>
+                <div className="p-4 bg-slate-800 rounded-lg text-sm text-[#e0ac2f] font-bold border border-slate-700 mb-6">
+                  (Account details will be provided by Admin soon)
+                </div>
+                
+                <div className="text-left space-y-2">
+                  <label className="block text-sm font-medium text-slate-400">Upload Payment Screenshot / Receipt</label>
+                  <input type="file" className="w-full bg-[#16223c] border border-[#22304d] rounded-lg p-2 text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#e0ac2f] file:text-black hover:file:bg-[#f2c94c]" />
+                </div>
               </div>
             )}
 

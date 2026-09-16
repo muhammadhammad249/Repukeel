@@ -1,12 +1,25 @@
 'use client';
 import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 
 export default function ScannerPage() {
   const [activeTab, setActiveTab] = useState<'brand' | 'text' | 'image'>('brand');
+  
+  // Brand state
+  const [brandName, setBrandName] = useState('');
+  const [brandUrl, setBrandUrl] = useState('');
+  
+  // Text state
+  const [textContent, setTextContent] = useState('');
+  
+  // Image state
   const [imageUrl, setImageUrl] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -18,6 +31,40 @@ export default function ScannerPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) setSelectedFile(file);
+  };
+
+  const handleScan = () => {
+    setLoading(true);
+    setError('');
+
+    setTimeout(() => {
+      setLoading(false);
+      
+      if (activeTab === 'brand') {
+        if (!brandName) {
+          setError('Please enter a brand name.');
+          return;
+        }
+        let query = `"${brandName}"`;
+        if (brandUrl) query += ` -site:${brandUrl}`;
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+      } else if (activeTab === 'text') {
+        if (!textContent) {
+          setError('Please enter some text to scan.');
+          return;
+        }
+        window.open(`https://www.google.com/search?q="${encodeURIComponent(textContent)}"`, '_blank');
+      } else if (activeTab === 'image') {
+        if (imageUrl) {
+          window.open(`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`, '_blank');
+        } else if (selectedFile) {
+          // If a file is uploaded, we just redirect to lens upload page since we can't upload via GET
+          window.open(`https://lens.google.com`, '_blank');
+        } else {
+          setError('Please provide an image URL or upload an image.');
+        }
+      }
+    }, 800); // Small delay for UX
   };
 
   const tabs = [
@@ -118,36 +165,80 @@ export default function ScannerPage() {
             {/* ---- BRAND TAB ---- */}
             {activeTab === 'brand' && (
               <div className="flex flex-col gap-6">
+                {error && (
+                  <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    {error}
+                  </div>
+                )}
                 <div>
                   <label className="block text-[13px] font-[700] text-[var(--text-heading)] uppercase tracking-wider mb-2">Brand Name</label>
-                  <input type="text" placeholder="e.g. Acme Corp" className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(217,165,43,0.2)] outline-none transition-all text-[15px]" />
+                  <input 
+                    type="text" 
+                    value={brandName}
+                    onChange={(e) => setBrandName(e.target.value)}
+                    placeholder="e.g. Acme Corp" 
+                    className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(217,165,43,0.2)] outline-none transition-all text-[15px]" 
+                  />
                 </div>
                 <div>
                   <label className="block text-[13px] font-[700] text-[var(--text-heading)] uppercase tracking-wider mb-2">Official Website <span className="font-[400] normal-case text-[var(--text-body)]">(Optional)</span></label>
-                  <input type="url" placeholder="https://example.com" className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(217,165,43,0.2)] outline-none transition-all text-[15px]" />
+                  <input 
+                    type="url" 
+                    value={brandUrl}
+                    onChange={(e) => setBrandUrl(e.target.value)}
+                    placeholder="https://example.com" 
+                    className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(217,165,43,0.2)] outline-none transition-all text-[15px]" 
+                  />
                 </div>
-                <button className="btn btn-gold-solid w-full py-4 text-[16px]">Start Scan</button>
+                <button 
+                  onClick={handleScan}
+                  disabled={loading}
+                  className="btn btn-gold-solid w-full py-4 text-[16px] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Starting Scan...' : 'Start Scan'}
+                </button>
               </div>
             )}
 
             {/* ---- TEXT TAB ---- */}
             {activeTab === 'text' && (
               <div className="flex flex-col gap-6">
+                {error && (
+                  <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    {error}
+                  </div>
+                )}
                 <div>
                   <label className="block text-[13px] font-[700] text-[var(--text-heading)] uppercase tracking-wider mb-2">Text / Content to Scan</label>
                   <textarea
                     rows={6}
+                    value={textContent}
+                    onChange={(e) => setTextContent(e.target.value)}
                     placeholder="Paste a unique paragraph or phrase from your content here..."
                     className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[rgba(217,165,43,0.2)] outline-none transition-all resize-none text-[15px]"
                   ></textarea>
                 </div>
-                <button className="btn btn-gold-solid w-full py-4 text-[16px]">Start Scan</button>
+                <button 
+                  onClick={handleScan}
+                  disabled={loading}
+                  className="btn btn-gold-solid w-full py-4 text-[16px] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Starting Scan...' : 'Start Scan'}
+                </button>
               </div>
             )}
 
             {/* ---- IMAGE TAB ---- */}
             {activeTab === 'image' && (
               <div className="flex flex-col gap-6">
+                {error && (
+                  <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    {error}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
                   {/* Left: URL Input */}
@@ -205,7 +296,13 @@ export default function ScannerPage() {
                   </div>
                 </div>
 
-                <button className="btn btn-gold-solid w-full py-4 text-[16px]">Start Scan</button>
+                <button 
+                  onClick={handleScan}
+                  disabled={loading}
+                  className="btn btn-gold-solid w-full py-4 text-[16px] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Starting Scan...' : 'Start Scan'}
+                </button>
               </div>
             )}
 
@@ -214,7 +311,7 @@ export default function ScannerPage() {
         
         {/* Info text */}
         <p className="text-center text-[13px] text-[var(--text-body)] mt-8 max-w-xl mx-auto">
-          By using our AI Piracy Scanner, you agree to our <a href="#" className="text-[var(--gold)] hover:underline">Terms of Service</a>. Scans typically complete within 1–2 minutes.
+          By using our AI Piracy Scanner, you agree to our <Link href="/privacy-policy" className="text-[var(--gold)] hover:underline">Terms of Service</Link>. Scans typically complete within 1–2 minutes.
         </p>
       </section>
 

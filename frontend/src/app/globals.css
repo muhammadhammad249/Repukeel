@@ -276,3 +276,14 @@ a {
 .bg-navy h1, .bg-navy h2, .bg-navy h3, .bg-navy h4 {
   color: #ffffff;
 }
+
+/* Force utility colors to beat base typography */
+.text-white {
+  color: #ffffff !important;
+}
+.text-\[var\(--text-on-navy\)\] {
+  color: var(--text-on-navy) !important;
+}
+.text-\[var\(--text-muted-navy\)\] {
+  color: var(--text-muted-navy) !important;
+}

@@ -146,12 +146,10 @@ export default function Navbar() {
           {/* Right Side Tools */}
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
-            <Link
-              href="/login"
-              className="text-[14px] font-[600] text-[#333333] hover:text-[var(--gold)] transition-colors cursor-pointer"
-            >
-              Login
-            </Link>
+            <AccountMenu 
+              loginClassName="text-[14px] font-[600] text-[#333333] hover:text-[var(--gold)] transition-colors cursor-pointer" 
+              menuClassName="" 
+            />
           </div>
 
           {/* Hamburger Mobile */}
@@ -184,13 +182,10 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="w-full h-px bg-[#eee] my-2"></div>
-          <Link 
-            href="/login"
-            onClick={() => setDrawerOpen(false)}
-            className="text-xl font-[600] text-[var(--text-heading)]"
-          >
-            Login
-          </Link>
+          <AccountMenu 
+              loginClassName="text-xl font-[600] text-[var(--text-heading)]" 
+              menuClassName="mt-2" 
+            />
         </div>
       )}
     </>
