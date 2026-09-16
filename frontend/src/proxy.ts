@@ -19,10 +19,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Redirect logged-in users away from auth pages
-  if (hasSession && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  // REMOVED: Do NOT redirect away from /login or /signup
+  // Let users always access these pages freely
 
   return NextResponse.next();
 }
@@ -31,4 +29,3 @@ export const config = {
   // Run on all pages except Next.js internals, static files, and API routes
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*$).*)'],
 };
-

@@ -1,338 +1,269 @@
-"use client";
-
+'use client';
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-
-const SIDEBAR_CATEGORIES = [
-  {
-    id: 'content-removal',
-    label: 'Content Removal',
-    icon: '🗑️',
-    sectionTitle: 'SOLUTIONS FOR CONTENT REMOVAL',
-    heading: 'Content Removal',
-    services: [
-      'TikTok Content Removal', 'Travel & Hospitality Review Removal',
-      'Mugshot Removal & Suppression', 'Trustpilot Review Removal',
-      'BBB Review Removal', 'Ripoff Report Removal',
-      'Facebook Review Removal', 'Indeed Review Removal',
-      'Instagram Content Removal', 'Twitter / X Content Removal',
-      'Fake Review Removal',
-    ],
-    subServices: [
-      'Google Review Removal', 'Yelp Review Removal',
-    ],
-  },
-  {
-    id: 'dating-reputation',
-    label: 'Dating Reputation',
-    icon: '🔥',
-    sectionTitle: 'SOLUTIONS FOR DATING REPUTATION',
-    heading: 'Dating Reputation',
-    services: [
-      'Leaked Photo Removal', 'Private Content Takedown',
-      'Dating Site Profile Removal', 'Adult Content Removal',
-      'OnlyFans Leaked Content Removal', 'Reddit Post Removal',
-      'Telegram Content Removal', 'Discord Content Removal',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'search-result-cleanup',
-    label: 'Search Result Cleanup',
-    icon: '🔍',
-    sectionTitle: 'SOLUTIONS FOR SEARCH RESULT CLEANUP',
-    heading: 'Search Result Cleanup',
-    services: [
-      'Google Search Suppression', 'Bing Content Removal',
-      'Negative Link Removal', 'De-Indexing Service',
-      'Autocomplete Cleanup', 'Knowledge Panel Management',
-      'News Article Suppression', 'Mugshot De-Indexing',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'job-reputation',
-    label: 'Job Reputation',
-    icon: '👤',
-    sectionTitle: 'SOLUTIONS FOR JOB REPUTATION',
-    heading: 'Job Reputation',
-    services: [
-      'Glassdoor Review Removal', 'Indeed Review Management',
-      'LinkedIn Defamation Removal', 'Employment History Cleanup',
-      'Professional Profile Protection', 'Employer Review Removal',
-      'Background Check Cleanup', 'Career Reputation Management',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'monitoring-alerts',
-    label: 'Monitoring & Alerts',
-    icon: '📊',
-    sectionTitle: 'SOLUTIONS FOR MONITORING & ALERTS',
-    heading: 'Monitoring & Alerts',
-    services: [
-      'AI-Powered Brand Monitoring', 'Real-time Infringement Detection',
-      'Social Media Monitoring', 'Dark Web Monitoring',
-      '24/7 Content Alerts', 'Trademark Monitoring',
-      'Review Alert System', 'Competitor Monitoring',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'reputation-management',
-    label: 'Reputation Management',
-    icon: '⭐',
-    sectionTitle: 'SOLUTIONS FOR REPUTATION MANAGEMENT',
-    heading: 'Reputation Management',
-    services: [
-      'Online Reputation Management (ORM)', 'Defamatory Content Removal',
-      'Negative Article Suppression', 'Search Result Reputation Cleanup',
-      'Brand Image Restoration', 'Crisis Management',
-      'Review Management & Rating Improvement', 'Long-term Reputation Monitoring',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'reputation-audit',
-    label: 'Reputation Audit',
-    icon: '📋',
-    sectionTitle: 'SOLUTIONS FOR REPUTATION AUDIT',
-    heading: 'Reputation Audit',
-    services: [
-      'Full Brand Reputation Audit', 'Search Engine Audit',
-      'Social Media Profile Audit', 'Review & Rating Audit',
-      'Content Threat Analysis', 'Competitive Reputation Benchmarking',
-      'Legal Risk Assessment', 'Free Case Evaluation',
-    ],
-    subServices: [],
-  },
-  {
-    id: 'industries',
-    label: 'Industries',
-    icon: '🏢',
-    sectionTitle: 'INDUSTRIES WE SERVE',
-    heading: 'Industries',
-    services: [
-      'Content Creators & Influencers', 'E-Commerce Brands',
-      'Healthcare & Medical Professionals', 'Legal & Law Firms',
-      'Real Estate Professionals', 'Restaurants & Hospitality',
-      'Educators & Online Coaches', 'Enterprises & Corporations',
-    ],
-    subServices: [],
-  },
-];
+import Link from 'next/link';
+import BlueCtaBand from '../components/BlueCtaBand';
+import ServicesMenuLayout from '../components/ServicesMenuLayout';
 
 export default function ServicesPage() {
-  const [activeId, setActiveId] = useState('content-removal');
-  const active = SIDEBAR_CATEGORIES.find(c => c.id === activeId)!;
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeCatId, setActiveCatId] = useState('content-removal');
+
+  const toggleFaq = (idx: number) => {
+    setOpenFaq(openFaq === idx ? null : idx);
+  };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#080e1c', color: '#f4f6fb', fontFamily: 'sans-serif' }}>
-      <Navbar />
-      <div style={{ paddingTop: '80px' }}>
-
-        {/* Hero */}
-        <div style={{ textAlign: 'center', padding: '60px 24px 40px', maxWidth: '860px', margin: '0 auto' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#e0ac2f', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>Our Services</p>
-          <h1 style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 900, lineHeight: 1.2, marginBottom: '20px' }}>
-            Comprehensive Brand &amp; Reputation Protection Solutions
-          </h1>
-          <p style={{ fontSize: '15px', color: '#a9b3c9', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 28px' }}>
-            We specialize in protecting intellectual property through legal DMCA takedowns, copyright enforcement, content removal, and reputation management. Fast, reliable, and confidential service for creators and businesses worldwide.
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            <a href="/contact" style={{ background: '#e0ac2f', color: '#12100a', fontWeight: 700, fontSize: '14px', padding: '12px 28px', borderRadius: '8px', textDecoration: 'none' }}>Get Started</a>
-            <a href="/contact" style={{ background: 'transparent', border: '2px solid #22304d', color: '#f4f6fb', fontWeight: 700, fontSize: '14px', padding: '12px 28px', borderRadius: '8px', textDecoration: 'none' }}>Contact Us</a>
-          </div>
-        </div>
-
-        {/* Main Layout: Sidebar + Content */}
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px 80px', display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
-
-          {/* Sidebar */}
-          <div style={{ width: '220px', flexShrink: 0, position: 'sticky', top: '100px' }}>
-            {SIDEBAR_CATEGORIES.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveId(cat.id)}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '14px 16px', marginBottom: '6px', borderRadius: '10px',
-                  border: activeId === cat.id ? '1px solid #e0ac2f' : '1px solid #22304d',
-                  background: activeId === cat.id ? 'rgba(224,172,47,0.08)' : '#16223c',
-                  color: activeId === cat.id ? '#e0ac2f' : '#a9b3c9',
-                  fontWeight: activeId === cat.id ? 700 : 500,
-                  fontSize: '13px', cursor: 'pointer', textAlign: 'left', outline: 'none',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{cat.icon}</span>
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Content Panel */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: '11px', fontWeight: 700, color: '#e0ac2f', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px' }}>
-              {active.sectionTitle}
+    <div className="flex flex-col min-h-screen">
+      
+      {/* ================= HERO ================= */}
+      <section className="relative w-full bg-gradient-to-br from-white to-[#f0f4f8] pt-16 pb-24 overflow-hidden">
+        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="pill-badge mb-6">
+              Professional DMCA Services
+            </div>
+            <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-[var(--text-heading)]">
+              Complete<br/>
+              <span className="text-[var(--gold)]">DMCA Protection</span><br/>
+              For Your Content
+            </h1>
+            <p className="text-[17px] text-[var(--text-body)] mb-8 max-w-xl">
+              We offer comprehensive copyright protection and digital asset security solutions designed for creators, businesses, and enterprises worldwide.
             </p>
-
-            {/* Section Header */}
-            <div style={{
-              background: 'linear-gradient(90deg, #1a3a7c 0%, #16307a 100%)',
-              borderRadius: '10px', padding: '18px 24px', marginBottom: '20px',
-              display: 'flex', alignItems: 'center', gap: '14px'
-            }}>
-              <div style={{ background: '#e0ac2f', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontSize: '18px' }}>{active.icon}</span>
-              </div>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#fff' }}>{active.heading}</h2>
-            </div>
-
-            {/* Services Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-              {active.services.map((svc, i) => {
-                const svcSlug = svc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                return (
-                  <a
-                    key={i}
-                    href={`/services/${svcSlug}`}
-                    style={{
-                      display: 'block', padding: '16px 20px', borderRadius: '10px',
-                      border: '1px solid #22304d', background: '#16223c',
-                      color: '#f4f6fb', fontWeight: 600, fontSize: '14px',
-                      textDecoration: 'none', transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e0ac2f'; (e.currentTarget as HTMLAnchorElement).style.color = '#e0ac2f'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#22304d'; (e.currentTarget as HTMLAnchorElement).style.color = '#f4f6fb'; }}
-                  >
-                    {svc}
-                  </a>
-                );
-              })}
-            </div>
-
-            {/* Sub-Services (single column, indented) */}
-            {active.subServices.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingLeft: '40px' }}>
-                {active.subServices.map((sub, i) => {
-                  const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                  return (
-                    <a
-                      key={i}
-                      href={`/services/${subSlug}`}
-                      style={{
-                        display: 'block', padding: '14px 20px', borderRadius: '10px',
-                        border: '1px solid #22304d', background: '#16223c',
-                        color: '#f4f6fb', fontWeight: 600, fontSize: '14px',
-                        textDecoration: 'none', maxWidth: '320px', transition: 'all 0.2s',
-                      }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e0ac2f'; (e.currentTarget as HTMLAnchorElement).style.color = '#e0ac2f'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#22304d'; (e.currentTarget as HTMLAnchorElement).style.color = '#f4f6fb'; }}
-                    >
-                      {sub}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Why Choose Us */}
-        <div style={{ background: '#0c1526', borderTop: '1px solid #22304d', padding: '60px 24px' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ fontSize: '12px', fontWeight: 700, color: '#e0ac2f', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>Why Choose Us?</p>
-            <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 800, marginBottom: '48px' }}>Fast &amp; Effective Service — Your privacy and security are our top priorities</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '24px' }}>
-              {[
-                { icon: '⚡', title: 'Fast & Effective', desc: 'Quick removal of infringing content with 24-48 hour response time.' },
-                { icon: '⚖️', title: '100% Legal Compliance', desc: 'All processes follow DMCA and copyright laws perfectly.' },
-                { icon: '🔒', title: 'Confidential & Secure', desc: 'Your privacy and security are our top priorities.' },
-                { icon: '🎓', title: 'Expert Team', desc: 'Experienced professionals in DMCA and copyright law.' },
-              ].map((item, i) => (
-                <div key={i} style={{ background: '#16223c', border: '1px solid #22304d', borderRadius: '12px', padding: '28px 24px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '32px', marginBottom: '16px' }}>{item.icon}</div>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '10px', color: '#e0ac2f' }}>{item.title}</h3>
-                  <p style={{ fontSize: '13px', color: '#a9b3c9', lineHeight: 1.6 }}>{item.desc}</p>
+            
+            <div className="flex flex-wrap gap-3 mb-8">
+              {['24-48h Response', '99% Success Rate', 'Legal Compliance'].map((pill, i) => (
+                <div key={i} className="pill-badge">
+                  <span className="text-[var(--green)] font-[900]">✓</span> {pill}
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* How It Works */}
-        <div style={{ padding: '60px 24px' }}>
-          <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ fontSize: '12px', fontWeight: 700, color: '#e0ac2f', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>The Process</p>
-            <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 800, marginBottom: '48px' }}>From the moment you contact us to confirmed removal — here is exactly what happens.</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: '24px' }}>
-              {[
-                { num: '01', title: 'Submit Your Case', desc: 'Tell us what is happening. A brief description is enough to get started.' },
-                { num: '02', title: 'We Scan & Identify', desc: 'Our team performs a thorough scan to find every instance of the problem.' },
-                { num: '03', title: 'Action Filed', desc: 'Takedown notices, legal demands, and platform reports are filed simultaneously.' },
-                { num: '04', title: 'Confirmed & Monitored', desc: 'Every removal is verified and documented. We then set up monitoring.' },
-              ].map((step, i) => (
-                <div key={i} style={{ background: '#16223c', border: '1px solid #22304d', borderRadius: '12px', padding: '28px 20px', textAlign: 'left' }}>
-                  <div style={{ fontSize: '36px', fontWeight: 900, color: '#e0ac2f', opacity: 0.5, marginBottom: '14px' }}>{step.num}</div>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '10px' }}>{step.title}</h3>
-                  <p style={{ fontSize: '13px', color: '#a9b3c9', lineHeight: 1.6 }}>{step.desc}</p>
-                </div>
-              ))}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href="#all-services" className="btn btn-gold-solid">Explore Services &rarr;</a>
+              <Link href="/contact" className="btn btn-outline-gold">Contact Us</Link>
+            </div>
+          </div>
+
+          <div className="relative flex justify-center lg:justify-end items-center h-full min-h-[400px]">
+            {/* Concentric dashed circles */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full border border-dashed border-[var(--gold)] opacity-30 anim-spin-slow"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-dashed border-[var(--text-heading)] opacity-10 anim-spin-slow" style={{ animationDirection: 'reverse' }}></div>
+            
+            {/* Main Rotated Diamond */}
+            <div className="relative z-10 w-48 h-48 bg-gradient-to-br from-[var(--gold-lt)] to-[var(--gold-dk)] rounded-3xl shadow-2xl flex items-center justify-center transform rotate-45 transition-transform hover:scale-105">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-20 h-20 -rotate-45">
+                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+
+            {/* Floating Badges */}
+            <div className="absolute top-10 left-10 w-12 h-12 bg-white rounded-xl shadow-xl flex items-center justify-center text-purple-600 z-20 anim-float">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </div>
+            <div className="absolute bottom-20 right-10 w-12 h-12 bg-white rounded-xl shadow-xl flex items-center justify-center text-blue-600 z-20 anim-float" style={{ animationDelay: '1s' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            
+            {/* Outer floating text badges */}
+            <div className="absolute top-24 -right-4 bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '0.5s' }}>
+              <span className="text-[16px] font-[800] text-blue-600 leading-none">24h</span>
+              <span className="text-[10px] font-[600] text-[var(--text-body)] uppercase tracking-wide">Response</span>
+            </div>
+            <div className="absolute bottom-10 left-0 bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '1.5s' }}>
+              <span className="text-[16px] font-[800] text-[var(--green)] leading-none">280+</span>
+              <span className="text-[10px] font-[600] text-[var(--text-body)] uppercase tracking-wide">Success</span>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Stats */}
-        <div style={{ background: '#0c1526', borderTop: '1px solid #22304d', borderBottom: '1px solid #22304d', padding: '50px 24px' }}>
-          <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '24px', textAlign: 'center' }}>
+      {/* ================= INTERACTIVE SERVICES LAYOUT ================= */}
+      <section className="w-full bg-[#f4f7fb] py-16" id="all-services">
+        <div className="container max-w-[1400px]">
+          <ServicesMenuLayout activeCatId={activeCatId} setActiveCatId={setActiveCatId} />
+        </div>
+      </section>
+
+      {/* ================= PLATFORM-SPECIFIC TAKEDOWNS ================= */}
+      <section className="w-full bg-[var(--bg-soft)] py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-4xl font-[800] mb-4">Platform-Specific Takedowns</h2>
+            <p className="text-[16px] text-[var(--text-body)]">We hold deep expertise with the legal channels of all major platforms.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Facebook */}
+            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-br from-blue-500 to-blue-700 transition-transform hover:-translate-y-2">
+              <div className="text-5xl mb-6">f</div>
+              <h3 className="text-2xl font-[800] mb-3">Facebook</h3>
+              <p className="text-[15px] opacity-90">Instant removal of stolen images, videos, and impersonator pages via direct legal channels.</p>
+            </div>
+            {/* Instagram */}
+            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 transition-transform hover:-translate-y-2">
+              <div className="w-10 h-10 border-2 border-white rounded-[10px] relative mb-6">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-white rounded-full"></div>
+                <div className="absolute top-1 right-1 w-1 h-1 bg-white rounded-full"></div>
+              </div>
+              <h3 className="text-2xl font-[800] mb-3">Instagram</h3>
+              <p className="text-[15px] opacity-90">Takedowns of reels, posts, stories, and fake accounts copying your identity or content.</p>
+            </div>
+            {/* Twitter / X */}
+            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-br from-gray-800 to-black transition-transform hover:-translate-y-2">
+              <div className="text-4xl mb-6 font-bold leading-none">𝕏</div>
+              <h3 className="text-2xl font-[800] mb-3">Twitter / X</h3>
+              <p className="text-[15px] opacity-90">Swift action against unauthorized media sharing and defamatory tweets.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= 4-COLUMN STRIP ================= */}
+      <section className="w-full bg-white py-16 border-y border-[var(--border-light)]">
+        <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { icon: '🛡️', title: 'Total Protection' },
+            { icon: '⚡', title: 'Fast Results' },
+            { icon: '🔒', title: '100% Confidential' },
+            { icon: '⚖️', title: 'Legally Compliant' }
+          ].map((item, i) => (
+            <div key={i} className="flex flex-col items-center gap-3">
+              <div className="text-3xl">{item.icon}</div>
+              <h4 className="text-[16px] font-[700] text-[var(--text-heading)]">{item.title}</h4>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= BLUE CTA 1 ================= */}
+      <BlueCtaBand 
+        headingWhite="Ready?"
+        headingGold="Get started today!"
+        subtext="Don't let copyright infringement harm your brand."
+        primaryBtnText="Get Started"
+        primaryBtnLink="/contact"
+        secondaryBtnText="View Pricing"
+        secondaryBtnLink="/pricing"
+      />
+
+      {/* ================= TESTIMONIALS ================= */}
+      <section className="w-full bg-white py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-4xl font-[800] mb-4">What people say about our company</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { stat: '500K+', label: 'Pieces of Content Removed' },
-              { stat: '12K+', label: 'Clients Protected' },
-              { stat: '98%', label: 'Takedown Success Rate' },
-              { stat: '24h', label: 'Average Response Time' },
-            ].map((item, i) => (
-              <div key={i}>
-                <div style={{ fontSize: '40px', fontWeight: 900, color: '#e0ac2f', marginBottom: '8px' }}>{item.stat}</div>
-                <div style={{ fontSize: '13px', color: '#a9b3c9' }}>{item.label}</div>
+              { name: "Sarah O'Connor", role: "Content Creator, Marketing Firm" },
+              { name: "John Doe", role: "Photography" },
+              { name: "Elena R.", role: "E-Commerce Director" }
+            ].map((t, i) => (
+              <div key={i} className="bg-[var(--bg-soft)] border border-[var(--border-light)] rounded-2xl p-8 flex flex-col">
+                <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
+                <p className="italic text-[15px] text-[var(--text-body)] mb-8 flex-1">
+                  "The Repukeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service."
+                </p>
+                <div className="flex items-center gap-3 mt-auto">
+                  <div className="w-10 h-10 rounded-full bg-[rgba(217,165,43,0.2)] flex items-center justify-center text-[var(--gold)] font-bold">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <h4 className="text-[15px] font-[700] text-[var(--text-heading)]">{t.name}</h4>
+                    <p className="text-[12px] text-[var(--text-body)]">{t.role}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* FAQ */}
-        <div style={{ padding: '60px 24px' }}>
-          <div style={{ maxWidth: '860px', margin: '0 auto' }}>
-            <p style={{ fontSize: '12px', fontWeight: 700, color: '#e0ac2f', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>FAQ</p>
-            <h2 style={{ fontSize: 'clamp(22px,3vw,34px)', fontWeight: 800, marginBottom: '36px', textAlign: 'center' }}>Straight answers to the questions we get asked most</h2>
+      {/* ================= DARK NAVY STAT STRIP ================= */}
+      <section className="w-full bg-[var(--bg-navy)] py-16">
+        <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { n: '500K+', l: 'Pieces of Content Removed' },
+            { n: '200+', l: 'Clients Protected' },
+            { n: '99%', l: 'Takedown Success Rate' },
+            { n: '24hr', l: 'Average Response Time' }
+          ].map((stat, i) => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <span className="text-4xl font-[800] text-[var(--gold)]">{stat.n}</span>
+              <span className="text-[13px] font-[500] text-[var(--text-muted-navy)] uppercase tracking-wide">{stat.l}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= WHO WE SERVE ================= */}
+      <section className="w-full bg-white py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-4xl font-[800] mb-4">Who We Serve</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Tailored protection solutions for every industry.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { q: 'How quickly can you remove infringing content?', a: 'Most platform takedowns happen within 24 to 72 hours of a valid notice being filed. Search engine de-indexing typically takes 24 to 96 hours.' },
-              { q: 'Do I need a registered copyright or trademark?', a: 'Not necessarily. Copyright exists automatically from the moment of creation in most countries, so you do not need a formal registration to file a DMCA takedown.' },
-              { q: 'What if infringing content keeps reappearing after removal?', a: 'Re-uploads are handled automatically through our post-removal monitoring. New instances are flagged and actioned immediately without you needing to report them again.' },
-              { q: 'How is your pricing structured?', a: 'We offer transparent fixed-price packages depending on the type and scope of service. Contact us for a custom quote.' },
-              { q: 'Is everything I share with you kept confidential?', a: 'Yes, completely. All case details, your identity, and any sensitive information you provide is handled with strict confidentiality.' },
-              { q: 'Do you work with clients outside of Pakistan?', a: 'Yes. We work with clients in over 150 countries. Our services cover platforms and hosting providers globally.' },
+              { title: 'Content Creators', color: 'bg-pink-100 text-pink-600', icon: '🎨' },
+              { title: 'E-Commerce Brands', color: 'bg-blue-100 text-blue-600', icon: '🛍️' },
+              { title: 'Educators', color: 'bg-green-100 text-green-600', icon: '📚' },
+              { title: 'Enterprises', color: 'bg-purple-100 text-purple-600', icon: '🏢' }
+            ].map((ws, i) => (
+              <div key={i} className="card-light flex flex-col items-center text-center">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-6 ${ws.color}`}>
+                  {ws.icon}
+                </div>
+                <h4 className="text-[17px] font-[700] text-[var(--text-heading)] mb-2">{ws.title}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FAQ ACCORDION ================= */}
+      <section className="w-full bg-[var(--bg-soft)] py-24">
+        <div className="container max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-[800] mb-4">Frequently Asked Questions</h2>
+          </div>
+          <div className="flex flex-col gap-4">
+            {[
+              { q: 'Do you work with clients outside of Pakistan?', a: 'Yes, we are a global agency. We work with clients from over 150 countries and issue takedown notices under the DMCA and international copyright treaties.' },
+              { q: 'What happens if a site ignores the DMCA notice?', a: 'If a site host ignores our notice, we escalate to the server provider, domain registrar, and search engines to force de-indexing and suspension.' },
+              { q: 'Are your services confidential?', a: '100% confidential. We operate under strict NDAs and ensure your privacy is paramount.' },
+              { q: 'How do you charge?', a: 'We offer one-time removal fees, or monthly retainer plans for continuous monitoring and unlimited takedowns.' }
             ].map((faq, i) => (
-              <details key={i} style={{ marginBottom: '12px', background: '#16223c', border: '1px solid #22304d', borderRadius: '10px', padding: '20px 24px', cursor: 'pointer' }}>
-                <summary style={{ fontWeight: 700, fontSize: '15px', color: '#f4f6fb', listStyle: 'none', outline: 'none' }}>{faq.q}</summary>
-                <p style={{ marginTop: '14px', fontSize: '14px', color: '#a9b3c9', lineHeight: 1.7 }}>{faq.a}</p>
-              </details>
+              <div key={i} className="bg-white border border-[var(--border-light)] rounded-xl overflow-hidden">
+                <button 
+                  className="w-full px-6 py-5 text-left flex justify-between items-center font-[700] text-[var(--text-heading)] hover:bg-gray-50"
+                  onClick={() => toggleFaq(i)}
+                >
+                  {faq.q}
+                  <span className={`transform transition-transform text-[var(--gold)] ${openFaq === i ? 'rotate-180' : ''}`}>▼</span>
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 text-[15px] text-[var(--text-body)]">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* CTA */}
-        <div style={{ background: 'linear-gradient(135deg, #16223c 0%, #0c1526 100%)', border: '1px solid #22304d', borderRadius: '16px', margin: '0 24px 60px', maxWidth: '900px', marginLeft: 'auto', marginRight: 'auto', padding: '60px 40px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(22px,3vw,34px)', fontWeight: 800, marginBottom: '16px' }}>Ready? Get started today!</h2>
-          <p style={{ fontSize: '15px', color: '#a9b3c9', marginBottom: '32px' }}>Don't let copyright infringement harm your brand. Take action now!</p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            <a href="/contact" style={{ background: '#e0ac2f', color: '#12100a', fontWeight: 700, fontSize: '14px', padding: '14px 32px', borderRadius: '8px', textDecoration: 'none' }}>Get Started</a>
-            <a href="/pricing" style={{ background: 'transparent', border: '2px solid #22304d', color: '#f4f6fb', fontWeight: 700, fontSize: '14px', padding: '14px 32px', borderRadius: '8px', textDecoration: 'none' }}>View Pricing</a>
-          </div>
-        </div>
-
-      </div>
+      {/* ================= BLUE CTA 2 ================= */}
+      <BlueCtaBand 
+        headingWhite="Secure Your"
+        headingGold="Digital Assets"
+        subtext="Join hundreds of creators and brands who trust Repukeel with their reputation."
+        primaryBtnText="Contact Sales"
+        primaryBtnLink="/contact"
+        secondaryBtnText="Request a Demo"
+        secondaryBtnLink="/contact"
+      />
+      
     </div>
   );
 }

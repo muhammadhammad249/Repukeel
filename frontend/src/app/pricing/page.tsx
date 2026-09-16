@@ -1,214 +1,193 @@
 'use client';
-
-import Navbar from '../components/Navbar';
-import { Check } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-
-interface PricingPlan {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  priceSuffix: string;
-  popular?: boolean;
-  accentColor?: string;
-  takedowns: string[];
-  coverageHighlights: string[];
-  turnaround: string;
-  ctaLabel: string;
-}
-
-const pricingPlans: PricingPlan[] = [
-  {
-    id: 'basic',
-    name: 'Basic',
-    description: 'Essential takedown coverage for a single product or username.',
-    price: '$89',
-    priceSuffix: '/month',
-    takedowns: ['Unlimited — 1 product or username'],
-    coverageHighlights: [
-      'Four-engine delisting (Google, Bing, Yandex & DuckDuckGo)',
-      'Telegram & Discord takedowns',
-      'Impersonator removal',
-      'Social media monitoring',
-      '24/7 monitoring',
-    ],
-    turnaround: 'Standard takedown queue',
-    ctaLabel: 'Get Started',
-  },
-  {
-    id: 'professional',
-    name: 'Professional',
-    description: 'Priority protection for growing brands with multiple products.',
-    price: '$179',
-    priceSuffix: '/month',
-    popular: true,
-    accentColor: '#22c55e',
-    takedowns: ['Unlimited — up to 5 products or usernames'],
-    coverageHighlights: [
-      'Everything in Basic',
-      'Payment-processor reporting where applicable',
-      'Dedicated takedown manager',
-    ],
-    turnaround: 'Priority queue; 48-hour removal guarantee',
-    ctaLabel: 'Get Started',
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    description: 'Full-scale coverage for large catalogs and niche leak sites.',
-    price: '$359',
-    priceSuffix: '/month',
-    takedowns: ['Unlimited — up to 12 products or usernames'],
-    coverageHighlights: [
-      'Everything in Professional',
-      'Private trackers & filehosts',
-      'Custom crawlers for niche leak sites',
-    ],
-    turnaround: 'Priority queue; 48-hour removal guarantee',
-    ctaLabel: 'Get Started',
-  },
-];
+import React from 'react';
+import Link from 'next/link';
+import BlueCtaBand from '../components/BlueCtaBand';
 
 export default function PricingPage() {
-  const router = useRouter();
-
-  const handleSelect = (plan: PricingPlan) => {
-    const label = `${plan.name} — ${plan.price}${plan.priceSuffix}`;
-    router.push(`/checkout?plan=${encodeURIComponent(label)}`);
-  };
-
   return (
-    <div className="min-h-screen bg-[#080e1c] text-[#f4f6fb] font-sans">
-      <Navbar />
-
-      {/* Hero */}
-      <section className="mx-auto max-w-3xl px-6 pb-12 pt-24 text-center">
-        <h1 className="text-4xl font-bold text-white sm:text-5xl">
-          Simple, transparent pricing
-        </h1>
-        <p className="mt-4 text-lg text-slate-400">
-          Choose the protection level that fits your content — from a single
-          username to full-catalog enterprise coverage.
-        </p>
-      </section>
-
-      {/* Pricing cards */}
-      <section className="mx-auto grid max-w-5xl gap-6 px-6 pb-24 md:grid-cols-3">
-        {pricingPlans.map((plan) => {
-          const accent = plan.accentColor ?? '#e0b13a';
-          return (
-            <div
-              key={plan.id}
-              className="relative flex h-full flex-col rounded-xl border p-6 text-sm transition-transform duration-200 hover:-translate-y-1"
-              style={
-                plan.popular
-                  ? {
-                      borderColor: accent,
-                      backgroundColor: '#111a2e',
-                      boxShadow: `0 0 30px -10px ${accent}59`,
-                    }
-                  : { borderColor: 'rgba(255,255,255,0.1)', backgroundColor: '#0f1729' }
-              }
-            >
-              {plan.popular && (
-                <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide text-white"
-                  style={{ backgroundColor: accent }}
-                >
-                  MOST POPULAR
-                </span>
-              )}
-
-              <h3
-                className="text-lg font-bold"
-                style={{ color: plan.popular ? accent : '#ffffff' }}
-              >
-                {plan.name}
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
-                {plan.description}
-              </p>
-
-              <div className="mt-5 flex items-baseline gap-1.5">
-                <span
-                  className="text-3xl font-extrabold"
-                  style={{ color: accent }}
-                >
-                  {plan.price}
-                </span>
-                <span className="text-xs text-slate-400">{plan.priceSuffix}</span>
-              </div>
-
-              <hr className="my-5 border-white/10" />
-
-              {/* Takedowns */}
-              <div className="mb-4">
-                <p
-                  className="mb-2 text-[10px] font-semibold uppercase tracking-wide"
-                  style={{ color: accent }}
-                >
-                  Takedowns
-                </p>
-                <ul className="space-y-2">
-                  {plan.takedowns.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                      <span className="text-slate-200">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Coverage Highlights */}
-              <div className="mb-4">
-                <p
-                  className="mb-2 text-[10px] font-semibold uppercase tracking-wide"
-                  style={{ color: accent }}
-                >
-                  Coverage Highlights
-                </p>
-                <ul className="space-y-2">
-                  {plan.coverageHighlights.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                      <span className="text-slate-200">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Turnaround */}
-              <div className="mb-1 flex-1">
-                <p
-                  className="mb-1 text-[10px] font-semibold uppercase tracking-wide"
-                  style={{ color: accent }}
-                >
-                  Turnaround
-                </p>
-                <p className="text-slate-200">{plan.turnaround}</p>
-              </div>
-
-              {/* CTA Button — always visible for all plans */}
-              <button
-                onClick={() => handleSelect(plan)}
-                className="mt-6 w-full rounded-lg py-3 text-center text-sm font-bold transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-95 cursor-pointer"
-                style={
-                  plan.popular
-                    ? { backgroundColor: accent, color: '#0b0f1a' }
-                    : {
-                        backgroundColor: 'transparent',
-                        border: `2px solid ${accent}`,
-                        color: accent,
-                      }
-                }
-              >
-                {plan.ctaLabel} →
-              </button>
+    <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
+      
+      {/* ================= HERO (Dark Navy Grid) ================= */}
+      <section className="relative w-full bg-[var(--bg-navy)] pt-24 pb-20 overflow-hidden">
+        {/* Faint grid overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        
+        {/* Sparse gold dots */}
+        <div className="absolute top-20 left-[20%] w-1.5 h-1.5 rounded-full bg-[var(--gold)] opacity-50 shadow-[0_0_8px_var(--gold)]"></div>
+        <div className="absolute top-40 right-[30%] w-1.5 h-1.5 rounded-full bg-[var(--gold)] opacity-70 shadow-[0_0_8px_var(--gold)] animate-pulse"></div>
+        <div className="absolute bottom-32 left-[10%] w-2 h-2 rounded-full bg-[var(--gold)] opacity-40 shadow-[0_0_10px_var(--gold)]"></div>
+        <div className="absolute top-24 right-[10%] w-1 h-1 rounded-full bg-[var(--gold)] opacity-60"></div>
+        
+        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Text */}
+          <div>
+            <div className="inline-flex items-center gap-2 mb-6 pill-badge dark-var">
+              <span style={{ color: 'var(--gold)' }}>💳</span> Flexible Plans
             </div>
-          );
-        })}
+            <h1 className="text-5xl md:text-6xl font-[900] tracking-tight mb-4" style={{ color: '#ffffff' }}>
+              Transparent Pricing
+            </h1>
+            <p className="text-[20px] font-[600] mb-6" style={{ color: 'var(--gold)' }}>
+              No hidden fees. Total protection.
+            </p>
+            <p className="text-[16px] max-w-lg" style={{ color: '#9aa4c0' }}>
+              Choose the protection plan that fits your needs. Whether you're a single creator or a large enterprise, we have you covered.
+            </p>
+          </div>
+
+          {/* Right Visual: Attractive Plan Summary Card */}
+          <div className="relative hidden md:flex justify-center lg:justify-end items-center">
+            {/* Glow blob */}
+            <div className="absolute w-72 h-72 rounded-full bg-[var(--gold)] opacity-5 filter blur-3xl pointer-events-none"></div>
+
+            {/* Main card */}
+            <div className="relative z-10 w-full max-w-[320px] bg-[#111d40] border border-[rgba(217,165,43,0.3)] rounded-2xl p-8 shadow-[0_0_40px_rgba(217,165,43,0.12)]">
+              {/* Top badge */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--gold)] flex items-center justify-center text-[var(--bg-navy)]">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
+                      <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
+                    </svg>
+                  </div>
+                  <span className="text-[14px] font-[800] tracking-wide" style={{ color: '#ffffff' }}>All Plans Include</span>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-[var(--green)] shadow-[0_0_8px_#22c55e] animate-pulse"></div>
+              </div>
+
+              {/* Feature list */}
+              <div className="flex flex-col gap-4 mb-8">
+                {[
+                  'DMCA Takedown Notices',
+                  '24/7 Monitoring & Alerts',
+                  'Legal Expert Support',
+                  'Detailed Case Reports',
+                  '100% Confidential',
+                  'Global Coverage (150+ Countries)',
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[rgba(217,165,43,0.15)] flex items-center justify-center flex-shrink-0">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="3" className="w-3 h-3">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    </div>
+                    <span className="text-[14px] font-[500]" style={{ color: '#c8d0e7' }}>{feat}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Floating price pills */}
+              <div className="flex flex-wrap gap-2">
+                {['$99 / mo', '$199 / mo', '$499 / mo', 'Custom'].map((price, i) => (
+                  <span key={i} className="text-[13px] font-[700] px-3 py-1 rounded-full border border-[rgba(217,165,43,0.4)]" style={{ color: 'var(--gold)', background: 'rgba(217,165,43,0.06)' }}>
+                    {price}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
+
+      {/* ================= PRICING CARDS ================= */}
+      <section className="w-full bg-[var(--bg-soft)] py-20 px-4">
+        <div className="max-w-[1280px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
+          
+          {/* Basic Plan */}
+          <div className="card-light flex flex-col h-full rounded-2xl relative shadow-lg bg-white border border-[var(--border-light)] p-8">
+            <h3 className="text-[20px] font-[800] text-[var(--text-heading)] mb-2">Basic</h3>
+            <p className="text-[14px] text-[var(--text-body)] mb-6">For individuals starting out</p>
+            <div className="mb-8">
+              <span className="text-4xl font-[800] text-[var(--text-heading)]">$89</span>
+              <span className="text-[14px] text-[var(--text-body)]"> /month</span>
+            </div>
+            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Takedowns</strong>
+                <p className="text-[var(--text-body)]">Unlimited — 1 product or username</p>
+              </div>
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Coverage Highlights</strong>
+                <p className="text-[var(--text-body)]">Four-engine delisting (Google, Bing, Yandex & DuckDuckGo); Telegram & Discord takedowns; impersonator removal, social media, 24/7 monitoring</p>
+              </div>
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Turnaround</strong>
+                <p className="text-[var(--text-body)]">Standard takedown queue</p>
+              </div>
+            </div>
+            <Link href="/contact" className="btn btn-outline-dark w-full text-center">Choose Basic</Link>
+          </div>
+
+          {/* Professional Plan (Highlighted) */}
+          <div className="flex flex-col h-full rounded-2xl relative shadow-2xl bg-[var(--blue)] border border-[var(--blue-lt)] p-8 transform md:-translate-y-4">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--gold)] text-[var(--bg-navy)] text-[12px] font-[800] uppercase tracking-widest px-4 py-1 rounded-full shadow-md whitespace-nowrap">
+              Most Popular
+            </div>
+            <h3 className="text-[20px] font-[800] text-white mb-2">Professional</h3>
+            <p className="text-[14px] text-blue-100 mb-6">For growing creators & brands</p>
+            <div className="mb-8">
+              <span className="text-4xl font-[800] text-white">$179</span>
+              <span className="text-[14px] text-blue-200"> /month</span>
+            </div>
+            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
+              <div>
+                <strong className="block text-white mb-1">Takedowns</strong>
+                <p className="text-blue-100">Unlimited — up to 5 products or usernames</p>
+              </div>
+              <div>
+                <strong className="block text-white mb-1">Coverage Highlights</strong>
+                <p className="text-blue-100">Everything in Basic, plus payment-processor reporting where applicable and a dedicated takedown manager</p>
+              </div>
+              <div>
+                <strong className="block text-white mb-1">Turnaround</strong>
+                <p className="text-blue-100">Priority queue, 48-hour removal guarantee</p>
+              </div>
+            </div>
+            <Link href="/contact" className="btn btn-gold-solid w-full text-center">Choose Professional</Link>
+          </div>
+
+          {/* Enterprise Plan */}
+          <div className="card-light flex flex-col h-full rounded-2xl relative shadow-lg bg-white border border-[var(--border-light)] p-8">
+            <h3 className="text-[20px] font-[800] text-[var(--text-heading)] mb-2">Enterprise</h3>
+            <p className="text-[14px] text-[var(--text-body)] mb-6">For large scale protection needs</p>
+            <div className="mb-8">
+              <span className="text-4xl font-[800] text-[var(--text-heading)]">$359</span>
+              <span className="text-[14px] text-[var(--text-body)]"> /month</span>
+            </div>
+            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Takedowns</strong>
+                <p className="text-[var(--text-body)]">Unlimited — up to 12 products or usernames</p>
+              </div>
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Coverage Highlights</strong>
+                <p className="text-[var(--text-body)]">Everything in Professional, plus private trackers, filehosts, and custom crawlers for niche leak sites</p>
+              </div>
+              <div>
+                <strong className="block text-[var(--text-heading)] mb-1">Turnaround</strong>
+                <p className="text-[var(--text-body)]">Priority queue; 48-hour removal guarantee</p>
+              </div>
+            </div>
+            <Link href="/contact" className="btn btn-outline-dark w-full text-center">Contact Sales</Link>
+          </div>
+
+        </div>
+        </div>
+      </section>
+
+      {/* ================= BLUE CTA ================= */}
+      <BlueCtaBand 
+        headingWhite="Not sure which"
+        headingGold="plan is right?"
+        subtext="Talk to our experts to get a free risk assessment and find the perfect protection plan for your digital assets."
+        primaryBtnText="Contact Sales"
+        primaryBtnLink="/contact"
+        secondaryBtnText="View FAQs"
+        secondaryBtnLink="/#faq"
+      />
+      
     </div>
   );
 }

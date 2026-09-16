@@ -3,9 +3,6 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// Auth pages where logged-in users should be redirected away from
-const AUTH_PAGES = new Set(['/login', '/signup']);
-
 // Routes that require authentication — must match middleware PROTECTED_PREFIXES
 const PROTECTED_PREFIXES = ['/dashboard', '/checkout'];
 
@@ -23,16 +20,13 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
 
+    // If no token and trying to access a protected route, redirect to login
     if (!token && isProtectedRoute(pathname)) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
 
-    if (token && AUTH_PAGES.has(pathname)) {
-      router.replace('/');
-      return;
-    }
-
+    // Always allow all other pages through — never redirect away from /login or /signup
     setChecked(true);
   }, [pathname, router]);
 

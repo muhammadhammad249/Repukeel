@@ -1,1221 +1,389 @@
-"use client";
+'use client';
+import React from 'react';
+import Link from 'next/link';
 
-import React, { useState, useEffect } from "react";
-import Head from "next/head";
-import Chatbot from './components/Chatbot';
-import ThemeToggle from './components/ThemeToggle';
-import AccountMenu from './components/AccountMenu';
-
-const SERVICES = [
-  { icon: 'M13 2L3 14h7l-1 8 11-14h-7l1-6z', title: 'AI-Powered Infringement Monitoring', desc: 'Our AI engine continuously scans the web in real time to detect unauthorized use of your content before it spreads.' },
-  { icon: 'M3 3h18v18H3zM3 9h18M9 3v18', title: 'Website Copyright Protection', desc: 'Identify scraped, copied, or republished content on unauthorized third-party websites and take swift legal action.' },
-  { icon: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.35-4.35', title: 'Search Engine Removal (DMCA & De-Indexing)', desc: 'Remove infringing URLs from Google, Bing, and all major search engines through legally compliant de-indexing requests.' },
-  { icon: 'M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM18 16a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98', title: 'Social Media Content Protection', desc: 'Enforce your rights on Instagram, Facebook, TikTok, YouTube, Twitter/X, and Pinterest with platform-level takedowns.' },
-  { icon: 'M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z', title: 'Brand Protection & AI Monitoring', desc: 'Protect your brand from logo misuse, domain squatting, and reputation attacks using AI-driven brand-threat intelligence.' },
-  { icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', title: 'Impersonation Protection', desc: 'Detect and remove fake accounts, impostor profiles, and fraudulent pages impersonating you or your brand across every platform.' },
-  { icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6', title: 'Content & Article Removal', desc: 'Take down plagiarized blog posts, scraped articles, and copied written content from any website or publication quickly.' },
-  { icon: 'M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4', title: 'Leaked Content Protection', desc: 'Emergency removal of leaked private or premium content from all platforms with around-the-clock priority action.' },
-  { icon: 'M18 20V10M12 20V4M6 20v-6', title: 'Online Reputation Management (ORM)', desc: 'Suppress harmful content, false narratives, and damaging mentions so positive results dominate your search presence.' },
-  { icon: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', title: 'Continuous Monitoring (Free Trial)', desc: 'Automated 24/7 surveillance that instantly alerts you the moment new infringement of your content is detected online.' },
-  { icon: 'M12 2v20M5 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM19 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM5 7h14M8 3h8', title: 'Legal Support & Case Evaluation', desc: 'Receive a free legal assessment of your infringement case and expert escalation support when DMCA notices alone are not enough.' },
-  { icon: 'M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM12 18h.01', title: 'Application Protection', desc: 'Identify and shut down pirated clones, cracked builds, and unauthorized redistributions of your software or mobile apps.' },
-  { icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', title: 'Trademark Monitoring', desc: 'Monitor the web for unauthorized use of your registered trademarks across domains, social media, and online marketplaces.' },
-  { icon: 'M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4zM9 12.5l2 2 4-4', title: 'Anti-Counterfeiting Protection', desc: 'Identify and eliminate counterfeit product listings on Amazon, eBay, Alibaba, and other e-commerce marketplaces globally.' },
-];
-
-const SERVICE_CATEGORIES = [
-  { id: 'content-removal', label: 'Content Removal', icon: '🗑️', services: ['TikTok Content Removal', 'Travel & Hospitality Review Removal', 'Mugshot Removal & Suppression', 'Trustpilot Review Removal', 'BBB Review Removal', 'Ripoff Report Removal', 'Facebook Review Removal', 'Indeed Review Removal', 'Instagram Content Removal', 'Twitter / X Content Removal'] },
-  { id: 'dating-reputation', label: 'Dating Reputation', icon: '🔥', services: ['Leaked Photo Removal', 'Private Content Takedown', 'Dating Site Profile Removal', 'Adult Content Removal', 'OnlyFans Leaked Content Removal', 'Reddit Post Removal', 'Telegram Content Removal', 'Discord Content Removal'] },
-  { id: 'search-result-cleanup', label: 'Search Result Cleanup', icon: '🔍', services: ['Google Search Suppression', 'Bing Content Removal', 'Negative Link Removal', 'De-Indexing Service', 'Autocomplete Cleanup', 'Knowledge Panel Management', 'News Article Suppression', 'Mugshot De-Indexing'] },
-  { id: 'job-reputation', label: 'Job Reputation', icon: '👤', services: ['Glassdoor Review Removal', 'Indeed Review Management', 'LinkedIn Defamation Removal', 'Employment History Cleanup', 'Professional Profile Protection', 'Employer Review Removal', 'Background Check Cleanup', 'Career Reputation Management'] },
-  { id: 'monitoring-alerts', label: 'Monitoring & Alerts', icon: '📊', services: ['AI-Powered Brand Monitoring', 'Real-time Infringement Detection', 'Social Media Monitoring', 'Dark Web Monitoring', '24/7 Content Alerts', 'Trademark Monitoring', 'Review Alert System', 'Competitor Monitoring'] },
-  { id: 'reputation-management', label: 'Reputation Management', icon: '⭐', services: ['Online Reputation Management (ORM)', 'Defamatory Content Removal', 'Negative Article Suppression', 'Search Result Reputation Cleanup', 'Brand Image Restoration', 'Crisis Management', 'Review Management & Rating Improvement', 'Long-term Reputation Monitoring'] },
-  { id: 'reputation-audit', label: 'Reputation Audit', icon: '📋', services: ['Full Brand Reputation Audit', 'Search Engine Audit', 'Social Media Profile Audit', 'Review & Rating Audit', 'Content Threat Analysis', 'Competitive Reputation Benchmarking', 'Legal Risk Assessment', 'Free Case Evaluation'] },
-  { id: 'industries', label: 'Industries', icon: '🏢', services: ['Content Creators & Influencers', 'E-Commerce Brands', 'Healthcare & Medical Professionals', 'Legal & Law Firms', 'Real Estate Professionals', 'Restaurants & Hospitality', 'Educators & Online Coaches', 'Enterprises & Corporations'] },
-];
-
-export default function DMCAHomepage() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [megaActiveId, setMegaActiveId] = useState('content-removal');
-
-  useEffect(() => {
-    document.body.style.overflow = drawerOpen ? 'hidden' : '';
-    const handleResize = () => {
-      if (window.innerWidth > 900) setDrawerOpen(false);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [drawerOpen]);
-
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
-
+export default function Home() {
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* ============================================
-           CSS VARIABLES
-        ============================================ */
-        :root {
-          --bg-deepest:  #FFFFFF;
-          --bg-dark:     #F8FAFC;
-          --bg-mid:      #F8FAFC;
-          --bg-card:     #FFFFFF;
-          --border:      #E2E8F0;
-          --gold:        #2563EB;
-          --gold-lt:     #1D4ED8;
-          --text:        #111827;
-          --muted:       #64748B;
-          --green:       #22c55e;
-          --blue:        #2563EB;
-          --red:         #d4453f;
-          --radius-sm:   8px;
-          --radius-md:   12px;
-          --radius-lg:   16px;
-          --max-w:       1280px;
-        }
-        html[data-theme='dark'] {
-          --bg-deepest: #080e1c;
-          --bg-dark: #0c1526;
-          --bg-mid: #16223c;
-          --bg-card: #16223c;
-          --border: #22304d;
-          --gold: #e0ac2f;
-          --gold-lt: #f6cd5c;
-          --text: #f4f6fb;
-          --muted: #a9b3c9;
-        }
+    <div className="flex flex-col min-h-screen">
+      
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative w-full pt-16 pb-32 overflow-hidden bg-gradient-to-tr from-[#fef4d8] via-[#fdfaf3] to-[#eef4ff]">
+        {/* Very Faint Grid Background */}
+        <div className="absolute inset-0 opacity-[0.3]" style={{ backgroundImage: 'linear-gradient(#d1d5db 1px, transparent 1px), linear-gradient(90deg, #d1d5db 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
+        
+        {/* Extra Golden Glow on the left */}
+        <div className="absolute top-0 left-0 w-[600px] h-[100%] bg-gradient-to-r from-[#fae7b5] to-transparent opacity-60 pointer-events-none"></div>
 
-        html { scroll-behavior: smooth; }
-        body {
-          font-family: 'Poppins', sans-serif;
-          background: #FFFFFF !important;
-          color: #111827 !important;
-          line-height: 1.6;
-          -webkit-font-smoothing: antialiased;
-        }
-        html[data-theme='dark'] body { background: #080e1c !important; color: #f4f6fb !important; }
-
-        /* ============================================
-           UTILITY
-        ============================================ */
-        .container { max-width: var(--max-w); margin: 0 auto; padding: 0 28px; }
-        .gold { color: var(--gold); }
-
-        /* Buttons */
-        .btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 13px 28px; border-radius: var(--radius-sm);
-          font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-          cursor: pointer; border: none; transition: transform .18s ease, box-shadow .18s ease;
-          text-decoration: none; white-space: nowrap;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-        .btn-blue   { background: var(--blue); color: #fff; }
-        .btn-blue:hover { background: #1D4ED8; }
-        .btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
-        .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
-        .btn-gold   { background: var(--gold); color: #12100a; }
-        .btn-gold:hover { background: var(--gold-lt); }
-        .btn-dark   { background: var(--bg-card); color: var(--text); border: 1.5px solid var(--border); }
-        .btn-dark:hover { border-color: var(--gold); }
-        .btn-sm { padding: 9px 18px; font-size: 13px; }
-
-        /* Section spacing */
-        .section { padding: 88px 0; }
-        .section-kicker {
-          font-size: 12px; font-weight: 700; color: var(--gold);
-          text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
-        }
-        .section-h2 { font-size: clamp(26px, 3.5vw, 36px); font-weight: 800; line-height: 1.22; }
-        .section-sub { font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 620px; }
-
-        /* ============================================
-           SECTION 1 — HEADER
-        ============================================ */
-        #header {
-          position: sticky; top: 0; z-index: 1000;
-          background: #2563EB;
-          border-bottom: 1px solid #1D4ED8;
-        }
-        .header-inner {
-          max-width: var(--max-w); margin: 0 auto;
-          height: 64px;
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 0 28px;
-          box-sizing: border-box;
-          width: 100%;
-        }
-
-        /* Logo */
-        .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; min-width: 0; text-decoration: none; }
-        .logo-icon-wrap {
-          width: 40px; height: 40px; flex-shrink: 0;
-          background: #FFFFFF; border-radius: var(--radius-sm);
-          display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .logo-icon-wrap svg { width: 22px; height: 22px; }
-        .logo-text-wrap { line-height: 1.2; min-width: 0; }
-        .logo-text-wrap .brand { font-size: 15px; font-weight: 800; color: #FFFFFF; letter-spacing: .5px; display: block; white-space: nowrap; }
-        .logo-text-wrap .sub   { font-size: 9.5px; font-weight: 500; color: #DBEAFE; text-transform: uppercase; letter-spacing: 1.2px; display: block; white-space: nowrap; }
-
-        /* Nav */
-        .main-nav { display: flex; align-items: center; gap: 2px; }
-        .main-nav a {
-          font-size: 13px; font-weight: 500; color: #FFFFFF;
-          padding: 7px 13px; border-radius: 6px;
-          transition: color .15s, background .15s;
-          white-space: nowrap;
-        }
-        .main-nav a:hover { color: #DBEAFE; }
-        .main-nav a.active {
-          color: #FFFFFF; font-weight: 700;
-          border-bottom: 2.5px solid #FFFFFF;
-          border-radius: 0;
-        }
-        .nav-pill {
-          display: inline-flex; align-items: center; gap: 5px;
-          background: #1D4ED8; color: #FFFFFF !important;
-          font-weight: 700 !important; font-size: 13px !important;
-          padding: 6px 14px !important; border-radius: 20px !important;
-          border: none !important;
-        }
-        .nav-pill svg { width: 12px; height: 12px; }
-
-        /* ============================================
-           MEGA MENU (Services dropdown)
-        ============================================ */
-        .svc-mega-wrap { position: relative; }
-        .svc-mega-trigger {
-          font-size: 13px; font-weight: 500; color: #FFFFFF;
-          padding: 7px 13px; border-radius: 6px;
-          transition: color .15s; white-space: nowrap;
-          background: none; border: none; cursor: pointer; outline: none;
-          display: inline-flex; align-items: center; gap: 5px;
-          font-family: 'Poppins', sans-serif;
-        }
-        .svc-mega-trigger:hover { color: #DBEAFE; }
-        .svc-mega-trigger svg { transition: transform .2s; }
-        .svc-mega-trigger.open svg { transform: rotate(180deg); }
-        .svc-mega-menu {
-          position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%);
-          width: 90vw; max-width: 860px;
-          background: #2563EB; border: 1px solid #1D4ED8;
-          border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.55);
-          display: flex; z-index: 9999; overflow: hidden;
-          animation: megaFadeIn .18s ease;
-        }
-        @keyframes megaFadeIn {
-          from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
-          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .svc-mega-sidebar {
-          width: 210px; flex-shrink: 0;
-          background: #1D4ED8; padding: 10px;
-          border-right: 1px solid #60A5FA;
-        }
-        .svc-mega-cat {
-          width: 100%; display: flex; align-items: center; gap: 9px;
-          padding: 9px 11px; margin-bottom: 3px; border-radius: 8px;
-          border: 1px solid transparent;
-          background: transparent; color: #DBEAFE;
-          font-size: 13px; font-weight: 500;
-          cursor: pointer; text-align: left; outline: none;
-          transition: background .15s, border-color .15s, color .15s;
-        }
-        .svc-mega-cat.active, .svc-mega-cat:hover {
-          border-color: #BFDBFE; background: #2563EB; color: #FFFFFF; font-weight: 700;
-        }
-        .svc-mega-body { flex: 1; padding: 18px; min-width: 0; }
-        .svc-mega-header {
-          display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
-        }
-        .svc-mega-kicker { font-size: 10px; font-weight: 700; color: #DBEAFE; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
-        .svc-mega-all { font-size: 11px; font-weight: 600; color: #DBEAFE; text-decoration: none; }
-        .svc-mega-all:hover { color: #FFFFFF; }
-        .svc-mega-active-row {
-          background: #1D4ED8; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
-          display: flex; align-items: center; gap: 9px;
-        }
-        .svc-mega-items { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-        .svc-mega-item {
-          padding: 9px 13px; border-radius: 8px;
-          border: 1px solid #60A5FA; background: #2563EB;
-          color: #FFFFFF; font-size: 12px; font-weight: 500;
-          text-decoration: none; display: block;
-          transition: border-color .15s, color .15s;
-        }
-        .svc-mega-item:hover { border-color: #BFDBFE; color: #DBEAFE; }
-
-        /* Header right — desktop only */
-        .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-        .icon-btn {
-          background: none; border: none; cursor: pointer; padding: 6px;
-          color: #FFFFFF; border-radius: 6px; transition: color .15s;
-          display: flex; align-items: center;
-        }
-        .icon-btn:hover { color: var(--gold); }
-        .icon-btn svg { width: 20px; height: 20px; }
-        .login-link { font-size: 13px; font-weight: 600; color: #FFFFFF; }
-        .login-link:hover { color: #DBEAFE; }
-        .home-account-menu { position: relative; }
-        .account-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #BFDBFE; background: #1D4ED8; color: #FFFFFF; font: 700 12px 'Poppins', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .account-avatar:hover, .account-avatar:focus-visible { background: #2563EB; outline: none; box-shadow: 0 0 0 3px rgba(191,219,254,.45); }
-        .account-menu-overlay { position: fixed; inset: 0; z-index: 1000; border: 0; background: transparent; cursor: default; }
-        .account-dropdown { position: absolute; right: 0; top: 43px; z-index: 1001; min-width: 180px; padding: 8px; border: 1px solid #BFDBFE; border-radius: 10px; background: #FFFFFF; box-shadow: 0 12px 28px rgba(0,0,0,.2); }
-        .account-name { overflow: hidden; margin: 2px 8px 7px; color: #1E3A8A; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-        .account-dropdown button[role="menuitem"] { width: 100%; border: 0; border-radius: 6px; background: transparent; padding: 8px; color: #DC2626; cursor: pointer; font: 600 13px 'Poppins', sans-serif; text-align: left; }
-        .account-dropdown button[role="menuitem"]:hover { background: #FEF2F2; }
-
-        /* Hamburger — standalone, mobile only */
-        .hamburger {
-          display: none; flex-direction: column; gap: 5px;
-          background: none; border: none; cursor: pointer; padding: 6px; flex-shrink: 0;
-        }
-        .hamburger span { width: 22px; height: 2px; background: #FFFFFF; border-radius: 2px; display: block; }
-
-        /* Mobile drawer — full panel */
-        .mobile-drawer {
-          position: fixed; inset: 0; z-index: 2000;
-          background: #1e3a8a;
-          flex-direction: column; align-items: stretch;
-          overflow-y: auto; overflow-x: hidden;
-          display: none;
-        }
-        .mobile-drawer.open { display: flex; }
-        .drawer-header {
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 16px 20px; background: #2563EB;
-          border-bottom: 1px solid #1D4ED8; flex-shrink: 0;
-        }
-        .drawer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .drawer-logo-icon {
-          width: 36px; height: 36px; background: #FFFFFF; border-radius: 7px;
-          display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .drawer-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
-        .drawer-brand { font-size: 15px; font-weight: 800; color: #FFFFFF; }
-        .drawer-close {
-          width: 36px; height: 36px; border-radius: 8px;
-          background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-          color: #FFFFFF; font-size: 18px; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .drawer-body { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
-        .drawer-link {
-          font-size: 16px; font-weight: 600; color: #DBEAFE;
-          text-decoration: none; padding: 15px 24px;
-          border-bottom: 1px solid rgba(255,255,255,0.08);
-          display: flex; align-items: center; gap: 12px;
-          transition: background .15s, color .15s;
-        }
-        .drawer-link:hover { background: rgba(255,255,255,0.08); color: #FFFFFF; }
-        .drawer-footer {
-          padding: 20px 24px 40px;
-          border-top: 1px solid rgba(255,255,255,0.12);
-          display: flex; flex-direction: column; gap: 16px; flex-shrink: 0;
-        }
-        .drawer-footer-row { display: flex; align-items: center; justify-content: space-between; }
-        .drawer-footer-label { font-size: 14px; font-weight: 500; color: #DBEAFE; }
-        .drawer-login-btn {
-          display: flex; align-items: center; justify-content: center;
-          width: 100%; padding: 13px 0; border-radius: 10px;
-          font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700;
-          cursor: pointer; border: none; text-decoration: none;
-          background: #FFFFFF; color: #2563EB; transition: background .15s;
-        }
-        .drawer-login-btn:hover { background: #DBEAFE; }
-        .drawer-theme-btn {
-          display: flex; align-items: center; justify-content: center;
-          width: 36px; height: 36px; padding: 6px;
-          border: 1px solid rgba(255,255,255,0.35); border-radius: 8px;
-          background: transparent; color: #FFFFFF;
-          cursor: pointer; transition: background .15s;
-        }
-        .drawer-theme-btn svg { width: 18px; height: 18px; }
-
-        /* ============================================
-           SECTION 2 — HERO
-        ============================================ */
-        #hero {
-          background: var(--bg-dark);
-          background-image: radial-gradient(ellipse 65% 55% at 68% 15%, rgba(59,111,224,.22) 0%, transparent 65%),
-                            radial-gradient(ellipse 40% 40% at 20% 80%, rgba(224,172,47,.07) 0%, transparent 70%);
-          padding: 78px 28px 80px;
-        }
-        .hero-grid {
-          max-width: var(--max-w); margin: 0 auto;
-          display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center;
-        }
-
-        /* Left */
-        .hero-badge {
-          display: inline-flex; align-items: center; gap: 7px;
-          background: rgba(224,172,47,.1); border: 1px solid rgba(224,172,47,.3);
-          color: var(--gold); font-size: 13px; font-weight: 600;
-          padding: 7px 18px; border-radius: 30px; margin-bottom: 28px;
-        }
-        .hero-h1 {
-          font-size: clamp(38px, 5.2vw, 58px);
-          font-weight: 800; line-height: 1.1; letter-spacing: -.5px;
-          margin-bottom: 24px;
-        }
-        .hero-h1 .hero-gold { color: var(--gold); }
-        .hero-para {
-          font-size: 15px; color: var(--muted); line-height: 1.8;
-          max-width: 510px; margin-bottom: 36px;
-        }
-        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 32px; }
-        .trust-pills { display: flex; flex-wrap: wrap; gap: 10px; }
-        .trust-pill {
-          display: inline-flex; align-items: center; gap: 6px;
-          font-size: 12px; font-weight: 500; color: var(--muted);
-          background: rgba(255,255,255,.04); border: 1px solid var(--border);
-          padding: 7px 15px; border-radius: 30px;
-        }
-        .trust-pill .ck { color: var(--green); font-size: 12px; font-weight: 700; }
-
-        /* Right art */
-        .hero-art { position: relative; height: 480px; }
-        .shield-card {
-          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-          width: 280px; height: 295px;
-          background: linear-gradient(145deg, #16223c, #0d1829);
-          border: 1.5px solid var(--border); border-radius: var(--radius-lg);
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 0 80px rgba(224,172,47,.1), 0 24px 60px rgba(0,0,0,.4);
-        }
-        .shield-card svg { width: 120px; height: 120px; color: var(--gold); }
-
-        .f-badge {
-          position: absolute; border-radius: var(--radius-md);
-          padding: 14px 18px; font-weight: 700; text-align: center;
-          box-shadow: 0 12px 32px rgba(0,0,0,.45); white-space: nowrap;
-        }
-        .f-gold  { background: var(--gold);  color: #12100a; top:  9%;  right: 4%;  font-size: 13px; }
-        .f-blue  { background: var(--blue);  color: #fff;    bottom: 32%; right: -2%; font-size: 13px; }
-        .f-green { background: var(--green); color: #fff;    bottom: 4%; left: 12%;  font-size: 13px; }
-        .f-badge .fb-num  { font-size: 22px; font-weight: 800; display: block; line-height: 1.1; }
-        .f-badge .fb-lbl  { font-size: 11px; font-weight: 500; display: block; margin-top: 2px; opacity: .85; }
-
-        .scroll-hint {
-          position: absolute; bottom: 0; right: 0;
-          display: flex; flex-direction: column; align-items: center; gap: 6px;
-          font-size: 11px; color: var(--muted); font-weight: 500;
-        }
-        .scroll-mouse {
-          width: 20px; height: 32px;
-          border: 2px solid rgba(169,179,201,.4); border-radius: 10px;
-          display: flex; align-items: flex-start; justify-content: center; padding-top: 5px;
-        }
-        .scroll-dot {
-          width: 3px; height: 7px; background: var(--gold); border-radius: 3px;
-          animation: scrollDown 1.6s ease-in-out infinite;
-        }
-        @keyframes scrollDown {
-          0%   { transform: translateY(0);   opacity: 1; }
-          60%  { transform: translateY(8px); opacity: .2; }
-          100% { transform: translateY(0);   opacity: 1; }
-        }
-
-        /* ============================================
-           SECTION 3 — STATS BAR
-        ============================================ */
-        #stats-bar {
-          background: var(--bg-mid);
-          border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-          padding: 48px 28px;
-        }
-        .stats-grid {
-          max-width: var(--max-w); margin: 0 auto;
-          display: grid; grid-template-columns: repeat(4, 1fr);
-          gap: 20px; text-align: center;
-        }
-        .stat-col { padding: 10px; }
-        .stat-big { font-size: 38px; font-weight: 800; color: var(--gold); line-height: 1; }
-        .stat-lbl { font-size: 13px; color: var(--muted); margin-top: 7px; font-weight: 500; }
-
-        /* ============================================
-           SECTION 4 — SERVICE INTRO
-        ============================================ */
-        #service-intro { background: var(--bg-dark); padding: 88px 28px; }
-        .intro-grid {
-          max-width: var(--max-w); margin: 0 auto;
-          display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
-        }
-
-        /* Left */
-        .intro-h2 { font-size: clamp(26px, 3vw, 34px); font-weight: 800; line-height: 1.25; margin-bottom: 14px; }
-        .gold-bar  { width: 56px; height: 4px; background: var(--gold); border-radius: 2px; margin-bottom: 22px; }
-        .intro-para { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
-        .feat-list { margin: 28px 0 36px; display: flex; flex-direction: column; gap: 22px; }
-        .feat-item { display: flex; gap: 14px; align-items: flex-start; }
-        .feat-icon {
-          width: 42px; height: 42px; flex-shrink: 0;
-          background: rgba(224,172,47,.1); border: 1px solid rgba(224,172,47,.2);
-          border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
-        }
-        .feat-icon svg { width: 18px; height: 18px; color: var(--gold); }
-        .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-        .feat-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-        /* Right */
-        .sc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 22px; }
-        .sc-card {
-          background: linear-gradient(145deg, #1a2e55, #0f1e3a);
-          border: 1px solid var(--border); border-radius: var(--radius-md);
-          padding: 28px 20px; text-align: center;
-          transition: border-color .2s;
-        }
-        .sc-card:hover { border-color: var(--gold); }
-        .sc-card svg { width: 22px; height: 22px; color: var(--gold); margin-bottom: 12px; display:inline-block;}
-        .sc-num { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1; }
-        .sc-lbl { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
-        .quote-box {
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-left: 4px solid var(--red); border-radius: var(--radius-md);
-          padding: 22px 22px 22px 24px;
-        }
-        .quote-box blockquote { font-style: italic; color: #d6dce8; font-size: 14px; line-height: 1.75; margin-bottom: 14px; }
-        .quote-who  { font-size: 13px; font-weight: 700; }
-        .quote-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-        /* ============================================
-           SECTION 5 — SERVICES
-        ============================================ */
-        #services { background: var(--bg-deepest); padding: 88px 28px; }
-        .services-head { text-align: center; max-width: 700px; margin: 0 auto 54px; }
-        .services-head .section-h2 { margin: 10px 0 14px; }
-
-        .svc-grid {
-          max-width: var(--max-w); margin: 0 auto 48px;
-          display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
-        }
-        .svc-card {
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius-md); padding: 26px 20px;
-          transition: border-color .22s, transform .22s, box-shadow .22s; cursor: default;
-        }
-        .svc-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 14px 36px rgba(224,172,47,.09); }
-        .svc-icon {
-          width: 46px; height: 46px;
-          background: rgba(224,172,47,.09); border: 1px solid rgba(224,172,47,.22);
-          border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
-          margin-bottom: 16px;
-        }
-        .svc-icon svg { width: 21px; height: 21px; color: var(--gold); }
-        .svc-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
-        .svc-card p  { font-size: 12px; color: var(--muted); line-height: 1.65; }
-
-        .services-ctas { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
-
-        /* Review card */
-        .review-card {
-          max-width: 820px; margin: 0 auto;
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius-md); padding: 24px 30px;
-          display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
-        }
-        .review-stars { color: var(--green); font-size: 20px; letter-spacing: 2px; }
-        .review-score { font-size: 26px; font-weight: 800; line-height: 1; }
-        .review-count { font-size: 12px; color: var(--muted); margin-top: 4px; }
-        .review-div   { width: 1px; align-self: stretch; background: var(--border); flex-shrink: 0; }
-        .review-src   { font-size: 14px; font-weight: 700; }
-        .review-sub   { font-size: 12px; color: var(--muted); margin-top: 3px; }
-        .review-desc  { flex: 1; font-size: 13px; color: var(--muted); line-height: 1.65; min-width: 160px; }
-        .review-btn-wrap { margin-left: auto; }
-
-        /* ============================================
-           SECTION 6 — WHY CHOOSE US
-        ============================================ */
-        #why-us { background: var(--bg-mid); padding: 88px 28px; }
-        .why-grid {
-          max-width: var(--max-w); margin: 0 auto;
-          display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
-        }
-        .why-h2 { font-size: clamp(22px, 2.8vw, 30px); font-weight: 800; line-height: 1.28; margin: 10px 0 30px; }
-        .why-features { display: flex; flex-direction: column; gap: 16px; }
-        .why-feat {
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius-md); padding: 20px 20px 20px 18px;
-          display: flex; gap: 14px; align-items: flex-start;
-          transition: border-color .2s;
-        }
-        .why-feat:hover { border-color: var(--gold); }
-        .why-feat-icon {
-          width: 40px; height: 40px; flex-shrink: 0;
-          background: rgba(224,172,47,.1); border-radius: var(--radius-sm);
-          display: flex; align-items: center; justify-content: center;
-        }
-        .why-feat-icon svg { width: 18px; height: 18px; color: var(--gold); }
-        .why-feat h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .why-feat p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-        .why-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .ws-card {
-          background: linear-gradient(145deg, #1a2e55, #0f1e3a);
-          border: 1px solid var(--border); border-radius: var(--radius-md);
-          padding: 30px 20px; text-align: center;
-          transition: border-color .2s;
-        }
-        .ws-card:hover { border-color: var(--gold); }
-        .ws-num { font-size: 32px; font-weight: 800; color: var(--gold); line-height: 1; }
-        .ws-lbl { font-size: 12px; color: var(--muted); margin-top: 7px; line-height: 1.4; }
-
-        /* ============================================
-           SECTION 7 — FOOTER
-        ============================================ */
-        #footer { background: var(--bg-dark); border-top: 1px solid var(--border); padding: 72px 28px 0; }
-        .foot-grid {
-          max-width: var(--max-w); margin: 0 auto;
-          display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 44px;
-          padding-bottom: 52px;
-        }
-        /* Col 1 */
-        .foot-brand-box {
-          display: flex; align-items: center; gap: 13px;
-          background: var(--gold); border-radius: var(--radius-md);
-          padding: 16px 18px; margin-bottom: 18px;
-        }
-        .foot-brand-box .fbb-icon { font-size: 28px; }
-        .foot-brand-name { font-size: 18px; font-weight: 800; color: #12100a; }
-        .foot-brand-tag  { font-size: 10px; color: rgba(0,0,0,.6); font-weight: 500; line-height: 1.4; }
-        .foot-tagline { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 18px; }
-        .status-pill {
-          display: flex; align-items: center; gap: 9px;
-          background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25);
-          border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; max-width: 260px;
-        }
-        .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.25)} }
-        .status-text { font-size: 12px; color: var(--green); font-weight: 600; }
-        .social-row { display: flex; gap: 10px; }
-        .soc-btn {
-          width: 36px; height: 36px; border-radius: 7px;
-          border: 1px solid var(--border); background: var(--bg-card);
-          display: flex; align-items: center; justify-content: center;
-          color: var(--muted); transition: border-color .18s, color .18s;
-        }
-        .soc-btn:hover { border-color: var(--gold); color: var(--gold); }
-        .soc-btn svg { width: 15px; height: 15px; }
-
-        /* Cols 2-4 */
-        .foot-col h5 { font-size: 14px; font-weight: 700; margin-bottom: 20px; }
-        .foot-links { display: flex; flex-direction: column; gap: 11px; }
-        .foot-links a { font-size: 13px; color: var(--muted); transition: color .15s; }
-        .foot-links a:hover { color: var(--gold); }
-
-        /* Contact row */
-        .foot-contact-row {
-          max-width: var(--max-w); margin: 0 auto;
-          border-top: 1px solid var(--border); padding: 32px 0;
-          display: flex; gap: 48px; flex-wrap: wrap; align-items: flex-start;
-        }
-        .fci-group { min-width: 180px; }
-        .fci-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .fci-val   { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
-        .fci-val svg { width: 14px; height: 14px; color: var(--gold); flex-shrink: 0; }
-        .fci-val a { color: var(--gold); text-decoration: underline; }
-        .fci-links { display: flex; flex-direction: column; gap: 8px; }
-        .fci-links a { font-size: 13px; color: var(--muted); }
-        .fci-links a:hover { color: var(--gold); }
-
-        /* Emergency banner */
-        .emergency-band {
-          max-width: var(--max-w); margin: 0 auto;
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius-md); padding: 22px 28px;
-          display: flex; align-items: center; justify-content: space-between;
-          gap: 20px; flex-wrap: wrap; margin-bottom: 36px;
-        }
-        .emg-text h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .emg-text p  { font-size: 13px; color: var(--muted); }
-
-        /* Copyright bar */
-        .copy-bar {
-          max-width: var(--max-w); margin: 0 auto;
-          border-top: 1px solid var(--border); padding: 22px 0;
-          display: flex; justify-content: space-between; align-items: center;
-          gap: 14px; flex-wrap: wrap;
-        }
-        .copy-bar p   { font-size: 12px; color: var(--muted); }
-        .copy-links   { display: flex; gap: 18px; }
-        .copy-links a { font-size: 12px; color: var(--muted); }
-        .copy-links a:hover { color: var(--gold); }
-
-        /* ============================================
-           FLOATING FABs
-        ============================================ */
-        .fab-stack {
-          position: fixed; bottom: 26px; right: 26px;
-          display: flex; flex-direction: row; gap: 12px; z-index: 999;
-        }
-        .fab {
-          width: 52px; height: 52px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 6px 20px rgba(0,0,0,.45); cursor: pointer;
-          position: relative; transition: transform .2s;
-          text-decoration: none;
-        }
-        .fab:hover { transform: scale(1.1); }
-        .fab-bot { background: var(--bg-card); border: 2px solid var(--gold); }
-        .fab-bot svg { width: 22px; height: 22px; color: var(--gold); }
-        .fab-wa  { background: #22c55e; }
-        .fab-wa  svg { width: 24px; height: 24px; color: #fff; }
-        .fab-notif {
-          position: absolute; top: -3px; right: -3px;
-          width: 17px; height: 17px; border-radius: 50%;
-          background: #ef4444; color: #fff; font-size: 9px; font-weight: 800;
-          display: flex; align-items: center; justify-content: center;
-        }
-
-        /* ============================================
-           RESPONSIVE
-        ============================================ */
-        @media (max-width: 1100px) {
-          .svc-grid { grid-template-columns: repeat(4, 1fr); }
-          .foot-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 900px) {
-          .main-nav { display: none; }
-          .hamburger { display: flex; }
-          .hero-grid  { grid-template-columns: 1fr; gap: 40px; }
-          .hero-art   { height: 320px; }
-          .shield-card { width: 220px; height: 230px; }
-          .intro-grid { grid-template-columns: 1fr; }
-          .why-grid   { grid-template-columns: 1fr; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr); }
-          .svc-grid   { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 500px) {
-          .header-inner { padding: 0 14px; }
-          .logo-text-wrap .sub { display: none; }
-          .header-right { gap: 8px; }
-          .icon-btn { padding: 4px; }
-          .icon-btn svg { width: 18px; height: 18px; }
-          .account-avatar { width: 30px; height: 30px; font-size: 10px; }
-          .hamburger { padding: 4px; }
-        }
-        @media (max-width: 640px) {
-          .svc-grid   { grid-template-columns: repeat(2, 1fr); }
-          .foot-grid  { grid-template-columns: 1fr; }
-          .review-card { flex-direction: column; gap: 14px; }
-          .review-div  { width: 100%; height: 1px; }
-          .review-btn-wrap { margin-left: 0; }
-          .hero-h1    { font-size: 34px; }
-          .hero-art   { height: 280px; }
-          .shield-card { width: 190px; height: 200px; }
-        }
-        @media (max-width: 420px) {
-          .svc-grid { grid-template-columns: 1fr; }
-          .sc-grid  { grid-template-columns: 1fr; }
-          .why-stats{ grid-template-columns: 1fr; }
-          .hero-h1 { font-size: 30px; }
-          .hero-para { font-size: 14px; }
-          .hero-badge { font-size: 11px; padding: 6px 14px; }
-          .f-badge { padding: 10px 14px; }
-        }
-      `}} />
-
-      {/* MOBILE DRAWER */}
-      <nav className={`mobile-drawer ${drawerOpen ? 'open' : ''}`} aria-label="Mobile navigation" aria-modal="true" role="dialog">
-        {/* Drawer top bar */}
-        <div className="drawer-header">
-          <a href="/" className="drawer-logo" onClick={toggleDrawer}>
-            <div className="drawer-logo-icon">
-              <img src="/logo.jpg" alt="RepuKeel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-            <span className="drawer-brand">RepuKeel</span>
-          </a>
-          <button className="drawer-close" onClick={toggleDrawer} aria-label="Close menu">✕</button>
-        </div>
-        {/* Nav links */}
-        <div className="drawer-body">
-          <a href="/" className="drawer-link" onClick={toggleDrawer}><span>🏠</span> Home</a>
-          <a href="/protection" className="drawer-link" onClick={toggleDrawer}><span>🛡️</span> Protection</a>
-          <a href="/services" className="drawer-link" onClick={toggleDrawer}><span>⚙️</span> Services</a>
-          <a href="/scanner" className="drawer-link" onClick={toggleDrawer}><span>🔍</span> AI Scanner</a>
-          <a href="/about" className="drawer-link" onClick={toggleDrawer}><span>ℹ️</span> About Us</a>
-          <a href="/pricing" className="drawer-link" onClick={toggleDrawer}><span>💳</span> Pricing</a>
-          <a href="/blogs" className="drawer-link" onClick={toggleDrawer}><span>📝</span> Blog</a>
-          <a href="/contact" className="drawer-link" onClick={toggleDrawer}><span>📬</span> Contact</a>
-        </div>
-        {/* Footer: just a login link for quick access */}
-        <div className="drawer-footer">
-          <div>
-            <a href="/login" className="drawer-login-btn" onClick={toggleDrawer}>Login / Sign Up</a>
-          </div>
-        </div>
-      </nav>
-
-      {/* HEADER */}
-      <header id="header" role="banner">
-        <div className="header-inner">
-          <a href="#" className="logo" aria-label="RepuKeel — Home">
-            <div className="logo-icon-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', width: '40px', height: '40px', borderRadius: '8px' }}>
-              <img src="/logo.jpg" alt="RepuKeel Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-            <div className="logo-text-wrap">
-              <span className="brand">RepuKeel</span>
-              <span className="sub">Online Reputation Management</span>
-            </div>
-          </a>
-
-          <nav className="main-nav" aria-label="Main navigation">
-            <a href="/" className="active">Home</a>
-            <a href="/protection" className="nav-pill" aria-label="Protection">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
-              </svg>
-              Protection
-            </a>
-            {/* Services with Mega Dropdown — hover triggered */}
-            <div
-              className="svc-mega-wrap"
-              onMouseEnter={() => setServicesOpen(true)}
-              onMouseLeave={() => setServicesOpen(false)}
-            >
-              <button className={`svc-mega-trigger${servicesOpen ? ' open' : ''}`}>
-                Services
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </button>
-
-              {servicesOpen && (
-                <div className="svc-mega-menu">
-                  {/* Left sidebar */}
-                  <div className="svc-mega-sidebar">
-                    {SERVICE_CATEGORIES.map(cat => (
-                      <button
-                        key={cat.id}
-                        className={`svc-mega-cat${megaActiveId === cat.id ? ' active' : ''}`}
-                        onMouseEnter={() => setMegaActiveId(cat.id)}
-                        onClick={() => { window.location.href = `/services#${cat.id}`; }}
-                      >
-                        <span style={{ fontSize: '14px' }}>{cat.icon}</span>
-                        {cat.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Right content */}
-                  {(() => {
-                    const active = SERVICE_CATEGORIES.find(c => c.id === megaActiveId)!;
-                    return (
-                      <div className="svc-mega-body">
-                        <div className="svc-mega-header">
-                          <p className="svc-mega-kicker">Solutions for {active.label}</p>
-                          <a href="/services" className="svc-mega-all">View all →</a>
-                        </div>
-                        <div className="svc-mega-active-row">
-                          <span style={{ fontSize: '16px' }}>{active.icon}</span>
-                          <span style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{active.label}</span>
-                        </div>
-                        <div className="svc-mega-items">
-                          {active.services.map((svc, i) => {
-                            const slug = svc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                            return (
-                              <a key={i} href={`/services/${slug}`} className="svc-mega-item">{svc}</a>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              )}
-            </div>
-            <a href="/scanner">AI Scanner</a>
-            <a href="/about">About Us</a>
-            <a href="/pricing">Pricing</a>
-            <a href="/blogs">Blog</a>
-            <a href="/contact">Contact</a>
-          </nav>
-
-          {/* Desktop icons — hidden on mobile */}
-          <div className="header-right">
-            <ThemeToggle className="icon-btn" />
-            <AccountMenu loginClassName="login-link" menuClassName="home-account-menu" />
-          </div>
-
-          {/* Hamburger — standalone, mobile only, ALWAYS visible */}
-          <button className="hamburger" aria-label="Open navigation menu" aria-expanded={drawerOpen} onClick={toggleDrawer}>
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </header>
-
-      {/* HERO */}
-      <section id="hero" aria-labelledby="hero-h1">
-        <div className="hero-grid">
-          <div className="hero-left">
-            <div className="hero-badge" role="note">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
-                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
-              </svg>
+        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:items-start items-center pt-8">
+          
+          {/* Left Column */}
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 bg-[#fdfaf2] border border-[#f0c85a] rounded-full px-4 py-2 text-[13px] font-[600] text-[#b8860f] mb-8 shadow-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               Professional DMCA Protection Service
             </div>
-
-            <h1 className="hero-h1" id="hero-h1">
+            
+            <h1 className="text-5xl md:text-6xl lg:text-[72px] font-[900] leading-[1.05] tracking-tight mb-8 text-[#111827]">
               Protect Your<br/>
-              <span className="hero-gold">Digital Content</span><br/>
-              From Copyright Theft
+              <span className="text-[#d4af37]">Digital Content</span><br/>
+              From Copyright<br/>
+              Theft
             </h1>
-
-            <p className="hero-para">
-              Fast, effective DMCA takedown service with a 24-48 hour response time.
+            <p className="text-[17px] text-[#4b5563] mb-10 max-w-lg leading-relaxed">
+              Fast, effective DMCA takedown service with a 24-48 hour response time. 
               We protect your intellectual property from piracy and unauthorized use across all platforms.
             </p>
-
-            <div className="hero-btns">
-              <a href="/protection" className="btn btn-blue">Get Protection Now &rarr;</a>
-              <a href="#services" className="btn btn-outline">View Services</a>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <Link href="/protection" className="btn btn-navy-solid shadow-xl" style={{ padding: '16px 36px', fontSize: '16px' }}>Get Protection Now &rarr;</Link>
+              <a href="#services" className="btn btn-outline-dark" style={{ padding: '16px 36px', fontSize: '16px' }}>View Services</a>
             </div>
 
-            <div className="trust-pills" role="list" aria-label="Trust signals">
-              <span className="trust-pill" role="listitem"><span className="ck">&#10003;</span>No Win, No Fee</span>
-              <span className="trust-pill" role="listitem"><span className="ck">&#10003;</span>24/7 Support</span>
-              <span className="trust-pill" role="listitem"><span className="ck">&#10003;</span>Global Coverage</span>
-              <span className="trust-pill" role="listitem"><span className="ck">&#10003;</span>Legal Compliance</span>
-            </div>
-          </div>
-
-          <div className="hero-art" aria-hidden="true">
-            <div className="shield-card">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
-                <path d="M9 12.5l2 2 4-4" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="f-badge f-gold">
-              <span className="fb-num">4.9 &#9733;</span>
-              <span className="fb-lbl">Rating</span>
-            </div>
-            <div className="f-badge f-blue">
-              <span className="fb-num">24h</span>
-              <span className="fb-lbl">Response</span>
-            </div>
-            <div className="f-badge f-green">
-              <span className="fb-num">280+</span>
-              <span className="fb-lbl">Success</span>
-            </div>
-            <div className="scroll-hint">
-              Scroll to explore
-              <div className="scroll-mouse"><div className="scroll-dot"></div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS BAR */}
-      <section id="stats-bar" aria-label="Key statistics">
-        <div className="stats-grid">
-          <div className="stat-col">
-            <div className="stat-big">30K+</div>
-            <div className="stat-lbl">Content Pieces Removed</div>
-          </div>
-          <div className="stat-col">
-            <div className="stat-big">200+</div>
-            <div className="stat-lbl">Clients Protected</div>
-          </div>
-          <div className="stat-col">
-            <div className="stat-big">99%</div>
-            <div className="stat-lbl">Success Rate</div>
-          </div>
-          <div className="stat-col">
-            <div className="stat-big">150+</div>
-            <div className="stat-lbl">Countries Covered</div>
-          </div>
-        </div>
-      </section>
-
-      {/* SERVICE INTRO */}
-      <section id="service-intro" aria-labelledby="intro-h2">
-        <div className="intro-grid">
-          <div>
-            <h2 className="intro-h2" id="intro-h2">Professional DMCA<br/>Takedown Service</h2>
-            <div className="gold-bar" aria-hidden="true"></div>
-            <p className="intro-para">
-              We are a dedicated DMCA takedown service committed to protecting your digital content from copyright infringement, piracy, and unauthorized use.
-            </p>
-            <p className="intro-para">
-              With years of experience in copyright enforcement and online brand protection, we provide fast, effective, and hassle-free takedown solutions tailored to your needs. Whether you're an artist, entrepreneur, or corporation, we ensure your intellectual property stays secure.
-            </p>
-            <ul className="feat-list" aria-label="Key features">
-              <li className="feat-item">
-                <div className="feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z" strokeLinejoin="round"/></svg>
+            <div className="flex flex-wrap gap-3">
+              {['No Win, No Fee', '24/7 Support', 'Global Coverage', 'Legal Compliance'].map((pill, i) => (
+                <div key={i} className="flex items-center gap-1.5 bg-white border border-[#e5e7eb] rounded-full px-3 py-1.5 text-[12px] font-[600] text-[#1f2937] shadow-sm">
+                  <div className="w-4 h-4 rounded-full bg-[#22c55e] flex items-center justify-center text-white">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-2.5 h-2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  {pill}
                 </div>
-                <div>
-                  <p className="feat-title">Quick Content Removal</p>
-                  <p className="feat-desc">Quick removal of stolen content from all platforms within 24 to 48 hours.</p>
-                </div>
-              </li>
-              <li className="feat-item">
-                <div className="feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/></svg>
-                </div>
-                <div>
-                  <p className="feat-title">Complete Copyright Protection</p>
-                  <p className="feat-desc">Full spectrum protection for your intellectual property across every platform and jurisdiction.</p>
-                </div>
-              </li>
-              <li className="feat-item">
-                <div className="feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M5 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM19 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM5 7h14M8 3h8"/></svg>
-                </div>
-                <div>
-                  <p className="feat-title">Legal Support</p>
-                  <p className="feat-desc">Expert legal assistance and ongoing monitoring to protect your rights long-term.</p>
-                </div>
-              </li>
-            </ul>
-            <a href="/protection" className="btn btn-gold">&#10003; Start Protecting Now</a>
-          </div>
-          <div>
-            <div className="sc-grid">
-              <div className="sc-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{display:'inline-block'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <div className="sc-num">98%</div>
-                <div className="sc-lbl">Client Satisfaction</div>
-              </div>
-              <div className="sc-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{display:'inline-block'}}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                <div className="sc-num">24-48h</div>
-                <div className="sc-lbl">Average Takedown Time</div>
-              </div>
-              <div className="sc-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{display:'inline-block'}}><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
-                <div className="sc-num">50+</div>
-                <div className="sc-lbl">Countries Served</div>
-              </div>
-              <div className="sc-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{display:'inline-block'}}><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.5 13.5L6 22l6-3 6 3-2.5-8.5"/></svg>
-                <div className="sc-num">280+</div>
-                <div className="sc-lbl">Cases Solved</div>
-              </div>
-            </div>
-            <div className="quote-box">
-              <blockquote>"Your content is valuable&mdash;let us help you protect it. We provide expert DMCA takedown solutions to remove stolen content quickly and legally."</blockquote>
-              <p className="quote-who">RepuKeel Team</p>
-              <p className="quote-role">Copyright Protection Experts</p>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* SERVICES */}
-      <section id="services" aria-labelledby="svc-h2">
-        <div className="services-head">
-          <p className="section-kicker">Our Services</p>
-          <h2 className="section-h2" id="svc-h2">Increase sales with our brand protection solutions</h2>
-          <p className="section-sub" style={{margin: '0 auto'}}>Achieve comprehensive visibility of online threats with round-the-clock monitoring and enforcement</p>
-        </div>
+          {/* Right Column */}
+          <div className="relative flex justify-center lg:justify-end lg:mt-4" style={{ perspective: '1200px' }}>
+            <style>{`
+              @keyframes float3d {
+                0% { transform: translateY(0) rotateX(1deg) rotateY(-2deg); }
+                50% { transform: translateY(-12px) rotateX(-1deg) rotateY(2deg); }
+                100% { transform: translateY(0) rotateX(1deg) rotateY(-2deg); }
+              }
+              .animate-float3d {
+                animation: float3d 8s ease-in-out infinite;
+                transform-style: preserve-3d;
+              }
+            `}</style>
+            
+            {/* Background SVG curved dotted lines */}
+            <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] pointer-events-none opacity-40 z-0" viewBox="0 0 400 400">
+              <path d="M-50 250 Q 200 150 450 250" fill="none" stroke="#dca12b" strokeWidth="1" strokeDasharray="4 4" />
+              <path d="M0 350 Q 200 200 400 400" fill="none" stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 4" />
+              <circle cx="80" cy="225" r="3" fill="#dca12b" />
+              <circle cx="320" cy="225" r="3" fill="#dca12b" />
+              <circle cx="150" cy="290" r="3" fill="#9ca3af" />
+            </svg>
 
-        <div className="svc-grid" role="list" aria-label="Service catalog">
-          {SERVICES.map((svc, idx) => (
-            <article key={idx} className="svc-card" role="listitem">
-              <div className="svc-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d={svc.icon} strokeLinecap="round" strokeLinejoin="round"/>
+            {/* Completely exact positioning container */}
+            <div className="relative w-full max-w-[420px] aspect-square animate-float3d z-10 mx-auto lg:mr-8 mt-12 lg:mt-0">
+              
+              {/* Standalone floating pills (left side) */}
+              <div className="absolute top-[20%] -left-[15%] w-[32px] h-[85px] bg-[#22c55e] rounded-full rotate-[-15deg] shadow-lg z-0"></div>
+              <div className="absolute top-[60%] -left-[5%] w-[32px] h-[85px] bg-[#3b82f6] rounded-full shadow-lg z-0"></div>
+              
+              {/* Scattered dots */}
+              <div className="absolute top-[5%] left-[25%] w-3 h-3 bg-[#dca12b] rounded-full opacity-70"></div>
+              <div className="absolute top-[20%] right-[10%] w-2 h-2 bg-[#dca12b] rounded-full opacity-60"></div>
+              <div className="absolute bottom-[30%] left-[20%] w-2.5 h-2.5 bg-[#dca12b] rounded-full opacity-90"></div>
+              <div className="absolute bottom-[-15%] left-[10%] w-3 h-3 bg-[#dca12b] rounded-full opacity-70"></div>
+              <div className="absolute top-[35%] right-[-15%] w-3 h-3 bg-[#dca12b] rounded-full"></div>
+
+              {/* Main White Card */}
+              <div className="absolute inset-4 bg-white rounded-[40px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.15)] flex items-center justify-center z-10 border border-gray-50">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#dca12b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-[38%] h-[38%] drop-shadow-sm">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4" strokeWidth="3"/>
                 </svg>
               </div>
-              <h4>{svc.title}</h4>
-              <p>{svc.desc}</p>
-            </article>
+
+              {/* Top Right: Gold Rating Badge + Purple Pill */}
+              <div className="absolute top-[5%] -right-[10%] z-20">
+                {/* Purple pill tucked behind */}
+                <div className="absolute -top-[15px] -left-[30px] w-[28px] h-[75px] bg-[#a855f7] rounded-full rotate-[45deg] -z-10 shadow-md"></div>
+                
+                {/* Gold Card */}
+                <div className="bg-[#dca12b] rounded-[24px] p-5 shadow-2xl flex flex-col items-center justify-center w-[110px] h-[135px] text-white">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <div className="flex items-center gap-0.5">
+                    <span className="text-[28px] font-[900] leading-none tracking-tight">4.9</span>
+                    <span className="text-[20px] font-[900] leading-none">★</span>
+                  </div>
+                  <span className="text-[13px] font-[600] tracking-wide mt-1">Rating</span>
+                </div>
+              </div>
+              
+              {/* Bottom Right: Blue Response Badge + Orange Pill */}
+              <div className="absolute bottom-[10%] -right-[15%] z-20">
+                {/* Orange pill tucked behind left side */}
+                <div className="absolute bottom-[10px] -left-[45px] w-[50px] h-[22px] bg-[#f59e0b] rounded-full rotate-[-10deg] -z-10 shadow-md"></div>
+                
+                {/* Blue Card */}
+                <div className="bg-[#3675f5] rounded-[24px] p-5 shadow-2xl flex flex-col items-center justify-center w-[110px] h-[135px] text-white">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  <span className="text-[28px] font-[900] leading-none tracking-tight">24h</span>
+                  <span className="text-[13px] font-[600] tracking-wide mt-1">Response</span>
+                </div>
+              </div>
+
+              {/* Bottom Left: Huge Green Success Badge */}
+              <div className="absolute -bottom-[8%] -left-[12%] z-20">
+                {/* Green Card */}
+                <div className="bg-[#1cb954] rounded-[28px] p-6 shadow-2xl flex flex-col items-start justify-center w-[145px] h-[165px] text-white relative">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-8 h-8 mb-4"><path d="M22 7L13.5 15.5 8.5 10.5 2 17M16 7h6v6"/></svg>
+                  <span className="text-[34px] font-[900] leading-none tracking-tight">280+</span>
+                  <span className="text-[15px] font-[600] tracking-wide mt-1">Success</span>
+                  
+                  {/* Little green blob floating top right corner */}
+                  <div className="absolute -top-[12px] -right-[12px] w-[45px] h-[45px] bg-[#1cb954] rounded-full shadow-lg"></div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= STATS STRIP ================= */}
+      <section className="w-full bg-[var(--bg-navy)] py-12">
+        <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { n: '30K+', l: 'Content Pieces Removed' },
+            { n: '200+', l: 'Clients Protected' },
+            { n: '99%', l: 'Success Rate' },
+            { n: '150+', l: 'Countries Covered' }
+          ].map((stat, i) => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <span className="text-4xl font-[800] text-[var(--gold)]">{stat.n}</span>
+              <span className="text-[14px] font-[500] text-[var(--text-muted-navy)]">{stat.l}</span>
+            </div>
           ))}
         </div>
+      </section>
 
-        <div className="services-ctas">
-          <a href="#footer" className="btn btn-dark">CONTACT SALES</a>
-          <a href="/contact" className="btn btn-gold">REQUEST A DEMO</a>
-        </div>
-
-        <div className="review-card" role="region" aria-label="Customer review summary">
+      {/* ================= PROFESSIONAL DMCA SECTION ================= */}
+      <section className="w-full bg-white py-24">
+        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="review-stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            <div className="review-score">4.96<span style={{fontSize:'15px', fontWeight: 500, color: 'var(--muted)'}}> out of 5</span></div>
-            <div className="review-count">25 Reviews</div>
+            <h2 className="text-4xl font-[800] mb-6">Professional DMCA<br/>Takedown Service</h2>
+            <div className="w-16 h-1 bg-[var(--gold)] mb-8"></div>
+            <p className="text-[16px] text-[var(--text-body)] mb-6">
+              We are a dedicated DMCA takedown service committed to protecting your digital content from copyright infringement, piracy, and unauthorized use.
+            </p>
+            <div className="flex flex-col gap-6 mb-10">
+              {[
+                { title: 'Fast & Effective Takedowns', desc: 'Quick removal of stolen content from all platforms within 24 to 48 hours.' },
+                { title: 'Complete Copyright Protection', desc: 'Full spectrum protection for your intellectual property across every platform and jurisdiction.' },
+                { title: 'Legal Support', desc: 'Expert legal assistance and ongoing monitoring to protect your rights long-term.' }
+              ].map((ft, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] flex items-center justify-center text-[var(--gold)] flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/></svg>
+                  </div>
+                  <div>
+                    <h4 className="text-[17px] font-[700] text-[var(--text-heading)] mb-1">{ft.title}</h4>
+                    <p className="text-[14px] text-[var(--text-body)] leading-relaxed">{ft.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link href="/protection" className="btn btn-gold-solid">Start Protecting Now</Link>
           </div>
-          <div className="review-div" aria-hidden="true"></div>
-          <div>
-            <div className="review-src">Google</div>
-            <div className="review-sub">Verified Reviews Platform</div>
-          </div>
-          <p className="review-desc">Clients consistently rate RepuKeel 5 stars for blazing-fast response times, professional communication, and results that actually stick.</p>
-          <div className="review-btn-wrap">
-            <a href="/about" className="btn btn-dark btn-sm">REVIEWS</a>
+          
+          <div className="relative grid grid-cols-2 gap-4">
+            {[
+              { n: '98%', l: 'Client Satisfaction' },
+              { n: '24-48h', l: 'Average Takedown' },
+              { n: '50+', l: 'Countries Served' },
+              { n: '280+', l: 'Cases Solved' }
+            ].map((stat, i) => (
+              <div key={i} className="card-navy text-center p-6 flex flex-col items-center gap-3">
+                <span className="text-3xl font-[800] text-[var(--gold)]">{stat.n}</span>
+                <span className="text-[13px] font-[500] text-[var(--text-on-navy)] leading-tight">{stat.l}</span>
+              </div>
+            ))}
+            
+            {/* Overlay Quote Card */}
+            <div className="w-[100%] mt-6 bg-white border border-[var(--gold)] rounded-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] z-10 text-center relative overflow-hidden">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1" className="w-16 h-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"><path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/></svg>
+              <p className="italic text-[15px] font-[500] text-[var(--text-heading)] relative z-10">"Your content is valuable&mdash;let us help you protect it."</p>
+              <p className="text-[12px] font-[700] text-[var(--text-body)] mt-2 uppercase tracking-wide relative z-10">Repukeel Team</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section id="why-us" aria-labelledby="why-h2">
-        <div className="why-grid">
-          <div>
-            <p className="section-kicker">Why Choose Us</p>
-            <h2 className="why-h2" id="why-h2">We act fast, and we don&rsquo;t stop until the problem is fully resolved.</h2>
-            <div className="why-features">
-              <div className="why-feat">
-                <div className="why-feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z" strokeLinejoin="round"/></svg>
-                </div>
-                <div>
-                  <h4>Same-Day Action</h4>
-                  <p>Most takedown notices are filed within hours of receiving your case&mdash;not days or weeks later.</p>
-                </div>
-              </div>
-              <div className="why-feat">
-                <div className="why-feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
-                </div>
-                <div>
-                  <h4>Global Coverage</h4>
-                  <p>We enforce your rights across 150+ countries and every major platform, including dark-web repositories.</p>
-                </div>
-              </div>
-              <div className="why-feat">
-                <div className="why-feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <div>
-                  <h4>100% Confidential</h4>
-                  <p>Your identity, case details, and content are protected under strict confidentiality at every step.</p>
-                </div>
-              </div>
-              <div className="why-feat">
-                <div className="why-feat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-                </div>
-                <div>
-                  <h4>Proven Results</h4>
-                  <p>Over 30,000 pieces of content removed with a 99% success rate&mdash;results you can trust.</p>
-                </div>
-              </div>
-            </div>
+      {/* ================= SERVICES SECTION ================= */}
+      <section id="services" className="w-full bg-white py-24 border-t border-[var(--border-light)]">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[13px] font-[700] text-[var(--gold)] uppercase tracking-widest mb-2 block">Our Services</span>
+            <h2 className="text-4xl font-[800] mb-4">Increase sales with our brand protection solutions</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Achieve comprehensive visibility of online threats with round-the-clock monitoring and enforcement.</p>
           </div>
-          <div className="why-stats">
-            <div className="ws-card"><div className="ws-num">2K+</div><div className="ws-lbl">DMCA Takedowns Filed</div></div>
-            <div className="ws-card"><div className="ws-num">24hrs</div><div className="ws-lbl">Avg Removal Time</div></div>
-            <div className="ws-card"><div className="ws-num">20+</div><div className="ws-lbl">Platforms Covered</div></div>
-            <div className="ws-card"><div className="ws-num">99%</div><div className="ws-lbl">Client Satisfaction</div></div>
-            <div className="ws-card"><div className="ws-num">150+</div><div className="ws-lbl">Countries Served</div></div>
-            <div className="ws-card"><div className="ws-num">7+</div><div className="ws-lbl">Years of Experience</div></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {/* Rendering 6 sample cards for layout matching */}
+            {[
+              { title: 'AI-Powered Monitoring', desc: 'Continuous scanning to detect unauthorized use.' },
+              { title: 'Website Protection', desc: 'Identify scraped or copied content on 3rd-party sites.' },
+              { title: 'Search Engine Removal', desc: 'Remove infringing URLs from Google, Bing.' },
+              { title: 'Social Media Takedown', desc: 'Enforce rights on Instagram, Facebook, TikTok.' },
+              { title: 'Brand Impersonation', desc: 'Detect and remove fake accounts & profiles.' },
+              { title: 'Fake Review Removal', desc: 'Swiftly dispute and remove defamatory reviews.' }
+            ].map((svc, i) => (
+              <div key={i} className="card-light flex flex-col">
+                <div className="icon-box-light mb-6">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 2v20M5 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM19 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM5 7h14M8 3h8"/></svg>
+                </div>
+                <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{svc.title}</h4>
+                <p className="text-[14px] text-[var(--text-body)]">{svc.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center gap-4">
+            <Link href="/contact" className="btn btn-navy-solid">CONTACT SALES</Link>
+            <Link href="/contact" className="btn btn-gold-solid">REQUEST A DEMO</Link>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer id="footer" role="contentinfo">
-        <div className="foot-grid">
-          <div>
-            <div className="foot-brand-box">
-              <span className="fbb-icon" aria-hidden="true">🛡️</span>
-              <div>
-                <div className="foot-brand-name">RepuKeel</div>
-                <div className="foot-brand-tag">Online Reputation Management</div>
-              </div>
-            </div>
-            <p className="foot-tagline">Professional DMCA takedown and brand protection services for creators, businesses, and enterprises operating across the digital landscape worldwide.</p>
-            <div className="status-pill" aria-label="System status: operational">
-              <div className="status-dot"></div>
-              <span className="status-text">All systems operational</span>
-            </div>
-            <div className="social-row" aria-label="Social media">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="soc-btn" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3h4V0h-4a5 5 0 0 0-5 5v3H5v4h3v9h4v-9h4l1-4h-5V5a1 1 0 0 1 1-1z"/></svg></a>
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="soc-btn" aria-label="Twitter / X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="soc-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2 3.76-2 4 0 4.74 2.6 4.74 6V21h-4v-5.8c0-1.4 0-3.2-2-3.2s-2.2 1.5-2.2 3.1V21H9z"/></svg></a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="soc-btn" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-            </div>
+      {/* ================= 4 SIMPLE STEPS ================= */}
+      <section className="w-full bg-[var(--bg-soft)] py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-4xl font-[800] mb-4">How We Protect You in 4 Simple Steps</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Our streamlined process ensures rapid resolution of copyright infringements.</p>
           </div>
-          <div className="foot-col">
-            <h5>Brand Protection Solutions</h5>
-            <nav className="foot-links" aria-label="Brand protection links">
-              <a href="/protection">Intellectual Property Protection</a>
-              <a href="/protection">AI Brand Monitoring</a>
-              <a href="/protection">Trademark Monitoring</a>
-              <a href="/protection">Impersonation Protection</a>
-              <a href="/protection">Anti-Counterfeiting Solutions</a>
-              <a href="/services">Online Reputation Management</a>
-              <a href="/protection">Application Protection</a>
-              <a href="/protection">Anti-Piracy Protection</a>
-            </nav>
-          </div>
-          <div className="foot-col">
-            <h5>Content Protection Solutions</h5>
-            <nav className="foot-links" aria-label="Content protection links">
-              <a href="/protection">Copyright Protection</a>
-              <a href="/services">DMCA Takedown Service</a>
-              <a href="/services">Leaked Content Removal</a>
-              <a href="/services">Adult Content Protection</a>
-              <a href="/services">Article &amp; Blog Removal</a>
-              <a href="/services">Search Engine De-Indexing</a>
-              <a href="/services">Social Media Content Removal</a>
-            </nav>
-          </div>
-          <div className="foot-col">
-            <h5>Use Cases</h5>
-            <nav className="foot-links" aria-label="Use case links">
-              <a href="/use-cases/remove-leaked-onlyfans-content">Remove Leaked OnlyFans Content</a>
-              <a href="/use-cases/remove-leaked-private-content">Remove Leaked Private Content</a>
-              <a href="/use-cases/brand-defamation-removal">Brand Defamation Removal</a>
-              <a href="/use-cases/fake-profile-impersonation-removal">Fake Profile &amp; Impersonation Removal</a>
-              <a href="/use-cases/e-learning-content-protection">e-Learning Content Protection</a>
-              <a href="/use-cases/copyright-image-video-removal">Copyright Image &amp; Video Removal</a>
-              <a href="/use-cases/negative-article-removal">Negative Article Removal</a>
-            </nav>
-          </div>
-        </div>
-        <div className="foot-contact-row">
-          <div className="fci-group">
-            <div className="fci-label">Headquarters</div>
-            <div className="fci-val"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> I-8 Markaz, Islamabad, Pakistan</div>
-          </div>
-          <div className="fci-group">
-            <div className="fci-label">Email</div>
-            <div className="fci-val"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/></svg> <a href="mailto:legal@repukeel.com">legal@repukeel.com</a></div>
-          </div>
-          <div className="fci-group">
-            <div className="fci-label">Phone</div>
-            <div className="fci-val"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 11.8 19.8 19.8 0 0 1 1.1 3.18 2 2 0 0 1 3.07 1h3a2 2 0 0 1 2 1.72c.127 1.007.361 1.997.7 2.95a2 2 0 0 1-.45 2.11L7.09 8.99a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.953.339 1.943.573 2.95.7A2 2 0 0 1 21.1 16l.9.9z"/></svg> +92 335 8687629</div>
-          </div>
-          <div className="fci-group">
-            <div className="fci-label">Company</div>
-            <nav className="fci-links" aria-label="Company links">
-              <a href="/about">About Us</a><a href="/clients">Our Clients</a><a href="/case-studies">Case Studies</a><a href="/blogs">Blog</a>
-            </nav>
-          </div>
-          <div className="fci-group">
-            <div className="fci-label">Support</div>
-            <nav className="fci-links" aria-label="Support links">
-              <a href="/contact">Contact Us</a><a href="/request-free-analysis">Request Free Analysis</a><a href="/privacy-policy">Privacy Policy</a><a href="/terms-conditions">Terms &amp; Conditions</a>
-            </nav>
-          </div>
-        </div>
-        <div className="emergency-band" role="alert">
-          <div className="emg-text">
-            <h5>&#128680; 24/7 Emergency DMCA Support</h5>
-            <p>Experiencing an active content leak or urgent brand attack? Our team is on standby right now.</p>
-          </div>
-          <a href="tel:+923358687629" className="btn btn-gold">&#128222; Emergency Call Now</a>
-        </div>
-        <div className="copy-bar">
-          <p>&copy; 2019&ndash;2026 RepuKeel. All rights reserved. &middot; Professional DMCA Takedown Service &amp; Digital Brand Protection</p>
-          <div className="copy-links">
-            <a href="/privacy-policy">Privacy Policy</a><a href="/terms-conditions">Terms &amp; Conditions</a>
-          </div>
-        </div>
-      </footer>
 
-      {/* FLOATING FABs */}
-      <div className="fab-stack" aria-label="Quick contact">
-        <Chatbot />
-        <a href="https://wa.me/923358687629" className="fab fab-wa" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-3-.2-.3A8 8 0 1 1 12 20zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.9 1-.1.2-.3.2-.5.1a9 9 0 0 1-2-1.2 7.5 7.5 0 0 1-1.4-1.7c-.1-.3 0-.4.2-.5l.5-.5.3-.5.1-.5-1-2.3c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3C8.3 8.5 7.5 9.5 7.5 11s1 2.8 1.2 3 2 3.2 5 4.4c2.5 1 3 .8 3.5.8s1.7-.7 2-1.4.3-1.3.2-1.4z"/></svg>
-          <span className="fab-notif" aria-label="1 notification">1</span>
-        </a>
-      </div>
-    </>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {[
+              { n: '01', title: 'Contact Us', desc: 'Submit your case details securely through our portal.' },
+              { n: '02', title: 'We Scan & Identify', desc: 'Our AI scans the web for all infringing content.' },
+              { n: '03', title: 'Action Filed', desc: 'Legal DMCA takedown notices are immediately drafted and sent.' },
+              { n: '04', title: 'Confirmed', desc: 'Content is successfully removed and continuously monitored.' }
+            ].map((step, i) => (
+              <div key={i} className="relative p-6 flex flex-col items-center">
+                <div className="text-[100px] font-[900] text-[var(--gold)] opacity-10 absolute top-0 left-1/2 -translate-x-1/2 -z-10 leading-none">{step.n}</div>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--bg-navy)] to-[var(--gold)] mb-6 flex items-center justify-center text-white shadow-lg">
+                  <span className="font-[700] text-xl">{i+1}</span>
+                </div>
+                <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{step.title}</h4>
+                <p className="text-[14px] text-[var(--text-body)]">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY CHOOSE US ================= */}
+      <section className="w-full bg-white py-24">
+        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-4xl font-[800] mb-8">Why Thousands Choose Repukeel</h2>
+            <div className="flex flex-col gap-4">
+              {[
+                { title: 'Same-Day Action', desc: 'We act instantly to limit damage.' },
+                { title: 'Global Coverage', desc: 'Takedowns issued in every jurisdiction.' },
+                { title: '100% Confidential', desc: 'Your privacy is fully protected.' },
+                { title: 'Proven Results', desc: 'Unmatched 99% success rate across platforms.' }
+              ].map((feat, i) => (
+                <div key={i} className="card-light !p-6 flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] flex items-center justify-center text-[var(--gold)] flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <div>
+                    <h4 className="text-[17px] font-[700] text-[var(--text-heading)]">{feat.title}</h4>
+                    <p className="text-[14px] text-[var(--text-body)]">{feat.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            {[
+              { n: '2K+', l: 'DMCA Takedowns Filed' },
+              { n: '24hrs', l: 'Avg Removal Time' },
+              { n: '20+', l: 'Platforms Covered' },
+              { n: '99%', l: 'Client Satisfaction' },
+              { n: '150+', l: 'Countries Served' },
+              { n: '7+', l: 'Years of Experience' }
+            ].map((stat, i) => (
+              <div key={i} className="bg-white border border-[var(--border-light)] rounded-2xl p-6 text-center shadow-sm">
+                <div className="text-3xl font-[800] text-[var(--gold)] mb-1">{stat.n}</div>
+                <div className="text-[13px] font-[600] text-[var(--text-heading)] uppercase tracking-wide">{stat.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TESTIMONIALS ================= */}
+      <section className="w-full bg-[var(--bg-navy)] py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-4xl font-[800] text-white mb-4">Trusted by Creators Worldwide</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { name: 'Sarah M.', role: 'Content Creator' },
+              { name: 'Ahmed K.', role: 'Business Owner' },
+              { name: 'Jessica T.', role: 'Online Educator' },
+              { name: 'Mark D.', role: 'Brand Manager' }
+            ].map((t, i) => (
+              <div key={i} className="bg-[#111a36] border border-[var(--border-navy)] rounded-2xl p-8 flex flex-col">
+                <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
+                <p className="italic text-[15px] text-[var(--text-on-navy)] mb-8 flex-1">
+                  "Absolutely incredible service. They took down stolen copies of my course videos within 24 hours. Highly recommended!"
+                </p>
+                <div className="flex items-center gap-3 mt-auto">
+                  <div className="w-10 h-10 rounded-full bg-[var(--gold)] flex items-center justify-center text-[var(--bg-navy)] font-bold">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <h4 className="text-[15px] font-[700] text-white">{t.name}</h4>
+                    <p className="text-[12px] text-[var(--text-muted-navy)]">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FAQ ================= */}
+      <section className="w-full bg-white py-24">
+        <div className="container grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div>
+            <h2 className="text-4xl font-[800] mb-6">Got Questions?<br/>We Have Answers.</h2>
+            <p className="text-[16px] text-[var(--text-body)] mb-8">
+              Everything you need to know about our DMCA takedown process and brand protection services.
+            </p>
+            <ul className="flex flex-col gap-4 mb-10">
+              {['100% Legal & Compliant', 'Transparent Process', 'Dedicated Account Manager', 'No Hidden Fees'].map((chk, i) => (
+                <li key={i} className="flex items-center gap-3 font-[600] text-[var(--text-heading)]">
+                  <span className="text-[var(--gold)]">✓</span> {chk}
+                </li>
+              ))}
+            </ul>
+            <Link href="/contact" className="btn btn-navy-solid">Contact Our Team</Link>
+          </div>
+          <div className="flex flex-col gap-4">
+            {[
+              { q: 'How long does a takedown take?', a: 'Most standard DMCA takedowns are processed and resolved within 24 to 48 hours depending on the platform.' },
+              { q: 'What information do you need?', a: 'We simply need a link to your original content and links to where it has been stolen or copied.' },
+              { q: 'Do you work internationally?', a: 'Yes, we issue takedown notices globally and cover all major international hosting providers.' },
+              { q: 'What happens if the content comes back?', a: 'Our continuous monitoring plans ensure that if the content is re-uploaded, we automatically strike it down again.' }
+            ].map((faq, i) => (
+              <div key={i} className="bg-[var(--bg-soft)] rounded-2xl p-6">
+                <h4 className="text-[16px] font-[700] text-[var(--text-heading)] mb-2">{faq.q}</h4>
+                <p className="text-[14px] text-[var(--text-body)]">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+    </div>
   );
 }

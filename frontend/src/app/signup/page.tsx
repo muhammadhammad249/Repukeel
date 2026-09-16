@@ -1,39 +1,119 @@
 'use client';
-
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function SignupPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const update = (field: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [field]: event.target.value });
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setError('');
-    if (form.password !== form.confirmPassword) return setError('Passwords do not match.');
-    if (form.password.length < 8) return setError('Password must contain at least 8 characters.');
-    setIsSubmitting(true);
-    try {
-      const response = await fetch(`${API_URL}/api/v1/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Unable to create your account.');
-      localStorage.setItem('authToken', result.token);
-      localStorage.setItem('currentUser', JSON.stringify(result.user));
-      document.cookie = `authToken=${encodeURIComponent(result.token)}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-      router.replace('/');
-    } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to create your account.'); } finally { setIsSubmitting(false); }
-  }
-  return <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-24"><div className="w-full max-w-md"><div className="flex justify-center gap-6 mb-8 text-xs text-slate-500 flex-wrap">{["No Obligation", "Secure & Encrypted", "Free to Join", "Expert Support"].map((benefit) => <span key={benefit}>✓ {benefit}</span>)}</div><div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-lg"><h1 className="text-2xl font-bold mb-1 text-center">Create Account</h1><p className="text-slate-500 text-sm text-center mb-8">Join thousands of protected creators and brands.</p>
-    <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-      <div className="grid grid-cols-2 gap-4"><div><label htmlFor="first-name" className="block text-sm font-medium text-slate-700 mb-1">First Name</label><input id="first-name" type="text" value={form.firstName} onChange={update('firstName')} autoComplete="given-name" required className="w-full border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" /></div><div><label htmlFor="last-name" className="block text-sm font-medium text-slate-700 mb-1">Last Name</label><input id="last-name" type="text" value={form.lastName} onChange={update('lastName')} autoComplete="family-name" required className="w-full border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" /></div></div>
-      <div><label htmlFor="signup-email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label><input id="signup-email" type="email" value={form.email} onChange={update('email')} autoComplete="email" required className="w-full border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
-      <div><label htmlFor="signup-password" className="block text-sm font-medium text-slate-700 mb-1">Password</label><input id="signup-password" type="password" value={form.password} onChange={update('password')} autoComplete="new-password" minLength={8} required className="w-full border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
-      <div><label htmlFor="confirm-password" className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label><input id="confirm-password" type="password" value={form.confirmPassword} onChange={update('confirmPassword')} autoComplete="new-password" minLength={8} required className="w-full border border-slate-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
-      {error && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}<button type="submit" disabled={isSubmitting} className="mt-2 w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70 text-white py-3 rounded-xl font-bold text-base transition-colors">{isSubmitting ? 'Creating account…' : 'Create Account'}</button>
-    </form><p className="text-center text-sm text-slate-500 mt-6">Already have an account? <Link href="/login" className="text-blue-600 hover:underline font-medium">Sign in</Link></p>
-  </div></div></div>;
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    // Dummy logic
+    setTimeout(() => {
+      localStorage.setItem('authToken', 'dummy_token');
+      router.push('/dashboard');
+    }, 1000);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-68px)]">
+      
+      {/* Left Column: Form */}
+      <div className="w-full md:w-1/2 lg:w-5/12 bg-white flex flex-col justify-center px-8 sm:px-16 py-12">
+        <div className="max-w-md w-full mx-auto">
+          
+          <h1 className="text-3xl font-[800] text-[var(--text-heading)] mb-2">Create an Account</h1>
+          <p className="text-[15px] text-[var(--text-body)] mb-8">
+            Join Repukeel to start protecting your intellectual property today.
+          </p>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">First Name</label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
+                  placeholder="John"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Last Name</label>
+                <input 
+                  type="text" 
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
+                  placeholder="Doe"
+                  required 
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Email Address</label>
+              <input 
+                type="email" 
+                className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
+                placeholder="you@example.com"
+                required 
+              />
+            </div>
+            
+            <div>
+              <label className="block text-[13px] font-[700] text-[var(--text-heading)] mb-1.5">Password</label>
+              <input 
+                type="password" 
+                className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow text-[14px]" 
+                placeholder="••••••••"
+                required 
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="btn btn-gold-solid w-full mt-2 py-3.5 text-[15px]"
+              disabled={loading}
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <p className="text-center text-[14px] text-[var(--text-body)] mt-8">
+            Already have an account? <Link href="/login" className="font-[700] text-[var(--text-heading)] hover:text-[var(--gold)] transition-colors">Log in</Link>
+          </p>
+
+        </div>
+      </div>
+
+      {/* Right Column: Visual Panel */}
+      <div className="hidden md:flex w-full md:w-1/2 lg:w-7/12 bg-gradient-to-br from-[var(--bg-navy)] to-[#1a2f63] flex-col items-center justify-center p-12 relative overflow-hidden">
+        
+        {/* Background Decorative Rings */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-white/5 rounded-full pointer-events-none"></div>
+        
+        {/* 3D Spinning Diamond */}
+        <div className="relative mb-12">
+          {/* Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[var(--gold)] rounded-full mix-blend-screen filter blur-[50px] opacity-30"></div>
+          
+          <div className="icon-3d-spin w-24 h-24 bg-gradient-to-br from-[var(--gold-lt)] to-[var(--gold-dk)] rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(217,165,43,0.4)]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-12 h-12 -rotate-45">
+              <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div className="text-center max-w-sm relative z-10">
+          <h2 className="text-2xl font-[800] text-white mb-3">Total Protection</h2>
+          <p className="text-[15px] text-blue-200">
+            Monitor your cases, upload new takedown requests, and track real-time progress all from your secure dashboard.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  );
 }
