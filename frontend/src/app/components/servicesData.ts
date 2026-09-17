@@ -27,7 +27,10 @@ export const categoriesData = [
     solutions: [
       { title: 'Leaked Photos Removal' },
       { title: 'Private Content Removal' },
-      { title: 'Dating Profiles Cleanup' },
+      { 
+        title: 'Dating Profiles Cleanup',
+        subItems: ['OnlyFans Leaked Content']
+      },
       { title: 'Adult Content Removal' }
     ]
   },
@@ -38,7 +41,10 @@ export const categoriesData = [
     solutions: [
       { title: 'Google Suppression' },
       { title: 'Bing Removal' },
-      { title: 'Negative Link Removal' },
+      { 
+        title: 'Negative Link Removal',
+        subItems: ['Mugshot Removal', 'Article Removal']
+      },
       { title: 'News Article Suppression' }
     ]
   },

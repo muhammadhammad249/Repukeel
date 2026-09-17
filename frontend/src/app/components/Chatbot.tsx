@@ -21,7 +21,7 @@ const CONVERSATION_SCRIPT: ScriptStep[] = [
     id: 1,
     botMessage: "What type of issue are you facing?",
     type: 'choice',
-    options: ["Copyright / DMCA Takedown", "Leaked Content Removal", "Brand Impersonation", "Trademark Issue", "Other"],
+    options: ["Content Removal", "Dating Reputation", "Search Result Cleanup", "Job Reputation", "Monitoring & Alerts", "Reputation Management", "Reputation Audit", "Industries"],
     key: "category"
   },
   {
@@ -123,13 +123,16 @@ export default function Chatbot() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen, isTyping]);
 
-  // Initial load
+  // Reset state when closed
   useEffect(() => {
-    if (messages.length === 0) {
+    if (!isOpen) {
+      setCurrentStepId(1);
+      setAnswers({});
+      setInputValue('');
       const firstStep = CONVERSATION_SCRIPT.find(s => s.id === 1)!;
-      setMessages([{ id: 'bot-1', role: 'bot', text: firstStep.botMessage, stepId: 1 }]);
+      setMessages([{ id: `bot-${Date.now()}`, role: 'bot', text: firstStep.botMessage, stepId: 1 }]);
     }
-  }, [messages.length]);
+  }, [isOpen]);
 
   const currentStep = CONVERSATION_SCRIPT.find(s => s.id === currentStepId);
 
@@ -327,13 +330,7 @@ export default function Chatbot() {
 
           {/* Footer Input Area */}
           <div className="bg-white border-t border-gray-100 p-3 flex items-center gap-2 shrink-0 relative">
-            {/* Left Icons */}
-            <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            </button>
-            <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-            </button>
+            {/* Left Icons removed */}
             
             {/* Input Field */}
             <input 
@@ -355,13 +352,8 @@ export default function Chatbot() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 ml-0.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
             
-            {/* Overlapping Close Button */}
-            <button 
-              onClick={() => setIsOpen(false)}
-              className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#2b52c9] text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:bg-[#20409a] hover:scale-110 transition-transform z-50"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            {/* Overlapping Close Button removed */}
+
           </div>
         </div>
       )}

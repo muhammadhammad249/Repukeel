@@ -7,7 +7,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
-      
+
       {/* ================= HERO ================= */}
       <section className="w-full bg-gradient-to-br from-white to-[#f0f4f8] pt-20 pb-32 border-b border-[var(--border-light)]">
         <div className="container text-center max-w-3xl mx-auto">
@@ -25,7 +25,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
 
       {/* ================= CONTENT & SIDEBAR ================= */}
       <section className="container relative z-10 -mt-16 pb-24 grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
-        
+
         {/* Main Content Area */}
         <div className="lg:col-span-3 bg-white border border-[var(--border-light)] rounded-2xl p-8 md:p-12 shadow-sm">
           <div className="prose max-w-none text-black">
@@ -48,7 +48,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 Ignoring unauthorized content can severely damage your brand's reputation and lead to significant revenue loss. Acting quickly minimizes the exposure and demonstrates that you actively enforce your intellectual property rights.
               </p>
             </div>
-            
+
             <h3 className="text-[20px] font-[700] text-black mb-3 mt-8">What You Need to Provide</h3>
             <p className="mb-4">To start a case, please prepare:</p>
             <ul className="flex flex-col gap-3 mb-8 list-disc pl-5">
@@ -74,7 +74,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 'Fake Review Deletion'
               ].map((svc) => (
                 <li key={svc}>
-                  <Link 
+                  <Link
                     href={`/services/${svc.toLowerCase().replace(/\s+/g, '-')}`}
                     className="text-[14px] font-[600] text-black hover:text-[var(--gold)] transition-colors"
                   >
@@ -84,7 +84,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
               ))}
             </ul>
           </div>
-          
+
           <div className="bg-[var(--bg-navy)] rounded-2xl p-6 text-white text-center shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--gold)] rounded-full mix-blend-multiply opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
             <h3 className="text-[18px] font-[800] mb-2 relative z-10">Need Help?</h3>
@@ -94,7 +94,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
         </div>
 
       </section>
-      
+
     </div>
   );
 }

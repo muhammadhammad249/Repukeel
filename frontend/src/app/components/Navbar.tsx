@@ -65,7 +65,7 @@ export default function Navbar() {
   return (
     <>
       {isNavigating && <div className="nav-progress-bar"></div>}
-      <header className="sticky top-0 z-[1000] bg-white border-b border-[#eee] border-t-[6px] border-t-[#2c3138] shadow-[0_8px_30px_rgba(0,0,0,0.4)] h-[68px] flex items-center justify-center">
+      <header className="sticky top-0 z-[1000] bg-white border-b border-[#eee] shadow-[0_8px_30px_rgba(0,0,0,0.4)] h-[68px] flex items-center justify-center">
         <div className="w-full max-w-[1280px] px-[28px] flex items-center justify-between">
           
           {/* Logo */}
@@ -96,12 +96,8 @@ export default function Navbar() {
               if (link.name === 'Services') {
                 return (
                   <div key={link.name} className="relative" ref={servicesRef} onMouseEnter={() => setServicesDropdownOpen(true)}>
-                    <Link
-                      href={link.path}
-                      onClick={(e) => {
-                        handleNavClick(e, link.path);
-                        setServicesDropdownOpen(false);
-                      }}
+                    <button
+                      onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
                       className={`flex items-center gap-1 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
                         isActive || servicesDropdownOpen
                           ? 'text-[var(--gold)] border-[var(--gold)]' 
@@ -110,7 +106,7 @@ export default function Navbar() {
                     >
                       {link.name}
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-3.5 h-3.5 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
-                    </Link>
+                    </button>
 
                     {/* The Mega Menu Dropdown */}
                     {servicesDropdownOpen && (
@@ -168,19 +164,46 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {drawerOpen && (
         <div className="fixed inset-0 bg-white z-[1000] pt-[80px] px-6 flex flex-col gap-6 overflow-y-auto">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.path}
-              onClick={(e) => {
-                setDrawerOpen(false);
-                handleNavClick(e, link.path);
-              }}
-              className={`text-xl font-[600] ${pathname === link.path ? 'text-[var(--gold)]' : 'text-[var(--text-heading)]'}`}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            if (link.name === 'Services') {
+              return (
+                <div key={link.name} className="flex flex-col gap-4">
+                  <button
+                    onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                    className={`flex justify-between items-center text-xl font-[600] w-full text-left ${pathname.startsWith('/services') ? 'text-[var(--gold)]' : 'text-[var(--text-heading)]'}`}
+                  >
+                    {link.name}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-5 h-5 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                  {servicesDropdownOpen && (
+                    <div className="pl-4 -mr-6 overflow-hidden">
+                      <ServicesMenuLayout 
+                        activeCatId={servicesMenuTab} 
+                        setActiveCatId={setServicesMenuTab} 
+                        onLinkClick={() => {
+                          setServicesDropdownOpen(false);
+                          setDrawerOpen(false);
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            return (
+              <Link
+                key={link.name}
+                href={link.path}
+                onClick={(e) => {
+                  setDrawerOpen(false);
+                  handleNavClick(e, link.path);
+                }}
+                className={`text-xl font-[600] ${pathname === link.path ? 'text-[var(--gold)]' : 'text-[var(--text-heading)]'}`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
           <div className="w-full h-px bg-[#eee] my-2"></div>
           <AccountMenu 
               loginClassName="text-xl font-[600] text-[var(--text-heading)]" 
