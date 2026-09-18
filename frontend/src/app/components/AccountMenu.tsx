@@ -10,6 +10,16 @@ function getAuthToken(): boolean {
   return !!localStorage.getItem('authToken');
 }
 
+function getStoredUser(): StoredUser | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const value = localStorage.getItem('currentUser');
+    return value ? JSON.parse(value) as StoredUser : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AccountMenu({ loginClassName, menuClassName }: { loginClassName: string; menuClassName: string }) {
   const router = useRouter();
   const pathname = usePathname();
