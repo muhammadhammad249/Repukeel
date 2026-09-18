@@ -81,24 +81,28 @@ export default function Footer() {
                 {[
                   {
                     name: 'facebook',
+                    url: 'https://www.facebook.com/RepuKeel/',
                     icon: (
                       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                     ),
                   },
                   {
                     name: 'twitter',
+                    url: 'https://x.com/Repukeel',
                     icon: (
                       <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
                     ),
                   },
                   {
                     name: 'linkedin',
+                    url: 'https://www.linkedin.com/in/repu-keel-118157438',
                     icon: (
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" />
                     ),
                   },
                   {
                     name: 'instagram',
+                    url: 'https://www.instagram.com/repukeel/',
                     icon: (
                       <path d="M17 2H7A5 5 0 0 0 2 7v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5z M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01" />
                     ),
@@ -106,7 +110,7 @@ export default function Footer() {
                 ].map((social) => (
                   <a
                     key={social.name}
-                    href={`https://${social.name}.com/repukeel`}
+                    href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 rounded-[10px] bg-[#121c36] hover:bg-[var(--gold)] hover:text-[#0a152e] transition-colors flex items-center justify-center text-gray-400"
@@ -393,10 +397,12 @@ export default function Footer() {
                   </span>
 
                   <a
-                    href="tel:+923358687629"
+                    href="https://wa.me/923451644916"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-[var(--gold)] transition-colors"
                   >
-                    +923358687629
+                    +923451644916
                   </a>
                 </div>
               </li>
@@ -550,7 +556,7 @@ export default function Footer() {
 
               {/* WhatsApp */}
               <a
-                href="https://wa.me/923358687629"
+                href="https://wa.me/923451644916"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-[9px] px-4 py-3 text-[14px] font-[600] text-white hover:bg-[#0a152e] hover:text-[var(--gold)] transition-colors"

@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import AuthGate from "./components/AuthGate";
 import GlobalLayoutWrapper from "./components/GlobalLayoutWrapper";
 import Chatbot from "./components/Chatbot";
@@ -34,20 +33,6 @@ export default function RootLayout({
         />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
-        <Script id="theme-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: `
-          try {
-            var savedTheme = localStorage.getItem('theme');
-            var theme = savedTheme === 'dark' || savedTheme === 'light'
-              ? savedTheme
-              : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            document.documentElement.dataset.theme = theme;
-            if (theme === 'dark') {
-              document.documentElement.classList.add('dark');
-            } else {
-              document.documentElement.classList.remove('dark');
-            }
-          } catch (_) {}
-        ` }} />
         <AuthGate>
           <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
         </AuthGate>
@@ -59,7 +44,7 @@ export default function RootLayout({
 
           {/* WhatsApp FAB */}
           <a 
-            href="https://wa.me/923358687629" 
+            href="https://wa.me/923451644916" 
             className="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(37,211,102,0.5)] transition-transform hover:scale-105 bg-[#25d366] text-white relative z-10 animate-bounce" 
             target="_blank" 
             rel="noopener noreferrer" 
