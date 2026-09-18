@@ -10,9 +10,8 @@ import ServicesMenuLayout from './ServicesMenuLayout';
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [servicesMenuTab, setServicesMenuTab] = useState('content-removal');
-  const servicesRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,14 +19,18 @@ export default function Navbar() {
     // Stop navigation progress bar when pathname changes
     setIsNavigating(false);
     // Also close dropdown on navigation
-    setServicesDropdownOpen(false);
+    setOpenDropdown(null);
   }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (servicesRef.current && !servicesRef.current.contains(target)) {
-        setServicesDropdownOpen(false);
+      // Don't close the dropdown if clicking inside the mobile drawer
+      if (target.closest('#mobile-drawer')) return;
+      
+      // Close dropdown if click is outside any element with .has-dropdown
+      if (!target.closest('.has-dropdown')) {
+        setOpenDropdown(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -94,27 +97,32 @@ export default function Navbar() {
               }
 
               if (link.name === 'Services') {
+                const isOpen = openDropdown === link.name;
                 return (
-                  <div key={link.name} className="relative" ref={servicesRef} onMouseEnter={() => setServicesDropdownOpen(true)}>
+                  <div key={link.name} className="relative has-dropdown">
                     <button
-                      onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenDropdown(isOpen ? null : link.name);
+                      }}
                       className={`flex items-center gap-1 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
-                        isActive || servicesDropdownOpen
+                        isActive || isOpen
                           ? 'text-[var(--gold)] border-[var(--gold)]' 
                           : 'text-black border-transparent hover:text-[var(--gold)]'
                       }`}
                     >
                       {link.name}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-3.5 h-3.5 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
                     </button>
 
                     {/* The Mega Menu Dropdown */}
-                    {servicesDropdownOpen && (
+                    {isOpen && (
                       <div className="fixed top-[84px] left-[28px] xl:left-[calc(50vw-640px+28px)] mt-0 w-[95vw] max-w-[950px] bg-[#f4f7fb] rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.2)] border border-[var(--border-light)] p-4 lg:p-6 z-[1000] anim-fade-in overflow-y-auto max-h-[calc(100vh-120px)]">
                         <ServicesMenuLayout 
                           activeCatId={servicesMenuTab} 
                           setActiveCatId={setServicesMenuTab} 
-                          onLinkClick={() => setServicesDropdownOpen(false)}
+                          onLinkClick={() => setOpenDropdown(null)}
                         />
                       </div>
                     )}
@@ -163,25 +171,30 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {drawerOpen && (
-        <div className="fixed inset-0 bg-white z-[1000] pt-[80px] px-6 flex flex-col gap-6 overflow-y-auto">
+        <div id="mobile-drawer" className="fixed inset-0 bg-white z-[1000] pt-[80px] px-6 flex flex-col gap-6 overflow-y-auto">
           {navLinks.map((link) => {
             if (link.name === 'Services') {
+              const isOpen = openDropdown === link.name;
               return (
-                <div key={link.name} className="flex flex-col gap-4">
+                <div key={link.name} className="flex flex-col gap-4 has-dropdown">
                   <button
-                    onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setOpenDropdown(isOpen ? null : link.name);
+                    }}
                     className={`flex justify-between items-center text-xl font-[600] w-full text-left ${pathname.startsWith('/services') ? 'text-[var(--gold)]' : 'text-[var(--text-heading)]'}`}
                   >
                     {link.name}
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-5 h-5 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
                   </button>
-                  {servicesDropdownOpen && (
+                  {isOpen && (
                     <div className="pl-4 -mr-6 overflow-hidden">
                       <ServicesMenuLayout 
                         activeCatId={servicesMenuTab} 
                         setActiveCatId={setServicesMenuTab} 
                         onLinkClick={() => {
-                          setServicesDropdownOpen(false);
+                          setOpenDropdown(null);
                           setDrawerOpen(false);
                         }}
                       />

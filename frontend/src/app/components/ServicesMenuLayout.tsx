@@ -23,30 +23,57 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
         {categories.map(cat => {
           const isActive = activeCatId === cat.slug;
           return (
-            <button
-              key={cat.slug}
-              onClick={() => setActiveCatId(cat.slug)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left font-[800] text-[14px] transition-all duration-200 relative ${
-                isActive 
-                  ? 'bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.05)] z-10' 
-                  : 'bg-transparent text-black hover:bg-gray-300 hover:translate-x-1 hover:shadow-md'
-              }`}
-            >
-              <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px] text-black">
-                {cat.icon}
-              </div>
-              <span>{cat.name}</span>
-              {/* Active Notch */}
+            <div key={cat.slug} className="flex flex-col">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setActiveCatId(cat.slug);
+                }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left font-[800] text-[14px] transition-all duration-200 relative ${
+                  isActive 
+                    ? 'bg-white text-black shadow-[0_4px_20px_rgba(0,0,0,0.05)] z-10' 
+                    : 'bg-transparent text-black hover:bg-gray-300 hover:translate-x-1 hover:shadow-md'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px] text-black">
+                  {cat.icon}
+                </div>
+                <span>{cat.name}</span>
+                {/* Chevron for mobile accordion */}
+                <div className="ml-auto lg:hidden">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-4 h-4 transition-transform ${isActive ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+                {/* Active Notch for Desktop */}
+                {isActive && (
+                  <div className="hidden lg:block absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white transform rotate-45 border-t border-r border-[rgba(0,0,0,0.02)]"></div>
+                )}
+              </button>
+
+              {/* Mobile Sub-services (Accordion) */}
               {isActive && (
-                <div className="hidden lg:block absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white transform rotate-45 border-t border-r border-[rgba(0,0,0,0.02)]"></div>
+                <div className="lg:hidden mt-2 mb-4 px-2 flex flex-col gap-2 anim-fade-in">
+                  {cat.subServices.map((sol, i) => (
+                    <Link 
+                      key={i}
+                      href={`/${cat.slug}/${sol.slug}`} 
+                      onClick={handleLinkClick}
+                      className="bg-[#f8f9fc] hover:bg-gray-200 rounded-xl p-3 font-[800] text-[13px] text-black flex items-center justify-between border border-gray-200 shadow-sm"
+                    >
+                      <span>{sol.name}</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-black"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </Link>
+                  ))}
+                </div>
               )}
-            </button>
+            </div>
           );
         })}
       </div>
 
-      {/* Right Main Content */}
-      <div className="flex-1 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative z-0">
+      {/* Right Main Content (Desktop Only) */}
+      <div className="hidden lg:block flex-1 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative z-0">
         <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
           Solutions for {activeCategory.name}
         </h3>
