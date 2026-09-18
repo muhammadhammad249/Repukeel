@@ -6,7 +6,7 @@ import ServicesMenuLayout from '../components/ServicesMenuLayout';
 
 export default function ServicesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [activeCatId, setActiveCatId] = useState<string | null>('content-removal');
+  const [activeCatId, setActiveCatId] = useState<string | null>(null);
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);

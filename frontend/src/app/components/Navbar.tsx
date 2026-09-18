@@ -161,13 +161,21 @@ export default function Navbar() {
           {/* Hamburger Mobile */}
           <button 
             className="lg:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 z-[1001]" 
-            onClick={() => setDrawerOpen(!drawerOpen)}
+            onClick={() => {
+              const willOpen = !drawerOpen;
+              setDrawerOpen(willOpen);
+              if (willOpen) {
+                // Ensure dropdowns and sub-menus are collapsed when opening the navbar
+                setOpenDropdown(null);
+                setServicesMenuTab(null);
+              }
+            }}
             aria-label="Toggle Navigation"
           >
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-transform ${drawerOpen ? 'rotate-45 translate-y-[8px]' : ''}`}></span>
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-opacity ${drawerOpen ? 'opacity-0' : ''}`}></span>
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-transform ${drawerOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}></span>
-              </button>
+          </button>
             </>
           )}
         </div>
