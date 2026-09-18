@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 type StoredUser = { firstName?: string; lastName?: string; email?: string };
 
@@ -48,12 +49,12 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
 
   // ── Block render mismatch: server always renders this ────────────────
   if (!isMounted) {
-    return <a href="/login" className={`${loginClassName} opacity-0 pointer-events-none`}>Login</a>;
+    return <Link href={`/login?next=${encodeURIComponent(pathname)}`} className={`${loginClassName} opacity-0 pointer-events-none`}>Login</Link>;
   }
 
   // ── Not logged in at all (no token) → Login link ────────────────
   if (!user && !hasToken) {
-    return <a href="/login" className={loginClassName}>Login</a>;
+    return <Link href={`/login?next=${encodeURIComponent(pathname)}`} className={loginClassName}>Login</Link>;
   }
 
   // ── Logged in → Avatar button ───────────────────────────────────

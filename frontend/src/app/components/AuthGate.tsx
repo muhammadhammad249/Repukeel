@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 // Pages that require authentication to access
-const PROTECTED_ROUTES = ['/dashboard', '/checkout', '/scanner', '/protection'];
+const PROTECTED_ROUTES = ['/dashboard', '/checkout', '/scanner'];
 
 function isProtectedRoute(pathname: string): boolean {
   return PROTECTED_ROUTES.some(
