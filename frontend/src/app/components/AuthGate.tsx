@@ -3,12 +3,12 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// Routes that require authentication — must match middleware PROTECTED_PREFIXES
-const PROTECTED_PREFIXES = ['/dashboard', '/checkout'];
+// Pages that are always accessible without authentication
+const PUBLIC_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password'];
 
-function isProtectedRoute(pathname: string): boolean {
-  return PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/'),
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + '/'),
   );
 }
 
@@ -20,18 +20,24 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
 
-    // If no token and trying to access a protected route, redirect to login
-    if (!token && isProtectedRoute(pathname)) {
+    if (!token && !isPublicRoute(pathname)) {
+      // Not logged in and trying to access a protected page → send to login
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
 
-    // Always allow all other pages through — never redirect away from /login or /signup
+    if (token && pathname === '/login') {
+      // Already logged in, redirect away from login page
+      const next = new URLSearchParams(window.location.search).get('next') || '/';
+      router.replace(next);
+      return;
+    }
+
     setChecked(true);
   }, [pathname, router]);
 
-  // Show blank screen only when we know a redirect is needed (protected routes without token)
-  if (!checked && isProtectedRoute(pathname)) {
+  // Block render until auth check is done (avoids flash of protected content)
+  if (!checked && !isPublicRoute(pathname)) {
     return <div className="min-h-screen bg-slate-50" aria-label="Checking your session" />;
   }
 

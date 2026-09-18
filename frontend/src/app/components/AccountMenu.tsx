@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type StoredUser = { firstName?: string; lastName?: string; email?: string };
@@ -17,12 +17,23 @@ function getStoredUser(): StoredUser | null {
 
 export default function AccountMenu({ loginClassName, menuClassName }: { loginClassName: string; menuClassName: string }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<StoredUser | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // Refresh on route change
     const timer = window.setTimeout(() => setUser(getStoredUser()), 0);
     return () => window.clearTimeout(timer);
+  }, [pathname]);
+
+  useEffect(() => {
+    // Also refresh immediately when localStorage changes (e.g., right after login)
+    const onStorage = () => setUser(getStoredUser());
+    window.addEventListener('storage', onStorage);
+    // Trigger once on mount in case we're already logged in
+    setUser(getStoredUser());
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   if (!user) return <a href="/login" className={loginClassName}>Login</a>;

@@ -9,3 +9,6 @@ coverage/
 *.mp4
 *.zip
 .DS_Store
+
+.vercel
+.env*

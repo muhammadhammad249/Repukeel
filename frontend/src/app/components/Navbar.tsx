@@ -77,7 +77,9 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6">
+          {!['/login', '/signup', '/forgot-password', '/reset-password'].includes(pathname) && (
+            <>
+              <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = pathname === link.path;
               if (link.isPill) {
@@ -99,7 +101,7 @@ export default function Navbar() {
               if (link.name === 'Services') {
                 const isOpen = openDropdown === link.name;
                 return (
-                  <div key={link.name} className="relative has-dropdown">
+                  <div key={link.name} className="relative has-dropdown" onMouseEnter={() => setOpenDropdown(link.name)}>
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -165,7 +167,9 @@ export default function Navbar() {
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-transform ${drawerOpen ? 'rotate-45 translate-y-[8px]' : ''}`}></span>
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-opacity ${drawerOpen ? 'opacity-0' : ''}`}></span>
             <span className={`block w-6 h-[2px] bg-[var(--text-heading)] transition-transform ${drawerOpen ? '-rotate-45 -translate-y-[8px]' : ''}`}></span>
-          </button>
+              </button>
+            </>
+          )}
         </div>
       </header>
 
