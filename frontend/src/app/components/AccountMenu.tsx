@@ -24,21 +24,14 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
   const router = useRouter();
   const pathname = usePathname();
 
-  // Lazy initializer: read from localStorage on very first render
-  // so the avatar shows immediately with no flash of "Login"
-  const [user, setUser] = useState<StoredUser | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return getStoredUser();
-  });
-  // Separately track if the user has a valid token (even without full user data)
-  const [hasToken, setHasToken] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return getAuthToken();
-  });
+  const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<StoredUser | null>(null);
+  const [hasToken, setHasToken] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   // Re-read on every route change (covers post-login redirect)
   useEffect(() => {
+    setIsMounted(true);
     setUser(getStoredUser());
     setHasToken(getAuthToken());
   }, [pathname]);
@@ -52,6 +45,11 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     setIsOpen(false);
     router.push('/login');
   };
+
+  // ── Block render mismatch: server always renders this ────────────────
+  if (!isMounted) {
+    return <a href="/login" className={`${loginClassName} opacity-0 pointer-events-none`}>Login</a>;
+  }
 
   // ── Not logged in at all (no token) → Login link ────────────────
   if (!user && !hasToken) {
