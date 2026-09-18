@@ -40,7 +40,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? 'hidden' : '';
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
     const handleResize = () => {
       if (window.innerWidth > 900) setDrawerOpen(false);
     };

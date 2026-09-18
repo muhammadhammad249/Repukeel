@@ -131,7 +131,17 @@ export default function Chatbot() {
       setInputValue('');
       const firstStep = CONVERSATION_SCRIPT.find(s => s.id === 1)!;
       setMessages([{ id: `bot-${Date.now()}`, role: 'bot', text: firstStep.botMessage, stepId: 1 }]);
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    } else {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
   }, [isOpen]);
 
   const currentStep = CONVERSATION_SCRIPT.find(s => s.id === currentStepId);
