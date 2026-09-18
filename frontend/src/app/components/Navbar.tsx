@@ -11,7 +11,7 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [servicesMenuTab, setServicesMenuTab] = useState('content-removal');
+  const [servicesMenuTab, setServicesMenuTab] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 

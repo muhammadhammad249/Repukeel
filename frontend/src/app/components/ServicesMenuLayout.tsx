@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { categories } from '@/data/services';
 
 interface Props {
-  activeCatId: string;
-  setActiveCatId: (id: string) => void;
+  activeCatId: string | null;
+  setActiveCatId: (id: string | null) => void;
   onLinkClick?: () => void;
 }
 
 export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLinkClick }: Props) {
-  const activeCategory = categories.find(c => c.slug === activeCatId) || categories[0];
+  const activeCategory = activeCatId ? categories.find(c => c.slug === activeCatId) : null;
 
   const handleLinkClick = () => {
     if (onLinkClick) onLinkClick();
@@ -29,7 +29,7 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setActiveCatId(cat.slug);
+                  setActiveCatId(isActive ? null : cat.slug);
                 }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left font-[800] text-[14px] transition-all duration-200 relative ${
                   isActive 
@@ -74,31 +74,42 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
 
       {/* Right Main Content (Desktop Only) */}
       <div className="hidden lg:block flex-1 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative z-0">
-        <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
-          Solutions for {activeCategory.name}
-        </h3>
-        
-        <div className="w-full bg-[#20409a] rounded-xl p-4 mb-6 flex items-center gap-3 text-white shadow-lg">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg text-white">
-            {activeCategory.icon}
-          </div>
-          <h2 className="text-[18px] font-[900] text-white">{activeCategory.name}</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {activeCategory.subServices.map((sol, i) => (
-            <div key={i} className="flex flex-col gap-3">
-              <Link 
-                href={`/${activeCategory.slug}/${sol.slug}`} 
-                onClick={handleLinkClick}
-                className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-4 font-[800] text-[14px] text-black flex items-center justify-between group border border-gray-200 shadow-sm"
-              >
-                <span>{sol.name}</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
+        {activeCategory ? (
+          <>
+            <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
+              Solutions for {activeCategory.name}
+            </h3>
+            
+            <div className="w-full bg-[#20409a] rounded-xl p-4 mb-6 flex items-center gap-3 text-white shadow-lg">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg text-white">
+                {activeCategory.icon}
+              </div>
+              <h2 className="text-[18px] font-[900] text-white">{activeCategory.name}</h2>
             </div>
-          ))}
-        </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeCategory.subServices.map((sol, i) => (
+                <div key={i} className="flex flex-col gap-3">
+                  <Link 
+                    href={`/${activeCategory.slug}/${sol.slug}`} 
+                    onClick={handleLinkClick}
+                    className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-4 font-[800] text-[14px] text-black flex items-center justify-between group border border-gray-200 shadow-sm"
+                  >
+                    <span>{sol.name}</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16">
+              <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <p className="font-[600] text-[15px]">Select a service category to view solutions</p>
+          </div>
+        )}
       </div>
     </div>
     
