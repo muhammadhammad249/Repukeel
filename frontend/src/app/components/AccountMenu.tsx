@@ -60,12 +60,12 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
 
   // ── Logged in → Avatar button ───────────────────────────────────
   const initials =
-    `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() ||
-    user.email?.[0]?.toUpperCase() ||
+    `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase() ||
+    user?.email?.[0]?.toUpperCase() ||
     'U';
   const name =
-    [user.firstName, user.lastName].filter(Boolean).join(' ') ||
-    user.email ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
+    user?.email ||
     'Account';
 
   return (
@@ -91,7 +91,7 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
           <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-[var(--border-light)] overflow-hidden z-[100]">
             <div className="px-4 py-3 border-b border-[var(--border-light)] bg-gray-50">
               <p className="text-[14px] font-[700] text-[var(--text-heading)] truncate">{name}</p>
-              <p className="text-[12px] font-[500] text-[var(--text-body)] truncate">{user.email}</p>
+              <p className="text-[12px] font-[500] text-[var(--text-body)] truncate">{user?.email || 'User'}</p>
             </div>
             <div className="p-2" role="menu">
               <button
