@@ -161,56 +161,47 @@ export default function ServiceIcon({ slug, name }: { slug: string; name: string
   const isGradient = icon.bg.startsWith("linear-gradient");
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-white rounded-2xl border border-[var(--border-light)] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+    <div className="
+      flex items-center gap-4 p-4
+      sm:flex-col sm:items-center sm:gap-0 sm:p-8
+      bg-white rounded-2xl border border-[var(--border-light)]
+      shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+    ">
+      {/* Icon Box */}
       <div
         style={{
           background: icon.bg,
-          borderRadius: "20px",
-          width: "90px",
-          height: "90px",
+          borderRadius: "16px",
+          flexShrink: 0,
+          width: "64px",
+          height: "64px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-          marginBottom: "14px",
+          boxShadow: "0 6px 18px rgba(0,0,0,0.14)",
         }}
+        className="sm:w-[90px] sm:h-[90px] sm:mb-3 sm:rounded-[20px]"
       >
         <svg
           viewBox="0 0 24 24"
-          style={{ width: "48px", height: "48px" }}
+          className="w-8 h-8 sm:w-12 sm:h-12"
           aria-hidden="true"
         >
           {icon.svgPaths.map((p, i) => (
-            <path
-              key={i}
-              d={p.d}
-              fill={p.fill ?? icon.iconColor}
-            />
+            <path key={i} d={p.d} fill={p.fill ?? icon.iconColor} />
           ))}
         </svg>
       </div>
-      <p
-        style={{
-          fontFamily: "Poppins, sans-serif",
-          fontWeight: 700,
-          fontSize: "15px",
-          color: "#111",
-          textAlign: "center",
-        }}
-      >
-        {icon.label}
-      </p>
-      <p
-        style={{
-          fontFamily: "Poppins, sans-serif",
-          fontSize: "11px",
-          color: "#9ca3af",
-          textAlign: "center",
-          marginTop: "4px",
-        }}
-      >
-        {name}
-      </p>
+
+      {/* Labels */}
+      <div className="sm:text-center">
+        <p style={{ fontFamily: "Poppins, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111" }}>
+          {icon.label}
+        </p>
+        <p style={{ fontFamily: "Poppins, sans-serif", fontSize: "11px", color: "#9ca3af", marginTop: "2px" }}>
+          {name}
+        </p>
+      </div>
     </div>
   );
 }

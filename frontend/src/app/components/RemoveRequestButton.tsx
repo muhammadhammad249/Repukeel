@@ -35,14 +35,14 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
     <>
       <button
         onClick={() => setOpen(true)}
-        className="bg-[#1e3a8a] text-white font-bold uppercase px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all"
+        className="w-full sm:w-auto bg-[#1e3a8a] text-white font-bold uppercase px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all text-[14px] sm:text-[15px]"
       >
         Remove My {serviceName} Post Now
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 relative border border-[var(--border-light)]">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-[9999] p-0 sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg p-6 sm:p-8 relative border border-[var(--border-light)] max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => {
                 setOpen(false);

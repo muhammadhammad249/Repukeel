@@ -17,16 +17,16 @@ export default async function SubServicePage({
 
   return (
     <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
-      <main className="container py-12">
+      <main className="container py-6 sm:py-8 lg:py-12">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-8 text-[13px] font-[600] text-[var(--text-muted-navy)]">
-          <span>{category.name}</span>
+        <div className="flex flex-wrap items-center gap-1.5 mb-6 sm:mb-8 text-[12px] sm:text-[13px] font-[600] text-[var(--text-muted-navy)]">
+          <span className="truncate max-w-[140px] sm:max-w-none">{category.name}</span>
           <span>›</span>
-          <span className="text-[var(--gold)]">{service.name}</span>
+          <span className="text-[var(--gold)] truncate max-w-[160px] sm:max-w-none">{service.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
           {/* ===== LEFT: Blog Content ===== */}
           <article>
@@ -35,20 +35,24 @@ export default async function SubServicePage({
               {category.name}
             </div>
 
-            <h1 style={{ fontFamily: 'Poppins, sans-serif', color: '#000000', fontSize: '36px', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px' }}>
+            <h1 style={{ fontFamily: 'Poppins, sans-serif', color: '#000000', fontWeight: 800, lineHeight: 1.15, marginBottom: '16px' }}
+              className="text-[26px] sm:text-[30px] lg:text-[36px]"
+            >
               {service.heading}
             </h1>
 
-            <p style={{ fontFamily: 'Poppins, sans-serif', color: '#374151', fontSize: '17px', lineHeight: 1.8, marginBottom: '32px' }}>
+            <p style={{ fontFamily: 'Poppins, sans-serif', color: '#374151', fontSize: '15px', lineHeight: 1.8, marginBottom: '28px' }}
+              className="sm:text-[17px]"
+            >
               {service.intro}
             </p>
 
             {service.bodySections.map((section, i) => (
-              <div key={i} style={{ marginBottom: '28px' }}>
-                <h2 style={{ fontFamily: 'Poppins, sans-serif', color: '#000000', fontSize: '20px', fontWeight: 700, marginBottom: '10px', marginTop: '32px' }}>
+              <div key={i} style={{ marginBottom: '24px' }}>
+                <h2 style={{ fontFamily: 'Poppins, sans-serif', color: '#000000', fontSize: '18px', fontWeight: 700, marginBottom: '8px', marginTop: '24px' }}>
                   {section.heading}
                 </h2>
-                <p style={{ fontFamily: 'Poppins, sans-serif', color: '#374151', fontSize: '15px', lineHeight: 1.8 }}>
+                <p style={{ fontFamily: 'Poppins, sans-serif', color: '#374151', fontSize: '14px', lineHeight: 1.8 }}>
                   {section.text}
                 </p>
               </div>
@@ -72,8 +76,8 @@ export default async function SubServicePage({
             <RemoveRequestButton serviceName={service.name} />
           </article>
 
-          {/* ===== RIGHT: Icon only ===== */}
-          <div className="lg:sticky lg:top-24">
+          {/* ===== RIGHT: Icon — shown below content on mobile, sticky on desktop ===== */}
+          <div className="lg:sticky lg:top-24 order-first lg:order-last">
             <ServiceIcon slug={service.slug} name={service.name} />
           </div>
 
