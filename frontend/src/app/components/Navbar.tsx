@@ -239,6 +239,7 @@ export default function Navbar() {
           <AccountMenu 
               loginClassName="text-xl font-[600] text-[var(--text-heading)]" 
               menuClassName="mt-2" 
+              onNavigate={() => setDrawerOpen(false)}
             />
         </div>
       )}

@@ -21,7 +21,7 @@ function getStoredUser(): StoredUser | null {
   }
 }
 
-export default function AccountMenu({ loginClassName, menuClassName }: { loginClassName: string; menuClassName: string }) {
+export default function AccountMenu({ loginClassName, menuClassName, onNavigate }: { loginClassName: string; menuClassName: string; onNavigate?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -37,6 +37,13 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     setHasToken(getAuthToken());
   }, [pathname]);
 
+  const navigateTo = (url: string) => {
+    // Close drawer / remove scroll lock before navigating
+    if (onNavigate) onNavigate();
+    // Small delay to let body unlock before pushing route
+    setTimeout(() => router.push(url), 10);
+  };
+
   const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
@@ -44,17 +51,27 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     setUser(null);
     setHasToken(false);
     setIsOpen(false);
-    router.push('/login');
+    navigateTo('/login');
   };
 
   // ── Block render mismatch: server always renders this ────────────────
   if (!isMounted) {
-    return <Link href={`/login?next=${encodeURIComponent(pathname)}`} className={`${loginClassName} opacity-0 pointer-events-none`}>Login</Link>;
+    return (
+      <button className={`${loginClassName} opacity-0 pointer-events-none`}>Login</button>
+    );
   }
 
   // ── Not logged in at all (no token) → Login link ────────────────
   if (!user && !hasToken) {
-    return <Link href={`/login?next=${encodeURIComponent(pathname)}`} className={loginClassName}>Login</Link>;
+    return (
+      <button
+        type="button"
+        className={loginClassName}
+        onClick={() => navigateTo(`/login?next=${encodeURIComponent(pathname)}`)}
+      >
+        Login
+      </button>
+    );
   }
 
   // ── Logged in → Avatar button ───────────────────────────────────
@@ -96,7 +113,7 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
               <button
                 type="button"
                 role="menuitem"
-                onClick={() => { setIsOpen(false); router.push('/dashboard'); }}
+                onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
                 className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[var(--text-heading)] rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Dashboard
