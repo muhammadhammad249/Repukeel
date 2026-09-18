@@ -188,18 +188,14 @@ export default function LoginPage() {
               `}</style>
               
               <div className="relative flex items-center justify-center animate-spinY">
-                {/* Outer Gold Diamond */}
-                <svg width="100" height="160" viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M50 0C50 0 100 50 100 80C100 110 50 160 50 160C50 160 0 110 0 80C0 50 50 0 50 0Z" fill="#d4af37" />
-                </svg>
-                {/* Inner White Shield Outline */}
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-[42px] h-[42px] absolute">
-                  <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round"/>
+                {/* Professional Solid Shield Logo */}
+                <svg viewBox="0 0 24 24" fill="#d4af37" className="w-[100px] h-[100px]">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
                 </svg>
               </div>
             </div>
             
-            <h2 className="text-[36px] font-[900] mb-5 tracking-tight">Repukeel Portal</h2>
+            <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">Repukeel Portal</h2>
             <p className="text-[16px] text-blue-100/60 font-[400] leading-relaxed max-w-[360px]">
               Track your cases, submit new protection requests, and manage your digital rights.
             </p>

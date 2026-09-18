@@ -35,9 +35,9 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full sm:w-auto bg-[#1e3a8a] text-white font-bold uppercase px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all text-[14px] sm:text-[15px]"
+        className="w-full sm:w-auto bg-[#1e3a8a] text-white font-bold uppercase px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all text-[14px] sm:text-[15px] mb-8"
       >
-        Remove My {serviceName} Post Now
+        Remove My {serviceName.replace(/\s*Removal\s*$/i, '').trim()}
       </button>
 
       {open && (

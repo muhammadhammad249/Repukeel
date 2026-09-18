@@ -192,6 +192,32 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* ================= FAQ SECTION ================= */}
+      <section id="faq" className="w-full bg-white py-24">
+        <div className="container max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-[13px] font-[700] text-[var(--gold)] uppercase tracking-widest mb-2 block">FAQ</span>
+            <h2 className="text-4xl font-[800] text-[var(--text-heading)] mb-4">Frequently Asked Questions</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Everything you need to know about our plans and services.</p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {[
+              { q: 'Which plan is right for me?', a: 'If you are an individual creator or small business, the Starter plan covers the basics. The Professional plan suits growing brands dealing with frequent infringement. Enterprise is best for companies with large content libraries or multiple brands.' },
+              { q: 'Can I change my plan at any time?', a: 'Yes. You can upgrade or downgrade your plan at any time. Changes take effect on your next billing cycle and any unused credit is applied to your new plan.' },
+              { q: 'Is there a free trial?', a: 'We offer a free risk assessment for new clients. This gives you a clear picture of your exposure before committing to a plan. Contact our sales team to get started.' },
+              { q: 'How quickly are takedowns processed?', a: 'Most takedown requests are processed within 24–48 hours. Enterprise clients receive priority queue status with a guaranteed 48-hour removal SLA.' },
+              { q: 'Do you cover all platforms?', a: 'Yes. Our coverage includes all major social media platforms (TikTok, Instagram, Facebook, YouTube, X/Twitter), search engines (Google, Bing), adult content sites, file-sharing platforms, and review sites.' },
+              { q: 'Is my information kept confidential?', a: '100% confidential. All client information is protected under strict NDAs. We never share client details with third parties.' },
+              { q: 'What happens if removed content reappears?', a: 'Our monitoring system detects reappearances automatically. Re-uploads are covered under your plan at no extra cost — we will issue a new takedown immediately.' },
+              { q: 'Do you offer refunds?', a: 'If a takedown cannot be completed due to reasons within our control, we will issue a full refund for that specific request. Monthly subscription fees are non-refundable but you may cancel any time.' },
+            ].map((item, i) => (
+              <FaqItem key={i} q={item.q} a={item.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ================= BLUE CTA ================= */}
       <BlueCtaBand 
         headingWhite="Not sure which"
@@ -199,10 +225,28 @@ export default function PricingPage() {
         subtext="Talk to our experts to get a free risk assessment and find the perfect protection plan for your digital assets."
         primaryBtnText="Contact Sales"
         primaryBtnLink="/contact"
-        secondaryBtnText="View FAQs"
-        secondaryBtnLink="/#faq"
       />
       
+    </div>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div className="border border-[var(--border-light)] rounded-2xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-6 py-5 text-left font-[700] text-[var(--text-heading)] text-[16px] hover:bg-gray-50 transition-colors"
+      >
+        {q}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-5 h-5 flex-shrink-0 ml-4 transition-transform ${open ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      {open && (
+        <div className="px-6 pb-5 text-[15px] text-[var(--text-body)] leading-relaxed border-t border-[var(--border-light)] pt-4">
+          {a}
+        </div>
+      )}
     </div>
   );
 }

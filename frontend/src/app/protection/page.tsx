@@ -37,7 +37,7 @@ export default function ProtectionPage() {
               <p className="text-[15px] text-[var(--text-body)] mb-8 flex-1">
                 Found your content stolen? Submit the details and our legal team will issue a takedown notice immediately.
               </p>
-              <Link href="/contact" className="text-[var(--gold)] font-[700] text-[15px] hover:underline flex items-center gap-1">
+              <Link href="/contact" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1 mt-auto self-start">
                 Start now &rarr;
               </Link>
             </div>
@@ -51,7 +51,7 @@ export default function ProtectionPage() {
               <p className="text-[15px] text-[var(--text-body)] mb-8 flex-1">
                 Log in to your secure dashboard to view live updates on your active takedown requests and manage your account.
               </p>
-              <Link href="/login" className="text-[var(--gold)] font-[700] text-[15px] hover:underline flex items-center gap-1">
+              <Link href="/login" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1 mt-auto self-start">
                 Log in &rarr;
               </Link>
             </div>

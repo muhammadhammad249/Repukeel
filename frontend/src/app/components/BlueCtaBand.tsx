@@ -6,8 +6,8 @@ interface BlueCtaBandProps {
   subtext: string;
   primaryBtnText: string;
   primaryBtnLink: string;
-  secondaryBtnText: string;
-  secondaryBtnLink: string;
+  secondaryBtnText?: string;
+  secondaryBtnLink?: string;
 }
 
 export default function BlueCtaBand({
@@ -45,9 +45,11 @@ export default function BlueCtaBand({
           <Link href={primaryBtnLink} className="btn btn-gold-solid">
             {primaryBtnText}
           </Link>
-          <Link href={secondaryBtnLink} className="btn btn-outline-dark white-var">
-            {secondaryBtnText}
-          </Link>
+          {secondaryBtnText && secondaryBtnLink && (
+            <Link href={secondaryBtnLink} className="btn btn-outline-dark white-var">
+              {secondaryBtnText}
+            </Link>
+          )}
         </div>
       </div>
     </section>

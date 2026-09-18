@@ -24,15 +24,14 @@ export default function Home() {
               Professional DMCA Protection Service
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-[72px] font-[900] leading-[1.05] tracking-tight mb-8 text-[#111827]">
-              Protect Your<br/>
-              <span className="text-[#d4af37]">Digital Content</span><br/>
-              From Copyright<br/>
-              Theft
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-[900] leading-[1.05] tracking-tight mb-8 text-[#111827]">
+              Best Online<br/>
+              <span className="text-[#d4af37]">Reputation Management</span><br/>
+              Company<br/>
+              WorldWide
             </h1>
             <p className="text-[17px] text-[#4b5563] mb-10 max-w-lg leading-relaxed">
-              Fast, effective DMCA takedown service with a 24-48 hour response time. 
-              We protect your intellectual property from piracy and unauthorized use across all platforms.
+              At RepuKeel Reputation, we remove harmful online content, repair search results, and protect your reputation — fast, confidentially, and with proven results.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
@@ -171,51 +170,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= PROTECT YOUR IP SECTION (Redesigned) ================= */}
-      <section className="relative w-full bg-white py-24 overflow-hidden">
-        {/* Faint Dotted Grid Background */}
-        <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-        
-        {/* Floating Empty Gold Rings */}
-        <div className="absolute top-[10%] left-[5%] w-[120px] h-[120px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
-        <div className="absolute top-[25%] left-[25%] w-[80px] h-[80px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
-        <div className="absolute top-[15%] right-[20%] w-[150px] h-[150px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[20%] right-[10%] w-[100px] h-[100px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[30%] w-[200px] h-[200px] border border-[var(--gold)] opacity-40 rounded-full pointer-events-none"></div>
-
-        <div className="container relative z-10 flex flex-col items-center text-center">
-          
-          <div className="inline-flex items-center gap-2 bg-white border border-[#e5e7eb] rounded-full px-4 py-2 text-[14px] font-[600] text-[var(--text-heading)] mb-8 shadow-sm">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-            Ready to Transform Your Business?
-          </div>
-
-          <h2 className="text-4xl md:text-5xl font-[800] mb-6 text-[var(--text-heading)]">
-            Protect Your <span className="text-[var(--gold)] relative inline-block">
-              Intellectual Property
-              <div className="absolute bottom-[-4px] left-0 w-full h-[3px] bg-[var(--gold)]"></div>
-            </span> Today
-          </h2>
-          
-          <p className="text-[17px] text-[var(--text-body)] mb-12 max-w-3xl leading-relaxed">
-            Your online presence is valuable&mdash;do not let copyright infringement, content theft, or piracy threaten your brand. We provide expert DMCA takedown solutions to remove stolen content quickly and legally.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-            {[
-              'Fast & Effective Takedowns',
-              'Complete Copyright & Brand Protection',
-              'Legal Support & Ongoing Monitoring'
-            ].map((ft, i) => (
-              <div key={i} className="bg-white border border-[#f3f4f6] rounded-xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center justify-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-[var(--gold)] flex-shrink-0"></div>
-                <span className="font-[600] text-[15px] text-[var(--text-heading)]">{ft}</span>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
 
       {/* ================= SERVICES SECTION ================= */}
       <section id="services" className="w-full bg-white py-24 border-t border-[var(--border-light)]">
@@ -233,28 +187,28 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Rendering 6 sample cards for layout matching */}
             {[
-              { title: 'AI-Powered Monitoring', desc: 'Continuous scanning to detect unauthorized use.' },
-              { title: 'Website Protection', desc: 'Identify scraped or copied content on 3rd-party sites.' },
-              { title: 'Search Engine Removal', desc: 'Remove infringing URLs from Google, Bing.' },
-              { title: 'Social Media Takedown', desc: 'Enforce rights on Instagram, Facebook, TikTok.' },
-              { title: 'Brand Impersonation', desc: 'Detect and remove fake accounts & profiles.' },
-              { title: 'Fake Review Removal', desc: 'Swiftly dispute and remove defamatory reviews.' }
-            ].map((svc, i) => (
-              <motion.div 
-                key={i} 
+              { slug: 'content-removal', name: 'Content Removal', icon: '📄', desc: 'Remove harmful content from TikTok, Instagram, Reddit, Google and more.' },
+              { slug: 'dating-reputation', name: 'Dating Reputation', icon: '🔥', desc: 'Remove damaging profiles and posts from dating sites and apps.' },
+              { slug: 'job-reputation', name: 'Job Reputation', icon: '💼', desc: 'Protect your career by removing negative employment-related content.' },
+              { slug: 'monitoring-alerts', name: 'Monitoring & Alerts', icon: '📊', desc: 'Real-time monitoring and alerts for threats across the internet.' },
+              { slug: 'reputation-management', name: 'Reputation Management', icon: '🥇', desc: 'Comprehensive online reputation repair and enhancement.' },
+              { slug: 'search-result-cleanup', name: 'Search Result Cleanup', icon: '🔍', desc: 'Remove and suppress negative search results on Google and Bing.' },
+            ].map((cat, i) => (
+              <motion.div
+                key={i}
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="card-light flex flex-col"
               >
-                <div className="icon-box-light mb-6">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 2v20M5 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM19 7l-3 6a3.5 3.5 0 0 0 7 0l-3-6zM5 7h14M8 3h8"/></svg>
-                </div>
-                <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{svc.title}</h4>
-                <p className="text-[14px] text-[var(--text-body)]">{svc.desc}</p>
+                <Link href={`/${cat.slug}`} className="card-light flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-300 block">
+                  <div className="icon-box-light mb-6 text-2xl flex items-center justify-center">
+                    {cat.icon}
+                  </div>
+                  <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{cat.name}</h4>
+                  <p className="text-[14px] text-[var(--text-body)]">{cat.desc}</p>
+                </Link>
               </motion.div>
             ))}
           </div>
