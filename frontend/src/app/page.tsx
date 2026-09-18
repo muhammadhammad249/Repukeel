@@ -19,10 +19,6 @@ export default function Home() {
           
           {/* Left Column */}
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 bg-[#fdfaf2] border border-[#f0c85a] rounded-full px-4 py-2 text-[13px] font-[600] text-[#b8860f] mb-8 shadow-sm">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              Professional DMCA Protection Service
-            </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-[900] leading-[1.05] tracking-tight mb-8 text-[#111827]">
               Best Online<br/>
