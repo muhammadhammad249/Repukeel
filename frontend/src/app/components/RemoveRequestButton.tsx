@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormData = {
@@ -14,6 +14,17 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   const onSubmit = async (data: FormData) => {
     setStatus("loading");
