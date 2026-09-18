@@ -1,10 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextUrl = searchParams.get('next') || '/';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +34,7 @@ export default function LoginPage() {
         localStorage.setItem('authToken', 'admin_token');
         document.cookie = 'authToken=admin_token; Path=/; Max-Age=86400; SameSite=Lax';
         localStorage.setItem('currentUser', JSON.stringify({ firstName: 'Admin', lastName: '', email }));
-        router.push('/dashboard/admin');
+        router.push(nextUrl === '/' ? '/dashboard/admin' : nextUrl);
         return;
       }
       
@@ -48,7 +51,7 @@ export default function LoginPage() {
               lastName: parsedUser.lastName || '',
               email: parsedUser.email,
             }));
-            router.push('/');
+            router.push(nextUrl);
             return;
           } else if (parsedUser.email === email) {
             setError('Incorrect password. Please try again.');
@@ -65,24 +68,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
-      <div className="w-full min-h-screen flex">
-        
-        {/* Left Form Section */}
-        <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center relative bg-white">
-          {/* Top Left Logo */}
-          <div className="absolute top-10 left-10 flex items-center gap-3">
+    <div className="w-full min-h-screen flex">
+      
+      {/* Left Form Section */}
+      <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center relative bg-white">
+        {/* Top Left Back Button & Logo */}
+        <div className="absolute top-10 left-6 md:left-10 flex items-center gap-4">
+          <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors" aria-label="Go Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+          <div className="flex items-center gap-3">
             <div className="w-[36px] h-[36px] bg-[#d4af37] rounded-lg flex items-center justify-center">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-[20px] h-[20px]">
                 <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="font-[900] text-[#0a192f] tracking-tight text-[18px] uppercase">REPUKEEL</span>
+            <span className="hidden md:inline font-[900] text-[#0a192f] tracking-tight text-[18px] uppercase">REPUKEEL</span>
           </div>
+        </div>
 
-          <div className="max-w-[420px] w-full mx-auto mt-12">
-            <h1 className="text-[40px] font-[900] text-[#0a192f] mb-2">Welcome Back</h1>
-            <p className="text-[15px] text-gray-500 mb-8">Please enter your credentials to access your account</p>
+        <div className="max-w-[420px] w-full mx-auto mt-12">
+          <h1 className="text-[40px] font-[900] text-[#0a192f] mb-2">Welcome Back</h1>
+          <p className="text-[15px] text-gray-500 mb-8">Please enter your credentials to access your account</p>
 
             {error && (
               <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 mb-6 flex items-center gap-2">
@@ -211,6 +218,16 @@ export default function LoginPage() {
         </div>
 
       </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
+      <Suspense fallback={<div className="w-full min-h-screen flex items-center justify-center">Loading...</div>}>
+        <LoginContent />
+      </Suspense>
     </div>
   );
 }
