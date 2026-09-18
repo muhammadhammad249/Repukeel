@@ -29,6 +29,7 @@ export default function LoginPage() {
       // Admin bypass
       if (email === 'admin@repukeel.com' && password === 'admin123') {
         localStorage.setItem('authToken', 'admin_token');
+        document.cookie = 'authToken=admin_token; Path=/; Max-Age=86400; SameSite=Lax';
         localStorage.setItem('currentUser', JSON.stringify({ firstName: 'Admin', lastName: '', email }));
         router.push('/dashboard/admin');
         return;
@@ -41,6 +42,7 @@ export default function LoginPage() {
           const parsedUser = JSON.parse(savedUserStr);
           if (parsedUser.email === email && parsedUser.password === password) {
             localStorage.setItem('authToken', 'user_token');
+            document.cookie = 'authToken=user_token; Path=/; Max-Age=86400; SameSite=Lax';
             localStorage.setItem('currentUser', JSON.stringify({
               firstName: parsedUser.firstName || '',
               lastName: parsedUser.lastName || '',

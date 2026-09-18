@@ -17,6 +17,8 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    document.cookie = 'authToken=; Path=/; Max-Age=0; SameSite=Lax';
     router.push('/login');
   };
 

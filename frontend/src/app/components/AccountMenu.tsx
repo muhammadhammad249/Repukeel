@@ -5,14 +5,9 @@ import { useEffect, useState } from 'react';
 
 type StoredUser = { firstName?: string; lastName?: string; email?: string };
 
-function getStoredUser(): StoredUser | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const value = localStorage.getItem('currentUser');
-    return value ? JSON.parse(value) as StoredUser : null;
-  } catch {
-    return null;
-  }
+function getAuthToken(): boolean {
+  if (typeof window === 'undefined') return false;
+  return !!localStorage.getItem('authToken');
 }
 
 export default function AccountMenu({ loginClassName, menuClassName }: { loginClassName: string; menuClassName: string }) {
@@ -25,11 +20,17 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     if (typeof window === 'undefined') return null;
     return getStoredUser();
   });
+  // Separately track if the user has a valid token (even without full user data)
+  const [hasToken, setHasToken] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return getAuthToken();
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   // Re-read on every route change (covers post-login redirect)
   useEffect(() => {
     setUser(getStoredUser());
+    setHasToken(getAuthToken());
   }, [pathname]);
 
   const logout = () => {
@@ -37,12 +38,13 @@ export default function AccountMenu({ loginClassName, menuClassName }: { loginCl
     localStorage.removeItem('currentUser');
     document.cookie = 'authToken=; Path=/; Max-Age=0; SameSite=Lax';
     setUser(null);
+    setHasToken(false);
     setIsOpen(false);
     router.push('/login');
   };
 
-  // ── Not logged in → Login link ──────────────────────────────────
-  if (!user) {
+  // ── Not logged in at all (no token) → Login link ────────────────
+  if (!user && !hasToken) {
     return <a href="/login" className={loginClassName}>Login</a>;
   }
 
