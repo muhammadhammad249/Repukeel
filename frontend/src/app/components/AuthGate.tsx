@@ -3,11 +3,11 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// Pages that are always accessible without authentication
-const PUBLIC_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password'];
+// Pages that require authentication to access
+const PROTECTED_ROUTES = ['/dashboard', '/checkout', '/scanner', '/protection'];
 
-function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(
+function isProtectedRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + '/'),
   );
 }
@@ -20,7 +20,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
 
-    if (!token && !isPublicRoute(pathname)) {
+    if (!token && isProtectedRoute(pathname)) {
       // Not logged in and trying to access a protected page → send to login
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
@@ -37,7 +37,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   // Block render until auth check is done (avoids flash of protected content)
-  if (!checked && !isPublicRoute(pathname)) {
+  if (!checked && isProtectedRoute(pathname)) {
     return <div className="min-h-screen bg-slate-50" aria-label="Checking your session" />;
   }
 
