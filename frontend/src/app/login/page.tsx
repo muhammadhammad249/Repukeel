@@ -84,8 +84,13 @@ function LoginContent() {
             </svg>
           </button>
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Repukeel" width={36} height={36} className="w-[36px] h-[36px] object-contain rounded-lg" />
-            <span className="hidden md:inline font-[900] text-[#0a192f] tracking-tight text-[18px] uppercase">REPUKEEL</span>
+            <Image
+              src="/logo.png"
+              alt="Repukeel"
+              width={140}
+              height={40}
+              className="h-[40px] w-auto object-contain"
+            />
           </div>
         </div>
 

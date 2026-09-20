@@ -13,20 +13,15 @@ export default function Footer() {
           {/* Column 1: Brand & Status */}
           <div className="flex flex-col gap-8">
 
-            <Link href="/" className="flex items-center gap-4">
-              <Image src="/logo.png" alt="Repukeel Logo" width={56} height={56} className="w-[56px] h-[56px] object-contain rounded-[14px]" />
-
-              <div className="flex flex-col justify-center">
-                <span className="font-[900] text-[28px] tracking-tight text-white leading-none mb-1">
-                  Repukeel
-                </span>
-
-                <span className="text-[13px] font-[500] text-[#c8d0e7] leading-snug">
-                  Online Reputation Management and
-                  <br />
-                  Brand Protection Solutions
-                </span>
-              </div>
+            <Link href="/" className="inline-flex items-center">
+              <Image
+                src="/logo.png"
+                alt="Repukeel Logo"
+                width={180}
+                height={52}
+                className="h-[52px] w-auto object-contain"
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
             </Link>
 
             {/* System Status */}
