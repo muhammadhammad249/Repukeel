@@ -22,19 +22,18 @@ export default function ServicesPage() {
         <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="pill-badge mb-6">
-              Professional DMCA Services
+              Online Reputation Management Services
             </div>
             <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-black">
-              Complete<br/>
-              <span className="text-[var(--gold)]">DMCA Protection</span><br/>
-              For Your Content
+              Remove Harmful Content.<br/>
+              <span className="text-[var(--gold)]">Restore Your Reputation.</span>
             </h1>
             <p className="text-[17px] text-black mb-8 max-w-xl">
-              We offer comprehensive copyright protection and digital asset security solutions designed for creators, businesses, and enterprises worldwide.
+              RepuKeel helps individuals, creators and businesses remove negative reviews, damaging articles and stolen content, and protect their brand online.
             </p>
             
             <div className="flex flex-wrap gap-3 mb-8">
-              {['24-48h Response', '99% Success Rate', 'Legal Compliance'].map((pill, i) => (
+              {['Free reputation audit', 'Confidential', 'Fast response'].map((pill, i) => (
                 <div key={i} className="pill-badge">
                   <span className="text-[var(--green)] font-[900]">✓</span> {pill}
                 </div>
@@ -112,7 +111,7 @@ export default function ServicesPage() {
               <p className="text-[15px] opacity-90">Takedowns of reels, posts, stories, and fake accounts copying your identity or content.</p>
             </div>
             {/* Twitter / X */}
-            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-br from-gray-800 to-black transition-transform hover:-translate-y-2">
+            <div className="rounded-2xl p-8 flex flex-col text-[#0a192f] shadow-xl bg-white border border-gray-200 transition-transform hover:-translate-y-2">
               <div className="text-4xl mb-6 font-bold leading-none">𝕏</div>
               <h3 className="text-2xl font-[800] mb-3">Twitter / X</h3>
               <p className="text-[15px] opacity-90">Swift action against unauthorized media sharing and defamatory tweets.</p>

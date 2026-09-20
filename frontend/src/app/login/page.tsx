@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function LoginContent() {
@@ -83,11 +84,7 @@ function LoginContent() {
             </svg>
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-[36px] h-[36px] bg-[#d4af37] rounded-lg flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-[20px] h-[20px]">
-                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+            <Image src="/logo.png" alt="Repukeel" width={36} height={36} className="w-[36px] h-[36px] object-contain rounded-lg" />
             <span className="hidden md:inline font-[900] text-[#0a192f] tracking-tight text-[18px] uppercase">REPUKEEL</span>
           </div>
         </div>
@@ -221,8 +218,9 @@ function LoginContent() {
           </div>
 
           <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">Repukeel Portal</h2>
-          <p className="text-[16px] text-blue-100/60 font-[400] leading-relaxed max-w-[360px]">
-            Track your cases, submit new protection requests, and manage your digital rights.
+          <p className="text-[14px] text-blue-100/50 mt-6">
+            Need help?{' '}
+            <a href="mailto:Legal@Repukeel.com" className="text-[var(--gold)] font-[600] hover:underline">Legal@Repukeel.com</a>
           </p>
         </div>
       </div>

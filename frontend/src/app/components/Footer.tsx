@@ -14,21 +14,7 @@ export default function Footer() {
           <div className="flex flex-col gap-8">
 
             <Link href="/" className="flex items-center gap-4">
-              <div className="w-[56px] h-[56px] bg-[#d4af37] rounded-[14px] flex items-center justify-center shadow-lg shadow-[#d4af37]/20">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2.5"
-                  className="w-[32px] h-[32px]"
-                >
-                  <path
-                    d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <Image src="/logo.png" alt="Repukeel Logo" width={56} height={56} className="w-[56px] h-[56px] object-contain rounded-[14px]" />
 
               <div className="flex flex-col justify-center">
                 <span className="font-[900] text-[28px] tracking-tight text-white leading-none mb-1">
@@ -370,10 +356,10 @@ export default function Footer() {
                   </span>
 
                   <a
-                    href="mailto:legalrepukeel@gmail.com"
+                    href="mailto:Legal@Repukeel.com"
                     className="hover:text-[var(--gold)] transition-colors"
                   >
-                    legalrepukeel@gmail.com
+                    Legal@Repukeel.com
                   </a>
                 </div>
               </li>
