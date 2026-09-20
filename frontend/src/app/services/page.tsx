@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import BlueCtaBand from '../components/BlueCtaBand';
 import ServicesMenuLayout from '../components/ServicesMenuLayout';
+import { categories } from '@/data/services';
 
 export default function ServicesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [activeCatId, setActiveCatId] = useState<string | null>(null);
+  // Default to first category so desktop shows sub-services immediately on load
+  const [activeCatId, setActiveCatId] = useState<string | null>(categories[0]?.slug ?? null);
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);
