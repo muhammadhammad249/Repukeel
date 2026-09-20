@@ -6,12 +6,14 @@ import AccountMenu from './AccountMenu';
 import Link from 'next/link';
 import Image from 'next/image';
 import ServicesMenuLayout from './ServicesMenuLayout';
+import { categories } from '@/data/services';
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [servicesMenuTab, setServicesMenuTab] = useState<string | null>(null);
+  // Always default to first category so the mega-menu shows services immediately on open
+  const [servicesMenuTab, setServicesMenuTab] = useState<string | null>(categories[0]?.slug ?? null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -171,9 +173,9 @@ export default function Navbar() {
               const willOpen = !drawerOpen;
               setDrawerOpen(willOpen);
               if (willOpen) {
-                // Ensure dropdowns and sub-menus are collapsed when opening the navbar
+                // Collapse other dropdowns, but keep first service tab selected
                 setOpenDropdown(null);
-                setServicesMenuTab(null);
+                setServicesMenuTab(categories[0]?.slug ?? null);
               }
             }}
             aria-label="Toggle Navigation"
