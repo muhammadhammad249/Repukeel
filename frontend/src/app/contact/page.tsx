@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import BlueCtaBand from '../components/BlueCtaBand';
+import { categories } from '@/data/services';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -161,9 +162,9 @@ export default function ContactPage() {
                 <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Reason for Inquiry *</label>
                 <select name="reason" value={formData.reason} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] text-[var(--text-body)]" required>
                   <option value="" disabled>Select an option</option>
-                  <option value="dmca">New DMCA Takedown</option>
-                  <option value="monitoring">Brand Monitoring Services</option>
-                  <option value="partnership">Partnership / Agency</option>
+                  {categories.map((cat) => (
+                    <option key={cat.slug} value={cat.slug}>{cat.title}</option>
+                  ))}
                   <option value="other">Other</option>
                 </select>
               </div>

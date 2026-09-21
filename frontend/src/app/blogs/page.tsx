@@ -39,13 +39,13 @@ export default function BlogsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
       
-      {/* ================= HERO (Dark Navy) ================= */}
-      <section className="w-full bg-[var(--bg-navy)] pt-24 pb-32">
+      {/* ================= HERO ================= */}
+      <section className="w-full bg-white pt-24 pb-32">
         <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl font-[800] tracking-tight mb-4" style={{ color: '#ffffff' }}>
+          <h1 className="text-4xl md:text-5xl font-[800] tracking-tight mb-4 text-black">
             Insights & News
           </h1>
-          <p className="text-[16px] text-[var(--text-muted-navy)] max-w-2xl mx-auto mb-10">
+          <p className="text-[16px] text-gray-600 max-w-2xl mx-auto mb-10">
             Expert advice, company news, and the latest updates on digital rights management.
           </p>
 

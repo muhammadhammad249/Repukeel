@@ -69,6 +69,7 @@ export default function Navbar() {
     { name: 'AI Scanner', path: '/scanner' },
     { name: 'About Us', path: '/about' },
     { name: 'Pricing', path: '/pricing' },
+    { name: 'FAQs', path: '/faq' },
     { name: 'Blog', path: '/blogs' },
     { name: 'Contact', path: '/contact' },
   ];
