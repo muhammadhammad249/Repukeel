@@ -204,21 +204,14 @@ function LoginContent() {
         <div className="absolute bottom-[15%] right-[40%] w-1.5 h-1.5 bg-[#d4af37] rounded-full opacity-30 blur-[1px]"></div>
 
         <div className="relative z-10 flex flex-col items-center text-center text-white max-w-[450px]">
-          <div className="mb-12 relative flex items-center justify-center" style={{ perspective: '1000px' }}>
-            <style>{`
-              @keyframes spinY {
-                0% { transform: rotateY(0deg); }
-                100% { transform: rotateY(360deg); }
-              }
-              .animate-spinY {
-                animation: spinY 6s linear infinite;
-                transform-style: preserve-3d;
-              }
-            `}</style>
-            <div className="relative flex items-center justify-center animate-spinY">
-              <svg viewBox="0 0 24 24" fill="#d4af37" className="w-[100px] h-[100px]">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-              </svg>
+          <div className="mb-12 relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center">
+              <img 
+                src="/login-logo-outline.png" 
+                alt="Repukeel Shield" 
+                className="w-[120px] h-auto object-contain"
+                style={{ filter: 'invert(1) brightness(2)', mixBlendMode: 'screen' }}
+              />
             </div>
           </div>
 
