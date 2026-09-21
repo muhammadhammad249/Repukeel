@@ -63,7 +63,7 @@ export default function ContactPage() {
           {/* Right: Glassmorphism Panel */}
           <div className="relative flex justify-center lg:justify-end">
             <div className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl text-white">
-              <h3 className="text-[22px] font-[800] mb-6 flex items-center gap-2">
+              <h3 className="text-[22px] font-[800] mb-6 flex items-center gap-2 text-white">
                 <span className="text-[var(--gold)]">⚡</span> Quick Connect
               </h3>
               

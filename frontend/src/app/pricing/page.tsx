@@ -206,7 +206,15 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <BlueCtaBand />
+      <BlueCtaBand
+        headingWhite="Ready to Protect Your"
+        headingGold="Reputation?"
+        subtext="Get a free case review. We will assess your situation, confirm what is eligible, and send a custom quote within 24 hours."
+        primaryBtnText="Request Free Analysis"
+        primaryBtnLink="/request-free-analysis"
+        secondaryBtnText="Contact Us"
+        secondaryBtnLink="/contact"
+      />
     </div>
   );
 }
