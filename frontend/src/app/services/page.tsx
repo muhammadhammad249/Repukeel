@@ -96,19 +96,19 @@ export default function ServicesPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Facebook */}
-            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-br from-blue-500 to-blue-700 transition-transform hover:-translate-y-2">
-              <div className="text-5xl mb-6">f</div>
+            <div className="rounded-2xl p-8 flex flex-col text-[#0a192f] shadow-xl bg-white border border-gray-200 transition-transform hover:-translate-y-2">
+              <div className="text-5xl mb-6 text-blue-600 font-bold">f</div>
               <h3 className="text-2xl font-[800] mb-3">Facebook</h3>
-              <p className="text-[15px] opacity-90">Instant removal of stolen images, videos, and impersonator pages via direct legal channels.</p>
+              <p className="text-[15px] text-gray-600">Instant removal of stolen images, videos, and impersonator pages via direct legal channels.</p>
             </div>
             {/* Instagram */}
-            <div className="rounded-2xl p-8 flex flex-col text-white shadow-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 transition-transform hover:-translate-y-2">
-              <div className="w-10 h-10 border-2 border-white rounded-[10px] relative mb-6">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-white rounded-full"></div>
-                <div className="absolute top-1 right-1 w-1 h-1 bg-white rounded-full"></div>
+            <div className="rounded-2xl p-8 flex flex-col text-[#0a192f] shadow-xl bg-white border border-gray-200 transition-transform hover:-translate-y-2">
+              <div className="w-10 h-10 border-2 border-[#e1306c] rounded-[10px] relative mb-6">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[#e1306c] rounded-full"></div>
+                <div className="absolute top-1 right-1 w-1 h-1 bg-[#e1306c] rounded-full"></div>
               </div>
               <h3 className="text-2xl font-[800] mb-3">Instagram</h3>
-              <p className="text-[15px] opacity-90">Takedowns of reels, posts, stories, and fake accounts copying your identity or content.</p>
+              <p className="text-[15px] text-gray-600">Takedowns of reels, posts, stories, and fake accounts copying your identity or content.</p>
             </div>
             {/* Twitter / X */}
             <div className="rounded-2xl p-8 flex flex-col text-[#0a192f] shadow-xl bg-white border border-gray-200 transition-transform hover:-translate-y-2">

@@ -188,16 +188,16 @@ export default function PricingPage() {
               </ul>
             </div>
 
-            <div className="bg-[#0a192f] rounded-2xl p-8 text-white">
-              <h3 className="text-[18px] font-[800] mb-3">Not sure which service you need?</h3>
-              <p className="text-gray-400 text-[14px] mb-6">
+            <div className="bg-[#f8fafc] border border-gray-200 rounded-2xl p-8">
+              <h3 className="text-[18px] font-[800] text-[#0a192f] mb-3">Not sure which service you need?</h3>
+              <p className="text-gray-500 text-[14px] mb-6">
                 Get a free case review. We will assess your situation and recommend the right approach with a custom quote.
               </p>
               <div className="flex flex-col gap-3">
-                <Link href="/request-free-analysis" className="bg-[#d4af37] hover:bg-[#c19b2e] text-white font-bold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
+                <Link href="/request-free-analysis" className="bg-[#0a192f] hover:bg-[#1a2a4a] text-white font-bold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
                   Request Free Analysis
                 </Link>
-                <Link href="/contact" className="border border-white/20 hover:border-white/40 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
+                <Link href="/contact" className="border border-gray-300 hover:border-[#d4af37] text-[#0a192f] font-semibold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
                   Contact Us
                 </Link>
               </div>
