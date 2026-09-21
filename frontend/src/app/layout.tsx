@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import AuthGate from "./components/AuthGate";
 import GlobalLayoutWrapper from "./components/GlobalLayoutWrapper";
 import Chatbot from "./components/Chatbot";
@@ -33,6 +34,19 @@ export default function RootLayout({
         />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-YJ5E3P9TVV"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YJ5E3P9TVV');
+          `}
+        </Script>
         <AuthGate>
           <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
         </AuthGate>
