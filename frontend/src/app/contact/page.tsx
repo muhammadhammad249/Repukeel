@@ -160,8 +160,8 @@ export default function ContactPage() {
 
               <div>
                 <label className="block text-[14px] font-[700] text-[var(--text-heading)] mb-2">Reason for Inquiry *</label>
-                <select name="reason" value={formData.reason} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] text-[var(--text-body)]" required>
-                  <option value="" disabled>Select an option</option>
+                <select name="reason" value={formData.reason} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-[var(--border-light)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-shadow bg-[var(--bg-soft)] text-gray-900" required>
+                  <option value="" disabled className="text-gray-500">Select an option</option>
                   {categories.map((cat) => (
                     <option key={cat.slug} value={cat.slug}>{cat.title}</option>
                   ))}
