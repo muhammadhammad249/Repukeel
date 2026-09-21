@@ -85,11 +85,12 @@ function LoginContent() {
           </button>
           <div className="flex items-center gap-3">
             <Image
-              src="/logo.png"
+              src="/tick-logo.png"
               alt="Repukeel"
-              width={140}
+              width={40}
               height={40}
               className="h-[40px] w-auto object-contain"
+              unoptimized
             />
           </div>
         </div>
