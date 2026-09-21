@@ -125,33 +125,33 @@ export default function Footer() {
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/reputation-management/professionals" className="hover:text-white transition-colors">
                   Intellectual Property Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/monitoring-alerts/social-media-reputation-monitoring" className="hover:text-white transition-colors">
                   AI Brand Monitoring
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/monitoring-alerts/social-media-reputation-monitoring" className="hover:text-white transition-colors">
                   Trademark Monitoring
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/social-media-takedowns" className="hover:text-white transition-colors">
                   Impersonation Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/fake-review-removal" className="hover:text-white transition-colors">
                   Anti-Counterfeiting Solutions
-                </a>
+                </Link>
               </li>
 
               <li>
@@ -161,15 +161,15 @@ export default function Footer() {
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/tea-app-checker-removal" className="hover:text-white transition-colors">
                   Application Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   Anti-Piracy Protection
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -185,45 +185,45 @@ export default function Footer() {
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   Copyright Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/tiktok-content-removal" className="hover:text-white transition-colors">
                   DMCA Takedown Service
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/awdtsg-removal" className="hover:text-white transition-colors">
                   Leaked Content Removal
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/image-protection" className="hover:text-white transition-colors">
                   Adult Content Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/news-article-removal" className="hover:text-white transition-colors">
                   Article & Blog Removal
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/google-suppression-de-indexing" className="hover:text-white transition-colors">
                   Search Engine De-Indexing
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/instagram-content-removal" className="hover:text-white transition-colors">
                   Social Media Content Removal
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -239,45 +239,45 @@ export default function Footer() {
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/image-protection" className="hover:text-white transition-colors">
                   Remove Leaked OnlyFans Content
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/awdtsg-removal" className="hover:text-white transition-colors">
                   Remove Leaked Private Content
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/fake-review-removal" className="hover:text-white transition-colors">
                   Brand Defamation Removal
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/twitter-x-content-removal" className="hover:text-white transition-colors">
                   Fake Profile & Impersonation Removal
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   e-Learning Content Protection
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/content-removal/instagram-content-removal" className="hover:text-white transition-colors">
                   Copyright Image & Video Removal
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a href="/services" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/news-article-removal" className="hover:text-white transition-colors">
                   Negative Article Removal
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
