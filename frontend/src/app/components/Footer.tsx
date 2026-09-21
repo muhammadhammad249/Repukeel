@@ -161,13 +161,13 @@ export default function Footer() {
               </li>
 
               <li>
-                <Link href="/content-removal/tea-app-checker-removal" className="hover:text-white transition-colors">
+                <Link href="/dating-reputation/tea-app-checker-removal" className="hover:text-white transition-colors">
                   Application Protection
                 </Link>
               </li>
 
               <li>
-                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   Anti-Piracy Protection
                 </Link>
               </li>
@@ -185,7 +185,7 @@ export default function Footer() {
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
-                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   Copyright Protection
                 </Link>
               </li>
@@ -263,7 +263,7 @@ export default function Footer() {
               </li>
 
               <li>
-                <Link href="/content-removal/youtube-video-result-suppression" className="hover:text-white transition-colors">
+                <Link href="/search-result-cleanup/youtube-video-result-suppression" className="hover:text-white transition-colors">
                   e-Learning Content Protection
                 </Link>
               </li>
