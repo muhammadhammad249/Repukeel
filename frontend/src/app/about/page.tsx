@@ -93,29 +93,25 @@ export default function AboutPage() {
         <div className="container max-w-6xl mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-[13px] font-[800] text-[var(--gold)] uppercase tracking-widest mb-3 block">Process</span>
-            <h2 className="text-3xl md:text-4xl font-[800]">How We Work</h2>
+            <h2 className="text-3xl md:text-4xl font-[800] text-white">How We Work</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-[#111d40] p-8 rounded-2xl border border-white/5 relative">
-              <div className="text-[60px] font-[900] text-white/5 absolute top-4 right-6">1</div>
               <h4 className="text-[20px] font-[700] mb-3 text-[var(--gold)]">Audit</h4>
-              <p className="text-[15px] text-gray-300 leading-relaxed">We review your case and check what can realistically be removed.</p>
+              <p className="text-[15px] text-gray-100 leading-relaxed">We review your case and check what can realistically be removed.</p>
             </div>
             <div className="bg-[#111d40] p-8 rounded-2xl border border-white/5 relative">
-              <div className="text-[60px] font-[900] text-white/5 absolute top-4 right-6">2</div>
               <h4 className="text-[20px] font-[700] mb-3 text-[var(--gold)]">Strategy</h4>
-              <p className="text-[15px] text-gray-300 leading-relaxed">You get a clear plan with timelines and costs.</p>
+              <p className="text-[15px] text-gray-100 leading-relaxed">You get a clear plan with timelines and costs.</p>
             </div>
             <div className="bg-[#111d40] p-8 rounded-2xl border border-white/5 relative">
-              <div className="text-[60px] font-[900] text-white/5 absolute top-4 right-6">3</div>
               <h4 className="text-[20px] font-[700] mb-3 text-[var(--gold)]">Action</h4>
-              <p className="text-[15px] text-gray-300 leading-relaxed">We file removals, notices and appeals, and build your positive presence.</p>
+              <p className="text-[15px] text-gray-100 leading-relaxed">We file removals, notices and appeals, and build your positive presence.</p>
             </div>
             <div className="bg-[#111d40] p-8 rounded-2xl border border-white/5 relative">
-              <div className="text-[60px] font-[900] text-white/5 absolute top-4 right-6">4</div>
               <h4 className="text-[20px] font-[700] mb-3 text-[var(--gold)]">Protection</h4>
-              <p className="text-[15px] text-gray-300 leading-relaxed">We monitor for reposts and report back to you.</p>
+              <p className="text-[15px] text-gray-100 leading-relaxed">We monitor for reposts and report back to you.</p>
             </div>
           </div>
         </div>
