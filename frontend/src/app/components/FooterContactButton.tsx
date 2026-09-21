@@ -67,7 +67,7 @@ export default function FooterContactButton() {
       <div className={`absolute right-0 bottom-full mb-3 w-[220px] rounded-[12px] bg-[#121c36] border border-white/10 p-2 shadow-xl transition-all duration-200 z-50 ${isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2 pointer-events-none'}`}>
         {/* Gmail / Email */}
         <a
-          href="mailto:legalrepukeel@gmail.com"
+          href="mailto:Legal@Repukeel.com"
           onClick={() => setIsOpen(false)}
           className="flex items-center gap-3 rounded-[9px] px-4 py-3 text-[14px] font-[600] text-white hover:bg-[#0a152e] hover:text-[var(--gold)] transition-colors"
         >

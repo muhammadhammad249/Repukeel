@@ -1,252 +1,212 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import BlueCtaBand from '../components/BlueCtaBand';
 
+const SERVICES = [
+  { id: 1, name: 'Personal Reputation Audit', price: '$497', timeframe: '48–72 hours', type: 'Official' },
+  { id: 2, name: 'Wikipedia Notability Assessment', price: 'Free', timeframe: '5 business days', type: 'Official' },
+  { id: 3, name: 'Wikipedia Page Creation', price: '$4,995', timeframe: 'Contact for timeframe', type: 'Official' },
+  { id: 4, name: 'Wikipedia Press Foundation Building', price: '$3,000–$10,000', timeframe: '6–12 months', type: 'Estimated' },
+  { id: 5, name: 'Google Text Review Removal', price: '$1,000/review', timeframe: '3–7 days', type: 'Official' },
+  { id: 6, name: 'Google Image Review Removal', price: '$750/review', timeframe: 'Up to 7 days', type: 'Official' },
+  { id: 7, name: 'Yelp Review Removal', price: '$1,250/review', timeframe: 'Up to 30 days', type: 'Official' },
+  { id: 8, name: 'Fake Review Removal', price: '$500–$1,500/review', timeframe: '3–14 days', type: 'Estimated' },
+  { id: 9, name: 'BBB Review & Complaint Removal', price: '$750–$2,500', timeframe: '1–4 weeks', type: 'Estimated' },
+  { id: 10, name: 'Travel Review Removal', price: '$500–$1,500/review', timeframe: '3–30 days', type: 'Estimated' },
+  { id: 11, name: 'TikTok Content Removal', price: '$750–$2,500', timeframe: '3–14 days', type: 'Estimated' },
+  { id: 12, name: 'Instagram Content Removal', price: '$500–$2,000', timeframe: '3–14 days', type: 'Estimated' },
+  { id: 13, name: 'X/Twitter Content Removal', price: '$500–$2,000', timeframe: '3–14 days', type: 'Estimated' },
+  { id: 14, name: 'Reddit Content Removal', price: '$750–$2,500', timeframe: '3–21 days', type: 'Estimated' },
+  { id: 15, name: 'Facebook/AWDTSG Content Removal', price: '$750–$2,500', timeframe: '~72 hours–2 weeks', type: 'Estimated' },
+  { id: 16, name: 'Mugshot Removal', price: '$1,000–$3,000', timeframe: '1–4 weeks', type: 'Estimated' },
+  { id: 17, name: 'Defamatory Content Removal', price: '$1,000–$5,000+', timeframe: '1–6 weeks', type: 'Estimated' },
+  { id: 18, name: 'News Article Removal', price: '$2,000–$10,000+', timeframe: '2–12 weeks', type: 'Estimated' },
+  { id: 19, name: 'Forum/Gossip Content Removal', price: '$750–$3,000', timeframe: '1–4 weeks', type: 'Estimated' },
+  { id: 20, name: 'Dating App Image/Profile Removal', price: '$500–$2,000', timeframe: '3–14 days', type: 'Estimated' },
+  { id: 21, name: 'YouTube Content Removal', price: '$750–$3,000', timeframe: '3–21 days', type: 'Estimated' },
+  { id: 22, name: 'Quora Content Removal', price: '$500–$2,000', timeframe: '3–21 days', type: 'Estimated' },
+  { id: 23, name: 'Search Engine Content Removal', price: '$1,000–$5,000', timeframe: '2–8 weeks', type: 'Estimated' },
+  { id: 24, name: 'AWDTSG Removal', price: '$750–$2,500', timeframe: '~72 hours', type: 'Estimated' },
+  { id: 25, name: 'Tea App Search', price: '$149.99', timeframe: '24 hours', type: 'Official' },
+  { id: 26, name: 'Tea App Post Removal', price: '$750', timeframe: '3–14 days', type: 'Official price' },
+  { id: 27, name: 'Professional Reputation Management', price: '$999 / 30 days', timeframe: '30 days', type: 'Official' },
+  { id: 28, name: 'Job Reputation Management', price: '$1,500–$5,000/month', timeframe: 'Several weeks–months', type: 'Estimated' },
+  { id: 29, name: 'LinkedIn Profile Optimization', price: '$500–$1,500', timeframe: '3–10 days', type: 'Estimated' },
+  { id: 30, name: 'Background-Check Reputation Cleanup', price: '$1,500–$5,000', timeframe: '2–8 weeks', type: 'Estimated' },
+  { id: 31, name: 'Search Result Cleanup', price: '$1,500–$5,000/month', timeframe: '30–90 days', type: 'Estimated' },
+  { id: 32, name: 'Google Search Suppression', price: '$1,500–$5,000/month', timeframe: '30–90 days', type: 'Estimated' },
+  { id: 33, name: 'Google Autocomplete Cleanup', price: '$1,000–$3,500', timeframe: '2–8 weeks', type: 'Estimated' },
+  { id: 34, name: 'Reddit Search Suppression', price: '$1,000–$3,500/month', timeframe: '30–90 days', type: 'Estimated' },
+  { id: 35, name: 'YouTube Search Suppression', price: '$1,500–$4,000/month', timeframe: '30–90 days', type: 'Estimated' },
+  { id: 36, name: 'Search Engine De-indexing', price: '$750–$3,000', timeframe: '1–6 weeks', type: 'Estimated' },
+  { id: 37, name: 'AWDTSG Monitoring & Alerts', price: '$200–$750/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 38, name: 'Social Media Reputation Monitoring', price: '$200–$1,000/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 39, name: 'Dark Web & Data Leak Monitoring', price: '$300–$1,500/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 40, name: 'Employer & Workplace Risk Tracking', price: '$300–$1,500/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 41, name: 'Monthly Snapshot Reports', price: '$200–$750/month', timeframe: 'Monthly', type: 'Estimated' },
+  { id: 42, name: 'Reputation Monitoring & Alerts', price: '$250–$1,000/month', timeframe: '24/7 ongoing', type: 'Estimated' },
+  { id: 43, name: 'Online Reputation Management', price: '$1,500–$5,000/month', timeframe: '30–90 days+', type: 'Estimated' },
+  { id: 44, name: 'Dating Reputation Management', price: '$1,000–$4,000/month', timeframe: '30–90 days+', type: 'Estimated' },
+  { id: 45, name: 'Dating Reputation Monitoring', price: '$200–$750/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 46, name: 'Job Reputation Protection', price: '$500–$2,000/month', timeframe: 'Ongoing', type: 'Estimated' },
+  { id: 47, name: 'Reputation Audit', price: 'From $297', timeframe: 'Contact for timeframe', type: 'Official' },
+  { id: 48, name: 'Industry-Specific Reputation Management', price: '$1,500–$7,500/month', timeframe: '30–90 days+', type: 'Estimated' },
+];
+
 export default function PricingPage() {
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem('authToken'));
-  }, []);
-
-  const handlePlanClick = (plan: string) => {
-    if (isLoggedIn) {
-      router.push(`/checkout?plan=${plan}`);
-    } else {
-      router.push(`/signup?plan=${plan}`);
-    }
-  };
-  return (
-    <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">
-      
-      {/* ================= HERO (Dark Navy Grid) ================= */}
-      <section className="relative w-full bg-[var(--bg-navy)] pt-24 pb-20 overflow-hidden">
-        {/* Faint grid overlay */}
-        <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-        
-        {/* Sparse gold dots */}
-        <div className="absolute top-20 left-[20%] w-1.5 h-1.5 rounded-full bg-[var(--gold)] opacity-50 shadow-[0_0_8px_var(--gold)]"></div>
-        <div className="absolute top-40 right-[30%] w-1.5 h-1.5 rounded-full bg-[var(--gold)] opacity-70 shadow-[0_0_8px_var(--gold)] animate-pulse"></div>
-        <div className="absolute bottom-32 left-[10%] w-2 h-2 rounded-full bg-[var(--gold)] opacity-40 shadow-[0_0_10px_var(--gold)]"></div>
-        <div className="absolute top-24 right-[10%] w-1 h-1 rounded-full bg-[var(--gold)] opacity-60"></div>
-        
-        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          
-          {/* Left Text */}
-          <div>
-            <div className="inline-flex items-center gap-2 mb-6 pill-badge dark-var">
-              <span style={{ color: 'var(--gold)' }}>💳</span> Flexible Plans
-            </div>
-            <h1 className="text-5xl md:text-6xl font-[900] tracking-tight mb-4" style={{ color: '#ffffff' }}>
-              Transparent Pricing
-            </h1>
-            <p className="text-[20px] font-[600] mb-6" style={{ color: 'var(--gold)' }}>
-              No hidden fees. Total protection.
-            </p>
-            <p className="text-[16px] max-w-lg" style={{ color: '#9aa4c0' }}>
-              Choose the protection plan that fits your needs. Whether you're a single creator or a large enterprise, we have you covered.
-            </p>
-          </div>
-
-          {/* Right Visual: Attractive Plan Summary Card */}
-          <div className="relative hidden md:flex justify-center lg:justify-end items-center">
-            {/* Glow blob */}
-            <div className="absolute w-72 h-72 rounded-full bg-[var(--gold)] opacity-5 filter blur-3xl pointer-events-none"></div>
-
-            {/* Main card */}
-            <div className="relative z-10 w-full max-w-[320px] bg-[#111d40] border border-[rgba(217,165,43,0.3)] rounded-2xl p-8 shadow-[0_0_40px_rgba(217,165,43,0.12)]">
-              {/* Top badge */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--gold)] flex items-center justify-center text-[var(--bg-navy)]">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
-                      <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
-                    </svg>
-                  </div>
-                  <span className="text-[14px] font-[800] tracking-wide" style={{ color: '#ffffff' }}>All Plans Include</span>
-                </div>
-                <div className="w-2 h-2 rounded-full bg-[var(--green)] shadow-[0_0_8px_#22c55e] animate-pulse"></div>
-              </div>
-
-              {/* Feature list */}
-              <div className="flex flex-col gap-4 mb-8">
-                {[
-                  'DMCA Takedown Notices',
-                  '24/7 Monitoring & Alerts',
-                  'Legal Expert Support',
-                  'Detailed Case Reports',
-                  '100% Confidential',
-                  'Global Coverage (150+ Countries)',
-                ].map((feat, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[rgba(217,165,43,0.15)] flex items-center justify-center flex-shrink-0">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="3" className="w-3 h-3">
-                        <path d="M20 6L9 17l-5-5"/>
-                      </svg>
-                    </div>
-                    <span className="text-[14px] font-[500]" style={{ color: '#c8d0e7' }}>{feat}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Floating price pills */}
-              <div className="flex flex-wrap gap-2">
-                {['$99 / mo', '$199 / mo', '$499 / mo', 'Custom'].map((price, i) => (
-                  <span key={i} className="text-[13px] font-[700] px-3 py-1 rounded-full border border-[rgba(217,165,43,0.4)]" style={{ color: 'var(--gold)', background: 'rgba(217,165,43,0.06)' }}>
-                    {price}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= PRICING CARDS ================= */}
-      <section className="w-full bg-[var(--bg-soft)] py-20 px-4">
-        <div className="max-w-[1280px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
-          
-          {/* Basic Plan */}
-          <div className="card-light flex flex-col h-full rounded-2xl relative shadow-lg bg-white border border-[var(--border-light)] p-8">
-            <h3 className="text-[20px] font-[800] text-[var(--text-heading)] mb-2">Basic</h3>
-            <p className="text-[14px] text-[var(--text-body)] mb-6">For individuals starting out</p>
-            <div className="mb-8">
-              <span className="text-4xl font-[800] text-[var(--text-heading)]">$89</span>
-              <span className="text-[14px] text-[var(--text-body)]"> /month</span>
-            </div>
-            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Takedowns</strong>
-                <p className="text-[var(--text-body)]">Unlimited — 1 product or username</p>
-              </div>
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Coverage Highlights</strong>
-                <p className="text-[var(--text-body)]">Four-engine delisting (Google, Bing, Yandex & DuckDuckGo); Telegram & Discord takedowns; impersonator removal, social media, 24/7 monitoring</p>
-              </div>
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Turnaround</strong>
-                <p className="text-[var(--text-body)]">Standard takedown queue</p>
-              </div>
-            </div>
-            <button onClick={() => handlePlanClick('Basic')} className="btn btn-outline-dark w-full text-center">Choose Basic</button>
-          </div>
-
-          {/* Professional Plan (Highlighted) */}
-          <div className="flex flex-col h-full rounded-2xl relative shadow-2xl bg-[var(--blue)] border border-[var(--blue-lt)] p-8 transform md:-translate-y-4">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--gold)] text-[var(--bg-navy)] text-[12px] font-[800] uppercase tracking-widest px-4 py-1 rounded-full shadow-md whitespace-nowrap">
-              Most Popular
-            </div>
-            <h3 className="text-[20px] font-[800] text-white mb-2">Professional</h3>
-            <p className="text-[14px] text-blue-100 mb-6">For growing creators & brands</p>
-            <div className="mb-8">
-              <span className="text-4xl font-[800] text-white">$179</span>
-              <span className="text-[14px] text-blue-200"> /month</span>
-            </div>
-            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
-              <div>
-                <strong className="block text-white mb-1">Takedowns</strong>
-                <p className="text-blue-100">Unlimited — up to 5 products or usernames</p>
-              </div>
-              <div>
-                <strong className="block text-white mb-1">Coverage Highlights</strong>
-                <p className="text-blue-100">Everything in Basic, plus payment-processor reporting where applicable and a dedicated takedown manager</p>
-              </div>
-              <div>
-                <strong className="block text-white mb-1">Turnaround</strong>
-                <p className="text-blue-100">Priority queue, 48-hour removal guarantee</p>
-              </div>
-            </div>
-            <button onClick={() => handlePlanClick('Professional')} className="btn btn-gold-solid w-full text-center">Choose Professional</button>
-          </div>
-
-          {/* Enterprise Plan */}
-          <div className="card-light flex flex-col h-full rounded-2xl relative shadow-lg bg-white border border-[var(--border-light)] p-8">
-            <h3 className="text-[20px] font-[800] text-[var(--text-heading)] mb-2">Enterprise</h3>
-            <p className="text-[14px] text-[var(--text-body)] mb-6">For large scale protection needs</p>
-            <div className="mb-8">
-              <span className="text-4xl font-[800] text-[var(--text-heading)]">$359</span>
-              <span className="text-[14px] text-[var(--text-body)]"> /month</span>
-            </div>
-            <div className="flex flex-col gap-6 mb-8 flex-1 text-[14px]">
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Takedowns</strong>
-                <p className="text-[var(--text-body)]">Unlimited — up to 12 products or usernames</p>
-              </div>
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Coverage Highlights</strong>
-                <p className="text-[var(--text-body)]">Everything in Professional, plus private trackers, filehosts, and custom crawlers for niche leak sites</p>
-              </div>
-              <div>
-                <strong className="block text-[var(--text-heading)] mb-1">Turnaround</strong>
-                <p className="text-[var(--text-body)]">Priority queue; 48-hour removal guarantee</p>
-              </div>
-            </div>
-            <button onClick={() => handlePlanClick('Enterprise')} className="btn btn-outline-dark w-full text-center">Choose Enterprise</button>
-          </div>
-
-        </div>
-        </div>
-      </section>
-
-      {/* ================= FAQ SECTION ================= */}
-      <section id="faq" className="w-full bg-white py-24">
-        <div className="container max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[13px] font-[700] text-[var(--gold)] uppercase tracking-widest mb-2 block">FAQ</span>
-            <h2 className="text-4xl font-[800] text-[var(--text-heading)] mb-4">Frequently Asked Questions</h2>
-            <p className="text-[16px] text-[var(--text-body)]">Everything you need to know about our plans and services.</p>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            {[
-              { q: 'Which plan is right for me?', a: 'If you are an individual creator or small business, the Starter plan covers the basics. The Professional plan suits growing brands dealing with frequent infringement. Enterprise is best for companies with large content libraries or multiple brands.' },
-              { q: 'Can I change my plan at any time?', a: 'Yes. You can upgrade or downgrade your plan at any time. Changes take effect on your next billing cycle and any unused credit is applied to your new plan.' },
-              { q: 'Is there a free trial?', a: 'We offer a free risk assessment for new clients. This gives you a clear picture of your exposure before committing to a plan. Contact our sales team to get started.' },
-              { q: 'How quickly are takedowns processed?', a: 'Most takedown requests are processed within 24–48 hours. Enterprise clients receive priority queue status with a guaranteed 48-hour removal SLA.' },
-              { q: 'Do you cover all platforms?', a: 'Yes. Our coverage includes all major social media platforms (TikTok, Instagram, Facebook, YouTube, X/Twitter), search engines (Google, Bing), adult content sites, file-sharing platforms, and review sites.' },
-              { q: 'Is my information kept confidential?', a: '100% confidential. All client information is protected under strict NDAs. We never share client details with third parties.' },
-              { q: 'What happens if removed content reappears?', a: 'Our monitoring system detects reappearances automatically. Re-uploads are covered under your plan at no extra cost — we will issue a new takedown immediately.' },
-              { q: 'Do you offer refunds?', a: 'If a takedown cannot be completed due to reasons within our control, we will issue a full refund for that specific request. Monthly subscription fees are non-refundable but you may cancel any time.' },
-            ].map((item, i) => (
-              <FaqItem key={i} q={item.q} a={item.a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= BLUE CTA ================= */}
-      <BlueCtaBand 
-        headingWhite="Not sure which"
-        headingGold="plan is right?"
-        subtext="Talk to our experts to get a free risk assessment and find the perfect protection plan for your digital assets."
-        primaryBtnText="Contact Sales"
-        primaryBtnLink="/contact"
-      />
-      
-    </div>
+  const [search, setSearch] = useState('');
+  const filtered = SERVICES.filter(s =>
+    s.name.toLowerCase().includes(search.toLowerCase())
   );
-}
 
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = React.useState(false);
   return (
-    <div className="border border-[var(--border-light)] rounded-2xl overflow-hidden">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left font-[700] text-[var(--text-heading)] text-[16px] hover:bg-gray-50 transition-colors"
-      >
-        {q}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-5 h-5 flex-shrink-0 ml-4 transition-transform ${open ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      {open && (
-        <div className="px-6 pb-5 text-[15px] text-[var(--text-body)] leading-relaxed border-t border-[var(--border-light)] pt-4">
-          {a}
+    <div className="flex flex-col min-h-screen bg-white font-sans">
+
+      {/* Hero */}
+      <section className="relative w-full bg-[#0a192f] pt-24 pb-20 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute top-20 left-[20%] w-1.5 h-1.5 rounded-full bg-[#d4af37] opacity-50 shadow-[0_0_8px_#d4af37]"></div>
+        <div className="absolute top-40 right-[30%] w-1.5 h-1.5 rounded-full bg-[#d4af37] opacity-70 shadow-[0_0_8px_#d4af37] animate-pulse"></div>
+        <div className="absolute bottom-32 left-[10%] w-2 h-2 rounded-full bg-[#d4af37] opacity-40 shadow-[0_0_10px_#d4af37]"></div>
+
+        <div className="container relative z-10 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 border border-[#d4af37]/40 text-[#d4af37] text-[13px] font-[700] px-4 py-1.5 rounded-full">
+            💳 Service Pricing
+          </div>
+          <h1 className="text-5xl md:text-6xl font-[900] tracking-tight mb-4 text-white">
+            Transparent Pricing
+          </h1>
+          <p className="text-[18px] font-[600] mb-4 text-[#d4af37]">No hidden fees. Total protection.</p>
+          <p className="text-[15px] text-gray-400 max-w-xl mx-auto">
+            All 48 services listed with clear prices and timeframes. Prices marked <span className="text-[#d4af37] font-semibold">Official</span> are fixed; <span className="text-gray-300 font-semibold">Estimated</span> prices vary by case complexity.
+          </p>
         </div>
-      )}
+      </section>
+
+      {/* Notice */}
+      <div className="w-full bg-[#d4af37]/10 border-b border-[#d4af37]/30 py-3 px-6 text-center text-[13px] text-[#0a192f] font-[500]">
+        💬 All estimates require a free case review. &nbsp;
+        <a href="/contact" className="text-[#d4af37] font-bold hover:underline">Get a custom quote →</a>
+      </div>
+
+      {/* Search + Table */}
+      <section className="flex-1 w-full py-16 px-4">
+        <div className="max-w-[1100px] mx-auto">
+
+          {/* Search bar */}
+          <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
+            <div className="text-[#0a192f] font-[700] text-[18px]">
+              All Services <span className="text-gray-400 font-[400] text-[14px] ml-2">({SERVICES.length} total)</span>
+            </div>
+            <div className="relative">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search services..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-[14px] w-[260px] focus:outline-none focus:border-[#d4af37] shadow-sm"
+              />
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+            <table className="w-full text-[14px] border-collapse">
+              <thead>
+                <tr className="bg-[#0a192f] text-white">
+                  <th className="text-left px-4 py-4 font-[700] w-12">#</th>
+                  <th className="text-left px-4 py-4 font-[700]">Service</th>
+                  <th className="text-left px-4 py-4 font-[700]">Price (USD)</th>
+                  <th className="text-left px-4 py-4 font-[700]">Timeframe</th>
+                  <th className="text-left px-4 py-4 font-[700]">Price Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-12 text-gray-400">No services match your search.</td>
+                  </tr>
+                ) : (
+                  filtered.map((s, i) => (
+                    <tr
+                      key={s.id}
+                      className={`border-t border-gray-100 hover:bg-[#fffbf0] transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'}`}
+                    >
+                      <td className="px-4 py-3.5 text-gray-400 font-[600]">{s.id}</td>
+                      <td className="px-4 py-3.5 font-[600] text-[#0a192f]">{s.name}</td>
+                      <td className="px-4 py-3.5 font-[700] text-[#0a192f]">{s.price}</td>
+                      <td className="px-4 py-3.5 text-gray-600">{s.timeframe}</td>
+                      <td className="px-4 py-3.5">
+                        <span className={`inline-block text-[12px] font-[700] px-2.5 py-0.5 rounded-full ${
+                          s.type === 'Official'
+                            ? 'bg-[#d4af37]/15 text-[#9a7c1f]'
+                            : s.type === 'Official price'
+                            ? 'bg-blue-50 text-blue-600'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {s.type}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Legend */}
+          <div className="mt-6 flex flex-wrap gap-4 text-[13px]">
+            <div className="flex items-center gap-2">
+              <span className="inline-block bg-[#d4af37]/15 text-[#9a7c1f] text-[12px] font-[700] px-2.5 py-0.5 rounded-full">Official</span>
+              <span className="text-gray-500">Fixed, published rate</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block bg-gray-100 text-gray-600 text-[12px] font-[700] px-2.5 py-0.5 rounded-full">Estimated</span>
+              <span className="text-gray-500">Varies by case — free quote available</span>
+            </div>
+          </div>
+
+          {/* FAQ + CTA */}
+          <div className="grid md:grid-cols-2 gap-6 mt-16">
+            <div className="bg-[#f8fafc] border border-gray-200 rounded-2xl p-8">
+              <h3 className="text-[18px] font-[800] text-[#0a192f] mb-4">Payment Methods</h3>
+              <ul className="space-y-3 text-[14px] text-gray-600">
+                {['Western Union', 'Remitly', 'Cryptocurrency'].map(m => (
+                  <li key={m} className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#d4af37]/20 flex items-center justify-center text-[#d4af37]">✓</span>
+                    {m}
+                  </li>
+                ))}
+                <li className="flex items-center gap-3 text-gray-400">
+                  <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">✕</span>
+                  Cards / PayPal (not accepted)
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-[#0a192f] rounded-2xl p-8 text-white">
+              <h3 className="text-[18px] font-[800] mb-3">Not sure which service you need?</h3>
+              <p className="text-gray-400 text-[14px] mb-6">
+                Get a free case review. We will assess your situation and recommend the right approach with a custom quote.
+              </p>
+              <div className="flex flex-col gap-3">
+                <Link href="/request-free-analysis" className="bg-[#d4af37] hover:bg-[#c19b2e] text-white font-bold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
+                  Request Free Analysis
+                </Link>
+                <Link href="/contact" className="border border-white/20 hover:border-white/40 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-[14px] text-center">
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <BlueCtaBand />
     </div>
   );
 }

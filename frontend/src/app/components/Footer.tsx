@@ -440,7 +440,14 @@ export default function Footer() {
                 href="/terms-conditions"
                 className="hover:text-white transition-colors"
               >
-                Terms & Conditions
+                Terms &amp; Conditions
+              </Link>
+
+              <Link
+                href="/faq"
+                className="hover:text-white transition-colors"
+              >
+                FAQ
               </Link>
             </div>
           </div>
@@ -489,7 +496,16 @@ export default function Footer() {
               href="/terms-conditions"
               className="hover:text-white transition-colors"
             >
-              Terms & Conditions
+              Terms &amp; Conditions
+            </Link>
+
+            <span className="text-gray-600">|</span>
+
+            <Link
+              href="/faq"
+              className="hover:text-white transition-colors"
+            >
+              FAQ
             </Link>
 
           </div>
