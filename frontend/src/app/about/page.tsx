@@ -7,7 +7,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen bg-white">
       
       {/* ================= HERO ================= */}
-      <section className="relative w-full py-32 md:py-48 flex items-center justify-center overflow-hidden">
+      <section className="relative w-full py-16 md:py-24 flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center"></div>
         <div className="absolute inset-0 bg-[#0a1128] opacity-80"></div>

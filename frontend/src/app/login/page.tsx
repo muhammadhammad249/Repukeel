@@ -209,8 +209,8 @@ function LoginContent() {
               <img 
                 src="/login-logo-outline.png" 
                 alt="Repukeel Shield" 
-                className="w-[120px] h-auto object-contain"
-                style={{ filter: 'invert(1) brightness(2)', mixBlendMode: 'screen' }}
+                className="w-[130px] h-auto object-contain"
+                style={{ filter: 'brightness(10) contrast(1)', mixBlendMode: 'lighten' }}
               />
             </div>
           </div>
