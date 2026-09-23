@@ -1,6 +1,11 @@
-'use client';
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About Us | Reputation Experts',
+  description: 'Learn about RepuKeel, the premier online reputation management and brand protection agency. Discover our values, philosophy, and process.',
+};
 
 export default function AboutPage() {
   return (

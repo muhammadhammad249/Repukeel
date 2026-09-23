@@ -6,9 +6,46 @@ import GlobalLayoutWrapper from "./components/GlobalLayoutWrapper";
 import Chatbot from "./components/Chatbot";
 
 export const metadata: Metadata = {
-  title: "RepuKeel | Reputation & Brand Protection",
-  description:
-    "Fast, effective reputation and DMCA takedown service. Protecting your intellectual property from piracy and unauthorized use across all platforms.",
+  metadataBase: new URL('https://repukeel.com'),
+  title: {
+    default: "RepuKeel | Premium Reputation & Brand Protection Worldwide",
+    template: "%s | RepuKeel"
+  },
+  description: "Fast, effective reputation and DMCA takedown service. Protecting your intellectual property from piracy and unauthorized use across all platforms globally.",
+  keywords: ["Reputation Management", "DMCA Takedown", "Brand Protection", "Online Privacy", "Remove Defamation", "Anti-Piracy", "RepuKeel"],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://repukeel.com",
+    siteName: "RepuKeel",
+    title: "RepuKeel | Premium Reputation & Brand Protection",
+    description: "Defend your brand with RepuKeel. We remove harmful online content, repair search results, and protect your reputation globally.",
+    images: [
+      {
+        url: "/icon.jpg",
+        width: 1200,
+        height: 630,
+        alt: "RepuKeel Brand Protection",
+      }
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RepuKeel | Premium Reputation & Brand Protection",
+    description: "Defend your brand with RepuKeel. We remove harmful online content and protect your reputation globally.",
+    images: ["/icon.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export const viewport: Viewport = {
@@ -31,6 +68,27 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "RepuKeel",
+              "url": "https://repukeel.com",
+              "logo": "https://repukeel.com/icon.jpg",
+              "description": "RepuKeel specializes in online reputation management, DMCA takedowns, and global brand protection.",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+923451644916",
+                "contactType": "customer service"
+              },
+              "sameAs": [
+                "https://repukeel.com"
+              ]
+            })
+          }}
         />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
