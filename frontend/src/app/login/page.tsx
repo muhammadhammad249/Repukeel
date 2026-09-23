@@ -200,7 +200,7 @@ function LoginContent() {
               src="/login-logo-outline.png"
               alt="Repukeel Shield"
               className="w-[130px] h-auto object-contain"
-              style={{ filter: 'brightness(10) contrast(1)', mixBlendMode: 'lighten' }}
+              style={{ filter: 'grayscale(100%) invert(100%) brightness(10)', mixBlendMode: 'screen' }}
             />
           </div>
 
