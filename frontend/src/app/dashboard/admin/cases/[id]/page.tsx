@@ -27,6 +27,23 @@ export default function AdminCaseDetailPage() {
   const [notifyClient, setNotifyClient] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Tabs state
+  const [activeTab, setActiveTab] = useState('timeline');
+  const [messages, setMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sendingMsg, setSendingMsg] = useState(false);
+
+  // Invoice state
+  const [invoice, setInvoice] = useState<any>(null);
+  const [isSavingInvoice, setIsSavingInvoice] = useState(false);
+  const [invoiceForm, setInvoiceForm] = useState({
+    amount: '',
+    status: 'pending',
+    notes: '',
+    payment_method: '',
+    payment_reference: ''
+  });
+
   useEffect(() => {
     async function load() {
       const { data: c } = await supabase
@@ -50,7 +67,30 @@ export default function AdminCaseDetailPage() {
         .eq('case_id', id)
         .order('created_at', { ascending: true });
         
+      const { data: m } = await supabase
+        .from('messages')
+        .select('*, profiles(full_name, role)')
+        .eq('case_id', id)
+        .order('created_at', { ascending: true });
+
+      const { data: inv } = await supabase
+        .from('invoices')
+        .select('*')
+        .eq('case_id', id)
+        .maybeSingle();
+
       setUpdates(u || []);
+      setMessages(m || []);
+      setInvoice(inv);
+      if (inv) {
+        setInvoiceForm({
+          amount: inv.amount,
+          status: inv.status,
+          notes: inv.notes || '',
+          payment_method: inv.payment_method || '',
+          payment_reference: inv.payment_reference || ''
+        });
+      }
       setLoading(false);
     }
     if (id) load();
@@ -93,6 +133,47 @@ export default function AdminCaseDetailPage() {
     }
     
     setIsUpdating(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+    setSendingMsg(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase.from('messages').insert({
+      case_id: id,
+      sender_id: user.id,
+      message: newMessage.trim(),
+    });
+
+    const { data: m } = await supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true });
+    setMessages(m || []);
+    setNewMessage('');
+    setSendingMsg(false);
+  };
+
+  const handleSaveInvoice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingInvoice(true);
+    if (invoice) {
+      await supabase.from('invoices').update({
+        amount: invoiceForm.amount,
+        status: invoiceForm.status,
+        notes: invoiceForm.notes,
+        updated_at: new Date().toISOString()
+      }).eq('id', invoice.id);
+    } else {
+      await supabase.from('invoices').insert({
+        case_id: id,
+        amount: invoiceForm.amount,
+        status: invoiceForm.status,
+        notes: invoiceForm.notes
+      });
+    }
+    const { data: inv } = await supabase.from('invoices').select('*').eq('case_id', id).maybeSingle();
+    setInvoice(inv);
+    setIsSavingInvoice(false);
   };
 
   if (loading) {
@@ -181,109 +262,176 @@ export default function AdminCaseDetailPage() {
           )}
         </div>
 
-        {/* Timeline */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-[14px] font-[800] text-[#0a192f] mb-6">Activity Timeline</h3>
-          <div className="flex flex-col">
-            {updates.map((u, i) => {
-              const si = STATUS_LABELS[u.status] || { label: u.status, color: 'bg-gray-100 text-gray-700' };
-              return (
-                <div key={u.id} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-3 h-3 rounded-full mt-1 flex-shrink-0 ${i === updates.length - 1 ? 'bg-[#d4af37]' : 'bg-gray-300'}`}></div>
-                    {i < updates.length - 1 && <div className="w-px flex-1 bg-gray-200 my-1"></div>}
-                  </div>
-                  <div className="pb-6 flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[700] ${si.color}`}>{si.label}</span>
-                      <span className="text-[12px] text-gray-400">{new Date(u.created_at).toLocaleString()}</span>
-                      {u.profiles?.full_name && <span className="text-[11px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded">by {u.profiles.full_name}</span>}
-                    </div>
-                    {u.note && (
-                      <div className="mt-2 text-[14px] text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                        <span className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider block mb-1">Message to client:</span>
-                        {u.note}
-                      </div>
-                    )}
-                    {u.internal_note && (
-                      <div className="mt-2 text-[14px] text-purple-700 bg-purple-50 p-3 rounded-xl border border-purple-100">
-                        <span className="text-[11px] font-[700] text-purple-400 uppercase tracking-wider block mb-1">Internal Note (Admin only):</span>
-                        {u.internal_note}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+      </div>
+      
+      {/* Tabs */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-6">
+        <div className="border-b border-gray-100 flex overflow-x-auto">
+          {['timeline', 'messages', 'invoice'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-4 text-[13px] font-[700] whitespace-nowrap transition-all border-b-2 capitalize ${
+                activeTab === tab
+                  ? 'border-[#d4af37] text-[#d4af37]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab === 'timeline' ? '📋 Timeline' : tab === 'messages' ? `💬 Messages (${messages.length})` : '💳 Invoice'}
+            </button>
+          ))}
         </div>
 
-      </div>
-
-      {/* Right Column: Update Status Form */}
-      <div className="w-full lg:w-[380px] flex flex-col gap-6">
-        <form onSubmit={handleUpdateStatus} className="bg-white rounded-2xl border border-[#d4af37]/30 shadow-md p-6 sticky top-[92px]">
-          <h3 className="text-[15px] font-[800] text-[#0a192f] mb-4 flex items-center gap-2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-[#d4af37]"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Update Case Status
-          </h3>
-
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">New Status</label>
-              <select
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full px-3 py-2.5 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] font-[600]"
-                required
-              >
-                {ALL_STATUSES.map((s) => (
-                  <option key={s} value={s}>{STATUS_LABELS[s]?.label || s}</option>
-                ))}
-              </select>
+        {/* Timeline Tab */}
+        {activeTab === 'timeline' && (
+          <div className="p-6">
+            <h3 className="text-[14px] font-[800] text-[#0a192f] mb-6">Activity Timeline</h3>
+            <div className="flex flex-col">
+              {updates.map((u, i) => {
+                const si = STATUS_LABELS[u.status] || { label: u.status, color: 'bg-gray-100 text-gray-700' };
+                return (
+                  <div key={u.id} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-3 h-3 rounded-full mt-1 flex-shrink-0 ${i === updates.length - 1 ? 'bg-[#d4af37]' : 'bg-gray-300'}`}></div>
+                      {i < updates.length - 1 && <div className="w-px flex-1 bg-gray-200 my-1"></div>}
+                    </div>
+                    <div className="pb-6 flex-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[700] ${si.color}`}>{si.label}</span>
+                        <span className="text-[12px] text-gray-400">{new Date(u.created_at).toLocaleString()}</span>
+                        {u.profiles?.full_name && <span className="text-[11px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded">by {u.profiles.full_name}</span>}
+                      </div>
+                      {u.note && (
+                        <div className="mt-2 text-[14px] text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                          <span className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider block mb-1">Message to client:</span>
+                          {u.note}
+                        </div>
+                      )}
+                      {u.internal_note && (
+                        <div className="mt-2 text-[14px] text-purple-700 bg-purple-50 p-3 rounded-xl border border-purple-100">
+                          <span className="text-[11px] font-[700] text-purple-400 uppercase tracking-wider block mb-1">Internal Note (Admin only):</span>
+                          {u.internal_note}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-
-            <div>
-              <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Client Update Note <span className="text-gray-400 font-normal">(visible to client)</span></label>
-              <textarea
-                value={updateNote}
-                onChange={(e) => setUpdateNote(e.target.value)}
-                rows={3}
-                placeholder="e.g. Removal request filed with Google. Expected response within 7 days."
-                className="w-full px-3 py-2 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Internal Note <span className="text-gray-400 font-normal">(admins only)</span></label>
-              <textarea
-                value={internalNote}
-                onChange={(e) => setInternalNote(e.target.value)}
-                rows={2}
-                placeholder="Private note for the team..."
-                className="w-full px-3 py-2 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-purple-400 resize-none"
-              />
-            </div>
-
-            <label className="flex items-center gap-2 cursor-pointer mt-1">
-              <input
-                type="checkbox"
-                checked={notifyClient}
-                onChange={(e) => setNotifyClient(e.target.checked)}
-                className="w-4 h-4 accent-[#d4af37]"
-              />
-              <span className="text-[13px] font-[600] text-gray-700">Notify client by email</span>
-            </label>
-
-            <button
-              type="submit"
-              disabled={isUpdating}
-              className="w-full mt-2 h-[44px] bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[14px] rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? 'Saving...' : 'Save Update'}
-            </button>
           </div>
-        </form>
+        )}
+
+        {/* Messages Tab */}
+        {activeTab === 'messages' && (
+          <div className="flex flex-col h-[500px]">
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+              {messages.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-400 text-[14px]">No messages yet. Send a message to the client.</p>
+                </div>
+              ) : (
+                messages.map((m) => {
+                  const isAdmin = m.profiles?.role === 'admin' || m.profiles?.role === 'super_admin';
+                  return (
+                    <div key={m.id} className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                        isAdmin ? 'bg-[#0c1940] text-white' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        <p className={`text-[11px] font-[700] mb-1 ${isAdmin ? 'text-blue-200' : 'text-gray-500'}`}>
+                          {isAdmin ? 'You (Admin)' : client?.full_name || 'Client'}
+                        </p>
+                        <p className="text-[14px] leading-relaxed">{m.message}</p>
+                        <p className={`text-[11px] mt-1 ${isAdmin ? 'text-blue-300' : 'text-gray-400'}`}>
+                          {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            <div className="border-t border-gray-100 p-4 flex gap-3 bg-gray-50">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                placeholder="Type a message to the client..."
+                className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#0c1940] focus:ring-1 focus:ring-[#0c1940] transition-all"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={sendingMsg || !newMessage.trim()}
+                className="bg-[#0c1940] hover:bg-[#0c1940]/90 text-white font-[700] px-5 py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {sendingMsg ? '...' : 'Send'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Invoice Tab */}
+        {activeTab === 'invoice' && (
+          <div className="p-6">
+            <h3 className="text-[14px] font-[800] text-[#0a192f] mb-6">Manage Invoice</h3>
+            
+            <form onSubmit={handleSaveInvoice} className="flex flex-col gap-4 max-w-lg">
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Amount (USD)</label>
+                <input
+                  type="number"
+                  value={invoiceForm.amount}
+                  onChange={(e) => setInvoiceForm({...invoiceForm, amount: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37]"
+                  placeholder="0.00"
+                  step="0.01"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Status</label>
+                <select
+                  value={invoiceForm.status}
+                  onChange={(e) => setInvoiceForm({...invoiceForm, status: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37]"
+                >
+                  <option value="pending">Pending (Quote Sent)</option>
+                  <option value="submitted">Submitted (Client Paid)</option>
+                  <option value="confirmed">Confirmed (Payment Received)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Notes to Client</label>
+                <textarea
+                  value={invoiceForm.notes}
+                  onChange={(e) => setInvoiceForm({...invoiceForm, notes: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] resize-none"
+                  rows={3}
+                  placeholder="Payment instructions..."
+                />
+              </div>
+              
+              {(invoiceForm.status === 'submitted' || invoiceForm.status === 'confirmed') && (
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <p className="text-[12px] font-[700] text-gray-600 mb-2">Payment Details (from client)</p>
+                  <p className="text-[13px]"><strong>Method:</strong> {invoiceForm.payment_method || '—'}</p>
+                  <p className="text-[13px]"><strong>Reference:</strong> {invoiceForm.payment_reference || '—'}</p>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSavingInvoice}
+                className="w-full h-[44px] bg-[#0c1940] hover:bg-[#0c1940]/90 text-white font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50"
+              >
+                {isSavingInvoice ? 'Saving...' : invoice ? 'Update Invoice' : 'Create Invoice'}
+              </button>
+            </form>
+          </div>
+        )}
+
       </div>
     </div>
   );
