@@ -100,7 +100,7 @@ ALTER TABLE public.case_updates ENABLE ROW LEVEL SECURITY;
 -- Client: can see updates for own cases (excluding internal_note)
 CREATE POLICY "updates_client_own" ON public.case_updates
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.cases WHERE id = case_id AND client_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.cases WHERE public.cases.id = public.case_updates.case_id AND client_id = auth.uid())
   );
 
 -- Admin: all
@@ -124,7 +124,7 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "messages_client_own" ON public.messages
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.cases WHERE id = case_id AND client_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.cases WHERE public.cases.id = public.messages.case_id AND client_id = auth.uid())
     OR sender_id = auth.uid()
   );
 
@@ -154,12 +154,12 @@ ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "invoices_client_own" ON public.invoices
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.cases WHERE id = case_id AND client_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.cases WHERE public.cases.id = public.invoices.case_id AND client_id = auth.uid())
   );
 
 CREATE POLICY "invoices_client_update" ON public.invoices
   FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.cases WHERE id = case_id AND client_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.cases WHERE public.cases.id = public.invoices.case_id AND client_id = auth.uid())
   );
 
 CREATE POLICY "invoices_admin_all" ON public.invoices
@@ -185,7 +185,7 @@ ALTER TABLE public.case_files ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "files_client_own" ON public.case_files
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.cases WHERE id = case_id AND client_id = auth.uid())
+    EXISTS (SELECT 1 FROM public.cases WHERE public.cases.id = public.case_files.case_id AND client_id = auth.uid())
   );
 
 CREATE POLICY "files_admin_all" ON public.case_files
