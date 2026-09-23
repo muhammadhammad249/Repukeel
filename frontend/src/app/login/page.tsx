@@ -3,11 +3,12 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextUrl = searchParams.get('next') || '/';
+  const nextUrl = searchParams.get('next') || '/dashboard';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +16,7 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -26,44 +27,34 @@ function LoginContent() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (signInError) {
+      setError(signInError.message);
       setIsLoading(false);
+      return;
+    }
 
-      // Admin bypass
-      if (email === 'admin@repukeel.com' && password === 'admin123') {
-        localStorage.setItem('authToken', 'admin_token');
-        document.cookie = 'authToken=admin_token; Path=/; Max-Age=86400; SameSite=Lax';
-        localStorage.setItem('currentUser', JSON.stringify({ firstName: 'Admin', lastName: '', email }));
-        router.push(nextUrl === '/' ? '/dashboard/admin' : nextUrl);
-        return;
-      }
+    if (!data.user) {
+      setError('Login failed. Please try again.');
+      setIsLoading(false);
+      return;
+    }
 
-      // Check for registered user
-      const savedUserStr = localStorage.getItem('registeredUser');
-      if (savedUserStr) {
-        try {
-          const parsedUser = JSON.parse(savedUserStr);
-          if (parsedUser.email === email && parsedUser.password === password) {
-            localStorage.setItem('authToken', 'user_token');
-            document.cookie = 'authToken=user_token; Path=/; Max-Age=86400; SameSite=Lax';
-            localStorage.setItem('currentUser', JSON.stringify({
-              firstName: parsedUser.firstName || '',
-              lastName: parsedUser.lastName || '',
-              email: parsedUser.email,
-            }));
-            router.push(nextUrl);
-            return;
-          } else if (parsedUser.email === email) {
-            setError('Incorrect password. Please try again.');
-            return;
-          }
-        } catch {
-          console.error('Error parsing stored user data');
-        }
-      }
+    // Fetch role from profiles table
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
 
-      setError('You are not registered yet. Please Sign Up first to continue.');
-    }, 1500);
+    const role = profile?.role ?? 'client';
+
+    if (role === 'admin' || role === 'super_admin') {
+      router.push('/dashboard/admin');
+    } else {
+      router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+    }
   };
 
   return (
@@ -75,7 +66,7 @@ function LoginContent() {
         {/* Back Button + Logo */}
         <div className="absolute top-10 left-6 md:left-10 flex items-center gap-4">
           <button
-            onClick={() => router.push(nextUrl)}
+            onClick={() => router.push('/')}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
             aria-label="Go Back"
           >
@@ -205,14 +196,12 @@ function LoginContent() {
 
         <div className="relative z-10 flex flex-col items-center text-center text-white max-w-[450px]">
           <div className="mb-12 relative flex items-center justify-center">
-            <div className="relative flex items-center justify-center">
-              <img 
-                src="/login-logo-outline.png" 
-                alt="Repukeel Shield" 
-                className="w-[130px] h-auto object-contain"
-                style={{ filter: 'brightness(10) contrast(1)', mixBlendMode: 'lighten' }}
-              />
-            </div>
+            <img
+              src="/login-logo-outline.png"
+              alt="Repukeel Shield"
+              className="w-[130px] h-auto object-contain"
+              style={{ filter: 'brightness(10) contrast(1)', mixBlendMode: 'lighten' }}
+            />
           </div>
 
           <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">Repukeel Portal</h2>
