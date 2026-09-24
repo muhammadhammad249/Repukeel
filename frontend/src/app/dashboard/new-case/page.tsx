@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function NewCasePage() {
   const router = useRouter();
-  const [issueType, setIssueType] = useState('Copyright Infringement');
+  const [issueType, setIssueType] = useState('Content Removal');
   const [description, setDescription] = useState('');
   const [urls, setUrls] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,13 +50,14 @@ export default function NewCasePage() {
             onChange={(e) => setIssueType(e.target.value)}
             className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           >
-            <option>Copyright Infringement</option>
-            <option>Brand Protection</option>
-            <option>Leaked Content</option>
-            <option>Reputation Damage</option>
-            <option>Impersonation / Fake Profiles</option>
-            <option>Anti-Piracy</option>
-            <option>Other</option>
+            <option>Content Removal</option>
+            <option>Dating Reputation</option>
+            <option>Job Reputation</option>
+            <option>Monitoring & Alerts</option>
+            <option>Reputation Management</option>
+            <option>Search Result Cleanup</option>
+            <option>Reputation Audit</option>
+            <option>Industries</option>
           </select>
         </div>
         <div>
@@ -71,7 +72,7 @@ export default function NewCasePage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Known Infringing URLs <span className="text-slate-400 font-normal">(optional)</span></label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">URL <span className="text-slate-400 font-normal">(optional)</span></label>
           <textarea 
             rows={4} 
             value={urls}
