@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-type StoredUser = { name?: string; email?: string };
+type AuthUser = { name: string; email: string };
 
 export default function AccountMenu({
   loginClassName,
@@ -18,57 +18,56 @@ export default function AccountMenu({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [isMounted, setIsMounted] = useState(false);
-  const [user, setUser] = useState<StoredUser | null>(null);
+  // 3 states: true = loading, false = not logged in, AuthUser = logged in
+  const [authState, setAuthState] = useState<'loading' | 'loggedOut' | AuthUser>('loading');
   const [isOpen, setIsOpen] = useState(false);
-  const subscriptionRef = useRef<any>(null);
 
-  async function loadUser() {
-    try {
-      // getUser() makes a real network request - always accurate
-      const { data: { user: authUser }, error } = await supabase.auth.getUser();
-      if (error || !authUser) {
-        setUser(null);
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refresh() {
+      // getSession() reads localStorage - no network, always fast
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (cancelled) return;
+
+      if (!session?.user) {
+        setAuthState('loggedOut');
         return;
       }
 
-      // Try to get profile name
+      // Get name from profile or fallback to email
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, role')
-        .eq('id', authUser.id)
+        .select('full_name')
+        .eq('id', session.user.id)
         .single();
 
-      setUser({
-        name: profile?.full_name || authUser.user_metadata?.full_name || authUser.email || 'User',
-        email: authUser.email,
-      });
-    } catch {
-      setUser(null);
+      if (cancelled) return;
+
+      const name =
+        profile?.full_name ||
+        session.user.user_metadata?.full_name ||
+        session.user.email ||
+        'User';
+
+      setAuthState({ name, email: session.user.email || '' });
     }
-  }
 
-  useEffect(() => {
-    setIsMounted(true);
+    refresh();
 
-    // Load user immediately on mount
-    loadUser();
-
-    // Subscribe to auth state changes (login/logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') {
-        loadUser();
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        refresh();
+      } else {
+        setAuthState('loggedOut');
       }
     });
 
-    subscriptionRef.current = subscription;
-
     return () => {
+      cancelled = true;
       subscription.unsubscribe();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigateTo = (url: string) => {
@@ -78,20 +77,18 @@ export default function AccountMenu({
 
   const logout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
+    setAuthState('loggedOut');
     setIsOpen(false);
     navigateTo('/');
   };
 
-  // While still hydrating — show invisible placeholder to avoid layout shift
-  if (!isMounted) {
-    return (
-      <span className={`${loginClassName} opacity-0 pointer-events-none select-none`}>Login</span>
-    );
+  // While checking session → show invisible placeholder (no layout shift)
+  if (authState === 'loading') {
+    return <span className="opacity-0 pointer-events-none select-none" aria-hidden>...</span>;
   }
 
   // Not logged in → Login button
-  if (!user) {
+  if (authState === 'loggedOut') {
     return (
       <button
         type="button"
@@ -103,12 +100,12 @@ export default function AccountMenu({
     );
   }
 
-  // Logged in → Avatar (initials)
-  const words = (user.name || user.email || 'U').split(' ');
+  // Logged in → User Avatar with initials
+  const words = authState.name.trim().split(/\s+/);
   const initials = (
     words.length >= 2
       ? `${words[0][0]}${words[1][0]}`
-      : words[0].slice(0, 2)
+      : authState.name.slice(0, 2)
   ).toUpperCase();
 
   return (
@@ -133,8 +130,8 @@ export default function AccountMenu({
           />
           <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]">
             <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-              <p className="text-[14px] font-[700] text-[#0a192f] truncate">{user.name}</p>
-              <p className="text-[12px] text-gray-500 truncate">{user.email}</p>
+              <p className="text-[14px] font-[700] text-[#0a192f] truncate">{authState.name}</p>
+              <p className="text-[12px] text-gray-500 truncate">{authState.email}</p>
             </div>
             <div className="p-2" role="menu">
               <button
