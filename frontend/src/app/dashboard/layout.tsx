@@ -28,6 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     async function checkAuth() {
       const p = await getCurrentProfile();
       if (!p) {
+        await supabase.auth.signOut();
         router.push(`/login?next=${pathname}`);
         return;
       }

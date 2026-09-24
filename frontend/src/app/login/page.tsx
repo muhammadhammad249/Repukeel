@@ -17,17 +17,38 @@ function LoginContent() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check if already logged in (e.g., from email verification link)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    const handleSession = async (session: any) => {
+      if (!session) return;
+      
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+        
+      if (error || !profile) {
+        // Broken account (missing profile) or network error
+        await supabase.auth.signOut();
+        return;
+      }
+      
+      const role = profile.role ?? 'client';
+      if (role === 'admin' || role === 'super_admin') {
+        router.push('/dashboard/admin');
+      } else {
         router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
       }
+    };
+
+    // Check if already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleSession(session);
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+      if (event === 'SIGNED_IN') {
+        handleSession(session);
       }
     });
 
