@@ -2,12 +2,10 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-
-type StoredUser = { firstName?: string; lastName?: string; email?: string };
-
 import { supabase } from '@/lib/supabase';
 import { getCurrentProfile, signOut as authSignOut } from '@/lib/auth';
+
+type StoredUser = { firstName?: string; lastName?: string; email?: string };
 
 export default function AccountMenu({ loginClassName, menuClassName, onNavigate }: { loginClassName: string; menuClassName: string; onNavigate?: () => void }) {
   const router = useRouter();
@@ -18,29 +16,29 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
   const [hasToken, setHasToken] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      setHasToken(true);
+      const profile = await getCurrentProfile();
+      if (profile) {
+        setUser({
+          firstName: profile.full_name?.split(' ')[0] || '',
+          lastName: profile.full_name?.split(' ').slice(1).join(' ') || '',
+          email: profile.email,
+        });
+      } else {
+        setUser({ email: session.user.email });
+      }
+    } else {
+      setHasToken(false);
+      setUser(null);
+    }
+  };
+
+  // Run once on mount and subscribe to auth state changes
   useEffect(() => {
     setIsMounted(true);
-    
-    async function checkUser() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setHasToken(true);
-        const profile = await getCurrentProfile();
-        if (profile) {
-          setUser({ 
-            firstName: profile.full_name?.split(' ')[0] || '', 
-            lastName: profile.full_name?.split(' ').slice(1).join(' ') || '', 
-            email: profile.email 
-          });
-        } else {
-          setUser({ email: session.user.email });
-        }
-      } else {
-        setHasToken(false);
-        setUser(null);
-      }
-    }
-
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -55,7 +53,8 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
     return () => {
       subscription.unsubscribe();
     };
-  }, [pathname]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navigateTo = (url: string) => {
     if (onNavigate) onNavigate();
@@ -70,14 +69,14 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
     navigateTo('/login');
   };
 
-  // ── Block render mismatch: server always renders this ────────────────
+  // Block render mismatch: server always renders this
   if (!isMounted) {
     return (
       <button className={`${loginClassName} opacity-0 pointer-events-none`}>Login</button>
     );
   }
 
-  // ── Not logged in at all (no token) → Login link ────────────────
+  // Not logged in → Login button
   if (!user && !hasToken) {
     return (
       <button
@@ -90,7 +89,7 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
     );
   }
 
-  // ── Logged in → Avatar button ───────────────────────────────────
+  // Logged in → Avatar button
   const initials =
     `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase() ||
     user?.email?.[0]?.toUpperCase() ||
