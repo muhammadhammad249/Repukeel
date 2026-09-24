@@ -6,20 +6,8 @@ import Link from 'next/link';
 
 type StoredUser = { firstName?: string; lastName?: string; email?: string };
 
-function getAuthToken(): boolean {
-  if (typeof window === 'undefined') return false;
-  return !!localStorage.getItem('authToken');
-}
-
-function getStoredUser(): StoredUser | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const value = localStorage.getItem('currentUser');
-    return value ? JSON.parse(value) as StoredUser : null;
-  } catch {
-    return null;
-  }
-}
+import { supabase } from '@/lib/supabase';
+import { getCurrentProfile, signOut as authSignOut } from '@/lib/auth';
 
 export default function AccountMenu({ loginClassName, menuClassName, onNavigate }: { loginClassName: string; menuClassName: string; onNavigate?: () => void }) {
   const router = useRouter();
@@ -30,24 +18,52 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
   const [hasToken, setHasToken] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Re-read on every route change (covers post-login redirect)
   useEffect(() => {
     setIsMounted(true);
-    setUser(getStoredUser());
-    setHasToken(getAuthToken());
+    
+    async function checkUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setHasToken(true);
+        const profile = await getCurrentProfile();
+        if (profile) {
+          setUser({ 
+            firstName: profile.full_name?.split(' ')[0] || '', 
+            lastName: profile.full_name?.split(' ').slice(1).join(' ') || '', 
+            email: profile.email 
+          });
+        } else {
+          setUser({ email: session.user.email });
+        }
+      } else {
+        setHasToken(false);
+        setUser(null);
+      }
+    }
+
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        checkUser();
+      } else {
+        setHasToken(false);
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [pathname]);
 
   const navigateTo = (url: string) => {
-    // Close drawer / remove scroll lock before navigating
     if (onNavigate) onNavigate();
-    // Small delay to let body unlock before pushing route
     setTimeout(() => router.push(url), 10);
   };
 
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    document.cookie = 'authToken=; Path=/; Max-Age=0; SameSite=Lax';
+  const logout = async () => {
+    await authSignOut();
     setUser(null);
     setHasToken(false);
     setIsOpen(false);
