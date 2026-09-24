@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -16,6 +16,26 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    // Check if already logged in (e.g., from email verification link)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+      }
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router, nextUrl]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -27,33 +47,39 @@ function LoginContent() {
 
     setIsLoading(true);
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (signInError) {
-      setError(signInError.message);
+      if (signInError) {
+        setError(signInError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!data.user) {
+        setError('Login failed. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch role from profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      const role = profile?.role ?? 'client';
+
+      if (role === 'admin' || role === 'super_admin') {
+        router.push('/dashboard/admin');
+      } else {
+        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again.');
       setIsLoading(false);
-      return;
-    }
-
-    if (!data.user) {
-      setError('Login failed. Please try again.');
-      setIsLoading(false);
-      return;
-    }
-
-    // Fetch role from profiles table
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
-
-    const role = profile?.role ?? 'client';
-
-    if (role === 'admin' || role === 'super_admin') {
-      router.push('/dashboard/admin');
-    } else {
-      router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
     }
   };
 
