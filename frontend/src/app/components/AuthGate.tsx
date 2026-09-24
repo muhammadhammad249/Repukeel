@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 // Pages that require authentication to access
 const PROTECTED_ROUTES = ['/dashboard', '/checkout'];
@@ -18,22 +19,18 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
 
-    if (!token && isProtectedRoute(pathname)) {
-      // Not logged in and trying to access a protected page → send to login
-      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
-      return;
+      if (!session && isProtectedRoute(pathname)) {
+        router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+        return;
+      }
+
+      setChecked(true);
     }
 
-    if (token && pathname === '/login') {
-      // Already logged in, redirect away from login page
-      const next = new URLSearchParams(window.location.search).get('next') || '/';
-      router.replace(next);
-      return;
-    }
-
-    setChecked(true);
+    checkAuth();
   }, [pathname, router]);
 
   // Block render until auth check is done (avoids flash of protected content)
