@@ -4,17 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getCurrentProfile, generateCaseId } from '@/lib/auth';
 
-const SERVICE_TYPES = [
-  'Content Removal',
-  'DMCA / Copyright Takedown',
-  'Search Result Cleanup',
-  'Reputation Management',
-  'Monitoring & Alerts',
-  'Dating Reputation',
-  'Job Reputation / Background Check',
-  'Reputation Audit',
-  'Other',
-];
+import { categories } from '@/data/services';
 
 const URGENCY_LEVELS = [
   { value: 'normal', label: '🟢 Normal — within standard timeline' },
@@ -122,7 +112,14 @@ export default function NewInquiryPage() {
             className="w-full h-[48px] px-4 bg-[#f8fafc] border border-gray-200 rounded-xl outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] text-[15px] text-gray-800 transition-all"
           >
             <option value="" disabled>Select a service...</option>
-            {SERVICE_TYPES.map((s) => <option key={s} value={s}>{s}</option>)}
+            {categories.map((category) => (
+              <optgroup key={category.slug} label={category.name}>
+                {category.subServices.map((sub) => (
+                  <option key={sub.slug} value={sub.name}>{sub.name}</option>
+                ))}
+              </optgroup>
+            ))}
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -142,7 +139,7 @@ export default function NewInquiryPage() {
         {/* URLs */}
         <div>
           <label className="block text-[13px] font-[700] text-[#0a192f] mb-2">
-            Links / URLs <span className="text-gray-400 font-normal">(one per line)</span>
+            URL <span className="text-gray-400 font-normal">(optional, one per line)</span>
           </label>
           <textarea
             name="urls"

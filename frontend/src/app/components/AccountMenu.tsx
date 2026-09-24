@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-type AuthUser = { name: string; email: string };
+type AuthUser = { name: string; email: string; role?: string };
 
 export default function AccountMenu({
   loginClassName,
@@ -39,7 +39,7 @@ export default function AccountMenu({
       // Get name from profile or fallback to email
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name')
+        .select('full_name, role')
         .eq('id', session.user.id)
         .single();
 
@@ -51,7 +51,7 @@ export default function AccountMenu({
         session.user.email ||
         'User';
 
-      setAuthState({ name, email: session.user.email || '' });
+      setAuthState({ name, email: session.user.email || '', role: profile?.role });
     }
 
     refresh();
@@ -142,6 +142,16 @@ export default function AccountMenu({
               >
                 Dashboard
               </button>
+              {(authState.role === 'admin' || authState.role === 'super_admin') && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin/cases'); }}
+                  className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                >
+                  Admin Panel
+                </button>
+              )}
               <button
                 type="button"
                 role="menuitem"

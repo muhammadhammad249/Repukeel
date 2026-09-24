@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { getCurrentProfile, STATUS_LABELS } from '@/lib/auth';
@@ -17,6 +18,7 @@ export default function DashboardOverview() {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function load() {
@@ -134,7 +136,7 @@ export default function DashboardOverview() {
                 {cases.map((c) => {
                   const statusInfo = STATUS_LABELS[c.status] || { label: c.status, color: 'bg-gray-100 text-gray-700' };
                   return (
-                    <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/cases/${c.id}`)}>
                       <td className="py-4 px-6 text-[14px] font-[700] text-[#0a192f]">{c.case_id}</td>
                       <td className="py-4 px-6 text-[14px] text-gray-600">{c.service_type}</td>
                       <td className="py-4 px-6">
