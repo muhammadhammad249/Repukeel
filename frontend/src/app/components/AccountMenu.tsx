@@ -1,54 +1,69 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { getCurrentProfile, signOut as authSignOut } from '@/lib/auth';
 
-type StoredUser = { firstName?: string; lastName?: string; email?: string };
+type StoredUser = { name?: string; email?: string };
 
-export default function AccountMenu({ loginClassName, menuClassName, onNavigate }: { loginClassName: string; menuClassName: string; onNavigate?: () => void }) {
+export default function AccountMenu({
+  loginClassName,
+  menuClassName,
+  onNavigate,
+}: {
+  loginClassName: string;
+  menuClassName: string;
+  onNavigate?: () => void;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
   const [isMounted, setIsMounted] = useState(false);
   const [user, setUser] = useState<StoredUser | null>(null);
-  const [hasToken, setHasToken] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const subscriptionRef = useRef<any>(null);
 
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      setHasToken(true);
-      const profile = await getCurrentProfile();
-      if (profile) {
-        setUser({
-          firstName: profile.full_name?.split(' ')[0] || '',
-          lastName: profile.full_name?.split(' ').slice(1).join(' ') || '',
-          email: profile.email,
-        });
-      } else {
-        setUser({ email: session.user.email });
+  async function loadUser() {
+    try {
+      // getUser() makes a real network request - always accurate
+      const { data: { user: authUser }, error } = await supabase.auth.getUser();
+      if (error || !authUser) {
+        setUser(null);
+        return;
       }
-    } else {
-      setHasToken(false);
+
+      // Try to get profile name
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', authUser.id)
+        .single();
+
+      setUser({
+        name: profile?.full_name || authUser.user_metadata?.full_name || authUser.email || 'User',
+        email: authUser.email,
+      });
+    } catch {
       setUser(null);
     }
-  };
+  }
 
-  // Run once on mount and subscribe to auth state changes
   useEffect(() => {
     setIsMounted(true);
-    checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        checkUser();
-      } else {
-        setHasToken(false);
+    // Load user immediately on mount
+    loadUser();
+
+    // Subscribe to auth state changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') {
+        loadUser();
+      } else if (event === 'SIGNED_OUT') {
         setUser(null);
       }
     });
+
+    subscriptionRef.current = subscription;
 
     return () => {
       subscription.unsubscribe();
@@ -62,22 +77,21 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
   };
 
   const logout = async () => {
-    await authSignOut();
+    await supabase.auth.signOut();
     setUser(null);
-    setHasToken(false);
     setIsOpen(false);
-    navigateTo('/login');
+    navigateTo('/');
   };
 
-  // Block render mismatch: server always renders this
+  // While still hydrating — show invisible placeholder to avoid layout shift
   if (!isMounted) {
     return (
-      <button className={`${loginClassName} opacity-0 pointer-events-none`}>Login</button>
+      <span className={`${loginClassName} opacity-0 pointer-events-none select-none`}>Login</span>
     );
   }
 
   // Not logged in → Login button
-  if (!user && !hasToken) {
+  if (!user) {
     return (
       <button
         type="button"
@@ -89,24 +103,22 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
     );
   }
 
-  // Logged in → Avatar button
-  const initials =
-    `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase() ||
-    user?.email?.[0]?.toUpperCase() ||
-    'U';
-  const name =
-    [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
-    user?.email ||
-    'Account';
+  // Logged in → Avatar (initials)
+  const words = (user.name || user.email || 'U').split(' ');
+  const initials = (
+    words.length >= 2
+      ? `${words[0][0]}${words[1][0]}`
+      : words[0].slice(0, 2)
+  ).toUpperCase();
 
   return (
     <div className={`relative ${menuClassName}`}>
       <button
         type="button"
-        className="w-[40px] h-[40px] rounded-full bg-[var(--gold)] text-[var(--bg-navy)] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105"
+        className="w-[40px] h-[40px] rounded-full bg-[var(--gold)] text-[var(--bg-navy)] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
         aria-label="Open account menu"
         aria-expanded={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((v) => !v)}
       >
         {initials}
       </button>
@@ -116,20 +128,20 @@ export default function AccountMenu({ loginClassName, menuClassName, onNavigate 
           <button
             type="button"
             className="fixed inset-0 w-full h-full cursor-default z-[90]"
-            aria-label="Close account menu"
+            aria-label="Close menu"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-[var(--border-light)] overflow-hidden z-[100]">
-            <div className="px-4 py-3 border-b border-[var(--border-light)] bg-gray-50">
-              <p className="text-[14px] font-[700] text-[var(--text-heading)] truncate">{name}</p>
-              <p className="text-[12px] font-[500] text-[var(--text-body)] truncate">{user?.email || 'User'}</p>
+          <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]">
+            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+              <p className="text-[14px] font-[700] text-[#0a192f] truncate">{user.name}</p>
+              <p className="text-[12px] text-gray-500 truncate">{user.email}</p>
             </div>
             <div className="p-2" role="menu">
               <button
                 type="button"
                 role="menuitem"
                 onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
-                className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[var(--text-heading)] rounded-lg hover:bg-gray-100 transition-colors"
+                className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0a192f] rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Dashboard
               </button>
