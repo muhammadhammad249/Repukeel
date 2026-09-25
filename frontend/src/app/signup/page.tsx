@@ -55,11 +55,11 @@ export default function SignupPage() {
       return;
     }
 
-    // Update profile with whatsapp
+    // Update profile with whatsapp — always force role to 'client'
     if (data.user) {
       await supabase
         .from('profiles')
-        .update({ full_name: fullName, whatsapp })
+        .update({ full_name: fullName, whatsapp, role: 'client' })
         .eq('id', data.user.id);
     }
 
