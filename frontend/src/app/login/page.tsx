@@ -30,26 +30,31 @@ function LoginContent() {
 
     setIsLoading(true);
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
 
-    if (signInError) {
-      setError('Incorrect email or password. Please try again.');
+      if (signInError) {
+        setError('Incorrect email or password. Please try again.');
+        return;
+      }
+
+      if (!data?.user) {
+        setError('Login failed. Please try again.');
+        return;
+      }
+
+      // Session is now in memory and localStorage.
+      // Use client-side navigation — AuthGate will find the session immediately.
+      router.push('/dashboard');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError('Something went wrong. Please check your internet connection and try again.');
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    if (!data?.user) {
-      setError('Login failed. Please try again.');
-      setIsLoading(false);
-      return;
-    }
-
-    // Session is now in memory and localStorage.
-    // Use client-side navigation — AuthGate will find the session immediately.
-    router.push('/dashboard');
   };
 
   return (
