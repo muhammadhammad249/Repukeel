@@ -21,17 +21,23 @@ function LoginContent() {
     const handleSession = async (session: any) => {
       if (!session) return;
       
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+          
+        const role = profile?.role ?? 'client';
         
-      const role = profile?.role ?? 'client';
-      
-      if (role === 'admin' || role === 'super_admin') {
-        router.push('/dashboard/admin');
-      } else {
+        if (role === 'admin' || role === 'super_admin') {
+          router.push('/dashboard/admin');
+        } else {
+          router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
+        }
+      } catch (err) {
+        console.error('Session handling error:', err);
+        // Fallback to client role on error
         router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
       }
     };
@@ -84,7 +90,7 @@ function LoginContent() {
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
       const role = profile?.role ?? 'client';
 

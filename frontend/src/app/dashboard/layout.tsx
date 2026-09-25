@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           .from('profiles')
           .select('full_name, role')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
 
         if (dbProfile) {
           baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
