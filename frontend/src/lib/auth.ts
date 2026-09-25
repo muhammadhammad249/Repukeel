@@ -19,17 +19,34 @@ export async function getSessionUser() {
 
 /** Get the full profile (role etc.) for the current user */
 export async function getCurrentProfile(): Promise<UserProfile | null> {
-  const user = await getSessionUser();
-  if (!user) return null;
+  try {
+    // Use getSession (reads localStorage — instant, no network needed)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+    const user = session.user;
 
-  if (error || !data) return null;
-  return { ...data, email: user.email ?? '' };
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !data) {
+      // Return a minimal profile from session data so pages don't hang
+      return {
+        id: user.id,
+        role: 'client' as UserRole,
+        full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+        whatsapp: null,
+        email: user.email ?? '',
+      };
+    }
+
+    return { ...data, email: user.email ?? '' };
+  } catch {
+    return null;
+  }
 }
 
 /** Sign out and clear session */
