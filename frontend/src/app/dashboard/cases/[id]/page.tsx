@@ -1,6 +1,6 @@
 /* eslint-disable */
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -21,10 +21,15 @@ export default function CaseDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('timeline');
   const [sendingMsg, setSendingMsg] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const msgEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function load() {
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) setCurrentUserId(user.id);
+
         const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
           supabase.from('cases').select('*').eq('id', id).single(),
           supabase.from('case_updates').select('*').eq('case_id', id).order('created_at', { ascending: true }),
@@ -40,24 +45,48 @@ export default function CaseDetailPage() {
       }
     }
     if (id) load();
+
+    // Realtime: listen for new messages from admin
+    const channel = supabase.channel(`messages-case-${id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `case_id=eq.${id}` }, (payload) => {
+        setMessages((prev) => {
+          // avoid duplicate if optimistic message already exists
+          if (prev.find(m => m.id === payload.new.id)) return prev;
+          return [...prev, payload.new];
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [id]);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
-    setSendingMsg(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase.from('messages').insert({
-      case_id: id,
-      sender_id: user.id,
-      message: newMessage.trim(),
-    });
-
-    const { data: m } = await supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true });
-    setMessages(m || []);
+    if (!newMessage.trim() || sendingMsg) return;
+    const text = newMessage.trim();
     setNewMessage('');
-    setSendingMsg(false);
+
+    // Optimistic: show message instantly
+    const optimistic = {
+      id: `opt-${Date.now()}`,
+      case_id: id,
+      sender_id: currentUserId,
+      message: text,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimistic]);
+    setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+
+    // Insert to DB in background
+    const { data: inserted } = await supabase.from('messages').insert({
+      case_id: id,
+      sender_id: currentUserId,
+      message: text,
+    }).select().single();
+
+    // Replace optimistic with real record
+    if (inserted) {
+      setMessages((prev) => prev.map(m => m.id === optimistic.id ? inserted : m));
+    }
   };
 
   if (loading) {
@@ -217,32 +246,32 @@ export default function CaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isMe = m.sender_id === caseData.client_id;
+                  const isMe = currentUserId ? m.sender_id === currentUserId : m.sender_id === caseData?.client_id;
                   return (
                     <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      {/* Avatar for other side */}
+                      {/* Admin avatar */}
                       {!isMe && (
-                        <div className="w-7 h-7 rounded-full bg-[#0c1940] flex items-center justify-center flex-shrink-0 mb-1">
+                        <div className="w-8 h-8 rounded-full bg-[#0c1940] flex items-center justify-center flex-shrink-0 mb-1">
                           <span className="text-white text-[10px] font-[800]">RK</span>
                         </div>
                       )}
                       <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
                         isMe
-                          ? 'bg-[#d4af37] text-white rounded-br-sm'
+                          ? 'bg-[#25d366] text-white rounded-br-sm'
                           : 'bg-white text-gray-800 rounded-bl-sm'
                       }`}>
                         {!isMe && (
-                          <p className="text-[11px] font-[700] text-[#0c1940] mb-1">RepuKeel Team</p>
+                          <p className="text-[11px] font-[800] text-[#0c1940] mb-1">RepuKeel Team</p>
                         )}
                         <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-yellow-100' : 'text-gray-400'}`}>
+                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-green-100' : 'text-gray-400'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           {isMe && <span className="ml-1">✓✓</span>}
                         </p>
                       </div>
-                      {/* Avatar for self */}
+                      {/* Client avatar */}
                       {isMe && (
-                        <div className="w-7 h-7 rounded-full bg-[#d4af37] flex items-center justify-center flex-shrink-0 mb-1">
+                        <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center flex-shrink-0 mb-1">
                           <span className="text-white text-[10px] font-[800]">You</span>
                         </div>
                       )}
@@ -250,6 +279,7 @@ export default function CaseDetailPage() {
                   );
                 })
               )}
+              <div ref={msgEndRef} />
             </div>
             {/* Input bar */}
             <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">

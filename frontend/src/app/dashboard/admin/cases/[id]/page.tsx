@@ -1,6 +1,6 @@
 /* eslint-disable */
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -33,6 +33,8 @@ export default function AdminCaseDetailPage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const msgEndRef = useRef<HTMLDivElement>(null);
 
   // Invoice state
   const [invoice, setInvoice] = useState<any>(null);
@@ -47,6 +49,9 @@ export default function AdminCaseDetailPage() {
 
   useEffect(() => {
     async function load() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUserId(user.id);
+
       const { data: c } = await supabase
         .from('cases')
         .select('*')
@@ -95,6 +100,18 @@ export default function AdminCaseDetailPage() {
       setLoading(false);
     }
     if (id) load();
+
+    // Realtime: listen for new messages from client
+    const channel = supabase.channel(`admin-messages-case-${id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `case_id=eq.${id}` }, (payload) => {
+        setMessages((prev) => {
+          if (prev.find(m => m.id === payload.new.id)) return prev;
+          return [...prev, payload.new];
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [id]);
 
   const handleUpdateStatus = async (e: React.FormEvent) => {
@@ -137,21 +154,32 @@ export default function AdminCaseDetailPage() {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
-    setSendingMsg(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase.from('messages').insert({
-      case_id: id,
-      sender_id: user.id,
-      message: newMessage.trim(),
-    });
-
-    const { data: m } = await supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true });
-    setMessages(m || []);
+    if (!newMessage.trim() || sendingMsg) return;
+    const text = newMessage.trim();
     setNewMessage('');
-    setSendingMsg(false);
+
+    // Optimistic: show message instantly
+    const optimistic = {
+      id: `opt-${Date.now()}`,
+      case_id: id,
+      sender_id: currentUserId,
+      message: text,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimistic]);
+    setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+
+    // Insert to DB in background
+    const { data: inserted } = await supabase.from('messages').insert({
+      case_id: id,
+      sender_id: currentUserId,
+      message: text,
+    }).select().single();
+
+    // Replace optimistic with real record
+    if (inserted) {
+      setMessages((prev) => prev.map(m => m.id === optimistic.id ? inserted : m));
+    }
   };
 
   const handleSaveInvoice = async (e: React.FormEvent) => {
@@ -335,32 +363,32 @@ export default function AdminCaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isMe = m.sender_id !== caseData.client_id; // admin = not the client
+                  const isMe = currentUserId ? m.sender_id === currentUserId : m.sender_id !== caseData?.client_id;
                   return (
                     <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      {/* Avatar for client */}
+                      {/* Client avatar */}
                       {!isMe && (
-                        <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mb-1">
+                        <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mb-1">
                           <span className="text-white text-[10px] font-[800]">C</span>
                         </div>
                       )}
                       <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
                         isMe
-                          ? 'bg-[#0c1940] text-white rounded-br-sm'
+                          ? 'bg-[#25d366] text-white rounded-br-sm'
                           : 'bg-white text-gray-800 rounded-bl-sm'
                       }`}>
                         {!isMe && (
-                          <p className="text-[11px] font-[700] text-gray-500 mb-1">Client</p>
+                          <p className="text-[11px] font-[800] text-gray-500 mb-1">Client</p>
                         )}
                         <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-blue-300' : 'text-gray-400'}`}>
+                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-green-100' : 'text-gray-400'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           {isMe && <span className="ml-1">✓✓</span>}
                         </p>
                       </div>
                       {/* Admin avatar */}
                       {isMe && (
-                        <div className="w-7 h-7 rounded-full bg-[#0c1940] flex items-center justify-center flex-shrink-0 mb-1">
+                        <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center flex-shrink-0 mb-1">
                           <span className="text-white text-[10px] font-[800]">A</span>
                         </div>
                       )}
@@ -368,6 +396,7 @@ export default function AdminCaseDetailPage() {
                   );
                 })
               )}
+              <div ref={msgEndRef} />
             </div>
             {/* Input bar */}
             <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">
