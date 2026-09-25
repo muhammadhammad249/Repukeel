@@ -26,8 +26,8 @@ export default function CaseDetailPage() {
     async function load() {
       try {
         const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
-          supabase.from('cases').select('*, profiles(full_name, email)').eq('id', id).single(),
-          supabase.from('case_updates').select('*, profiles(full_name)').eq('case_id', id).order('created_at', { ascending: true }),
+          supabase.from('cases').select('*').eq('id', id).single(),
+          supabase.from('case_updates').select('*').eq('case_id', id).order('created_at', { ascending: true }),
           supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true }),
           supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
         ]);
