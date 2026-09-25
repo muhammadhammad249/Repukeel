@@ -90,11 +90,12 @@ function LoginContent() {
       const role = profile?.role ?? 'client';
 
       if (role === 'admin' || role === 'super_admin') {
-        window.location.href = '/dashboard/admin'; // Hard redirect for ultimate reliability
+        router.push('/dashboard/admin');
       } else {
-        window.location.href = nextUrl === '/dashboard' ? '/dashboard' : nextUrl; // Hard redirect for ultimate reliability
+        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
       }
-      // Do not set isLoading false here, let the browser navigate while spinner shows
+      
+      // Keep loading state true until page transition completes
     } catch (err: any) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');

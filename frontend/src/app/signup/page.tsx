@@ -71,7 +71,7 @@ export default function SignupPage() {
             whatsapp,
             role: 'client',
           }, { onConflict: 'id' });
-          window.location.href = '/dashboard';
+          router.push('/dashboard');
           return;
         }
         // Could not login — show success screen (account likely needs email confirm)
@@ -103,7 +103,7 @@ export default function SignupPage() {
     // No email confirmation needed — sign in directly
     const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
     if (!loginError) {
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
       return;
     }
 
