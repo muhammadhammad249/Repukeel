@@ -21,19 +21,14 @@ function LoginContent() {
     const handleSession = async (session: any) => {
       if (!session) return;
       
-      const { data: profile, error } = await supabase
+      const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', session.user.id)
         .single();
         
-      if (error || !profile) {
-        // Broken account (missing profile) or network error
-        await supabase.auth.signOut();
-        return;
-      }
+      const role = profile?.role ?? 'client';
       
-      const role = profile.role ?? 'client';
       if (role === 'admin' || role === 'super_admin') {
         router.push('/dashboard/admin');
       } else {
