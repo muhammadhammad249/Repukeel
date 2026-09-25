@@ -24,17 +24,20 @@ export default function CaseDetailPage() {
 
   useEffect(() => {
     async function load() {
-      const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
-        supabase.from('cases').select('*, profiles(full_name, email)').eq('id', id).single(),
-        supabase.from('case_updates').select('*, profiles(full_name)').eq('case_id', id).order('created_at', { ascending: true }),
-        supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true }),
-        supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
-      ]);
-      setCaseData(c);
-      setUpdates(u || []);
-      setMessages(m || []);
-      setInvoice(inv);
-      setLoading(false);
+      try {
+        const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
+          supabase.from('cases').select('*, profiles(full_name, email)').eq('id', id).single(),
+          supabase.from('case_updates').select('*, profiles(full_name)').eq('case_id', id).order('created_at', { ascending: true }),
+          supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true }),
+          supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
+        ]);
+        setCaseData(c);
+        setUpdates(u || []);
+        setMessages(m || []);
+        setInvoice(inv);
+      } finally {
+        setLoading(false);
+      }
     }
     if (id) load();
   }, [id]);

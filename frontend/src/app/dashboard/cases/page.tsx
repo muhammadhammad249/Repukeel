@@ -16,17 +16,20 @@ export default function MyCasesPage() {
 
   useEffect(() => {
     async function load() {
-      const profile = await getCurrentProfile();
-      if (!profile) return;
+      try {
+        const profile = await getCurrentProfile();
+        if (profile) {
+          const { data } = await supabase
+            .from('cases')
+            .select('*')
+            .eq('client_id', profile.id)
+            .order('created_at', { ascending: false });
 
-      const { data } = await supabase
-        .from('cases')
-        .select('*')
-        .eq('client_id', profile.id)
-        .order('created_at', { ascending: false });
-
-      setCases(data || []);
-      setLoading(false);
+          setCases(data || []);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
