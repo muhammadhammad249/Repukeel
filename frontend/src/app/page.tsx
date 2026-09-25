@@ -1,10 +1,34 @@
 /* eslint-disable */
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        // Fetch role to know which dashboard to redirect to
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+          
+        const role = profile?.role ?? 'client';
+        if (role === 'admin' || role === 'super_admin') {
+          router.push('/dashboard/admin');
+        } else {
+          router.push('/dashboard');
+        }
+      }
+    });
+  }, [router]);
+
   return (
     <div className="flex flex-col min-h-screen">
       
