@@ -84,21 +84,10 @@ function LoginContent() {
         setIsLoading(false);
         return;
       }
+      
+      // Let the onAuthStateChange listener (in useEffect) handle the actual redirect.
+      // This prevents Next.js router race conditions (infinite spinner) caused by pushing routes simultaneously.
 
-      // Fetch role from profiles table
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .maybeSingle();
-
-      const role = profile?.role ?? 'client';
-
-      if (role === 'admin' || role === 'super_admin') {
-        router.push('/dashboard/admin');
-      } else {
-        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
-      }
     } catch (err: any) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
