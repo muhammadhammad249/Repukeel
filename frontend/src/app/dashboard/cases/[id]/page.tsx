@@ -28,7 +28,7 @@ export default function CaseDetailPage() {
         const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
           supabase.from('cases').select('*, profiles(full_name, email)').eq('id', id).single(),
           supabase.from('case_updates').select('*, profiles(full_name)').eq('case_id', id).order('created_at', { ascending: true }),
-          supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true }),
+          supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true }),
           supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
         ]);
         setCaseData(c);
@@ -54,7 +54,7 @@ export default function CaseDetailPage() {
       message: newMessage.trim(),
     });
 
-    const { data: m } = await supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true });
+    const { data: m } = await supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true });
     setMessages(m || []);
     setNewMessage('');
     setSendingMsg(false);
@@ -212,7 +212,7 @@ export default function CaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isAdmin = m.profiles?.role === 'admin' || m.profiles?.role === 'super_admin';
+                  const isAdmin = m.sender_id !== caseData.client_id;
                   return (
                     <div key={m.id} className={`flex ${isAdmin ? 'justify-start' : 'justify-end'}`}>
                       <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${

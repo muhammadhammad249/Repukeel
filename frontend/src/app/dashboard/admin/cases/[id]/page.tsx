@@ -330,7 +330,7 @@ export default function AdminCaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isAdmin = m.profiles?.role === 'admin' || m.profiles?.role === 'super_admin';
+                  const isAdmin = m.sender_id !== caseData.client_id;
                   return (
                     <div key={m.id} className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
