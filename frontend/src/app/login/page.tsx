@@ -1,6 +1,6 @@
 /* eslint-disable */
 'use client';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -17,63 +17,39 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // If already logged in, redirect away — NO DB QUERY, session only
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        // Already logged in — go to dashboard (dashboard layout will handle admin redirect)
-        window.location.href = '/dashboard';
-      }
-    });
-  }, []);
+  // NO useEffect — no auto-redirect — no blink loop
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       setError('Please enter both email and password.');
       return;
     }
 
     setIsLoading(true);
 
-    try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
 
-      if (signInError) {
-        let msg = signInError.message;
-        if (
-          msg.toLowerCase().includes('invalid login credentials') ||
-          msg.toLowerCase().includes('invalid credentials') ||
-          msg.toLowerCase().includes('email not confirmed')
-        ) {
-          msg = 'Incorrect email or password. Please try again.';
-        }
-        setError(msg);
-        setIsLoading(false);
-        return;
-      }
-
-      if (!data?.user) {
-        setError('Login failed. Please try again.');
-        setIsLoading(false);
-        return;
-      }
-
-      // ✅ Login successful — redirect to /dashboard immediately.
-      // NO extra DB queries here. Dashboard layout will detect admin role
-      // and redirect admins to /dashboard/admin automatically.
-      window.location.href = '/dashboard';
-
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError('An unexpected error occurred. Please try again.');
+    if (signInError) {
+      setError('Incorrect email or password. Please try again.');
       setIsLoading(false);
+      return;
     }
+
+    if (!data?.user) {
+      setError('Login failed. Please try again.');
+      setIsLoading(false);
+      return;
+    }
+
+    // Session is now in memory and localStorage.
+    // Use client-side navigation — AuthGate will find the session immediately.
+    router.push('/dashboard');
   };
 
   return (
@@ -85,7 +61,7 @@ function LoginContent() {
         {/* Back Button + Logo */}
         <div className="absolute top-10 left-6 md:left-10 flex items-center gap-4">
           <button
-            onClick={() => { window.location.href = '/'; }}
+            onClick={() => router.push('/')}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
             aria-label="Go Back"
           >
@@ -133,7 +109,8 @@ function LoginContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  className="w-full h-[52px] pl-12 pr-4 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm"
+                  disabled={isLoading}
+                  className="w-full h-[52px] pl-12 pr-4 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm disabled:opacity-60"
                 />
               </div>
             </div>
@@ -155,7 +132,8 @@ function LoginContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
-                  className="w-full h-[52px] pl-12 pr-12 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm tracking-widest"
+                  disabled={isLoading}
+                  className="w-full h-[52px] pl-12 pr-12 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm tracking-widest disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -207,13 +185,6 @@ function LoginContent() {
       {/* Right Info Section */}
       <div className="hidden lg:flex w-1/2 relative items-center justify-center p-12 overflow-hidden bg-gradient-to-br from-[#0c1940] via-[#10245a] to-[#0c1940]">
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-
-        <div className="absolute top-[20%] left-[30%] w-1.5 h-1.5 bg-white rounded-full opacity-30 blur-[1px]"></div>
-        <div className="absolute top-[15%] left-[50%] w-2 h-2 bg-white rounded-full opacity-20 blur-[1.5px]"></div>
-        <div className="absolute top-[35%] right-[20%] w-1.5 h-1.5 bg-white rounded-full opacity-20 blur-[1px]"></div>
-        <div className="absolute bottom-[40%] right-[30%] w-2 h-2 bg-white rounded-full opacity-10 blur-[2px]"></div>
-        <div className="absolute bottom-[20%] left-[25%] w-1 h-1 bg-white rounded-full opacity-30 blur-[0.5px]"></div>
-        <div className="absolute bottom-[15%] right-[40%] w-1.5 h-1.5 bg-[#d4af37] rounded-full opacity-30 blur-[1px]"></div>
 
         <div className="relative z-10 flex flex-col items-center text-center text-white max-w-[450px]">
           <div className="mb-12 relative flex items-center justify-center">
