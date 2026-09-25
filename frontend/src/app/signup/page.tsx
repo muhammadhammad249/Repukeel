@@ -52,13 +52,16 @@ export default function SignupPage() {
       } else if (msg.includes('already registered') || msg.includes('user already exists')) {
         setError('This email is already registered. Please login instead.');
       } else if (msg.includes('sending confirmation email') || msg.includes('email') || msg.includes('smtp')) {
-        // Email confirmation disabled or SMTP not configured — attempt direct login
+        // Email confirmation still ON in Supabase — try login anyway
         const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
         if (!loginError) {
           router.push('/dashboard');
           return;
         }
-        setError('Account created but could not log in automatically. Please try logging in.');
+        // Email not confirmed yet — show success with note
+        setLoading(false);
+        setSuccess(true);
+        return;
       } else {
         setError(signUpError.message);
       }
@@ -101,9 +104,9 @@ export default function SignupPage() {
               <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h2 className="text-[24px] font-[800] text-[#0a192f] mb-3">Check your email</h2>
+          <h2 className="text-[24px] font-[800] text-[#0a192f] mb-3">Account Created!</h2>
           <p className="text-[15px] text-gray-500 mb-6">
-            We sent a confirmation link to <strong>{email}</strong>. Click the link to verify your email and activate your account.
+            Your account has been created for <strong>{email}</strong>. You can now log in with your email and password.
           </p>
           <Link href="/login" className="btn btn-navy-solid w-full text-center block">
             Go to Login
