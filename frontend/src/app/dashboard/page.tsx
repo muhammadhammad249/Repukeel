@@ -23,20 +23,22 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     async function load() {
-      const p = await getCurrentProfile();
-      setProfile(p);
+      try {
+        const p = await getCurrentProfile();
+        setProfile(p);
 
-      if (!p) return;
-
-      const { data } = await supabase
-        .from('cases')
-        .select('id, case_id, service_type, status, created_at, updated_at')
-        .eq('client_id', p.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      setCases(data || []);
-      setLoading(false);
+        if (p) {
+          const { data } = await supabase
+            .from('cases')
+            .select('id, case_id, service_type, status, created_at, updated_at')
+            .eq('client_id', p.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+          setCases(data || []);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);

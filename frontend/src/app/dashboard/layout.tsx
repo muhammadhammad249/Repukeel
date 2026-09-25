@@ -118,11 +118,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             New Inquiry
           </Link>
 
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#0c1940] flex items-center justify-center text-white font-[700] text-[14px]">
-              {profile?.full_name?.charAt(0)?.toUpperCase() || 'C'}
-            </div>
-          </div>
         </header>
 
         {/* Page Content */}

@@ -45,45 +45,48 @@ export default function NewInquiryPage() {
 
     setLoading(true);
 
-    const profile = await getCurrentProfile();
-    if (!profile) {
-      router.push('/login');
-      return;
-    }
+    try {
+      const profile = await getCurrentProfile();
+      if (!profile) {
+        router.push('/login');
+        return;
+      }
 
-    const caseId = await generateCaseId();
-    const urlArray = form.urls.split('\n').map((u) => u.trim()).filter(Boolean);
+      const caseId = await generateCaseId();
+      const urlArray = form.urls.split('\n').map((u) => u.trim()).filter(Boolean);
 
-    const { data, error: insertError } = await supabase
-      .from('cases')
-      .insert({
-        case_id: caseId,
-        client_id: profile.id,
-        service_type: form.service_type,
-        platform: form.platform,
-        description: form.description,
-        urls: urlArray,
-        urgency: form.urgency,
+      const { data, error: insertError } = await supabase
+        .from('cases')
+        .insert({
+          case_id: caseId,
+          client_id: profile.id,
+          service_type: form.service_type,
+          platform: form.platform,
+          description: form.description,
+          urls: urlArray,
+          urgency: form.urgency,
+          status: 'submitted',
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        setError(insertError.message);
+        return;
+      }
+
+      // Insert first timeline entry
+      await supabase.from('case_updates').insert({
+        case_id: data.id,
         status: 'submitted',
-      })
-      .select()
-      .single();
+        note: 'Your inquiry has been received. Case ID has been assigned.',
+        notify_client: false,
+      });
 
-    if (insertError) {
-      setError(insertError.message);
+      router.push(`/dashboard/cases/${data.id}?new=1`);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // Insert first timeline entry
-    await supabase.from('case_updates').insert({
-      case_id: data.id,
-      status: 'submitted',
-      note: 'Your inquiry has been received. Case ID has been assigned.',
-      notify_client: false,
-    });
-
-    router.push(`/dashboard/cases/${data.id}?new=1`);
   };
 
   return (
