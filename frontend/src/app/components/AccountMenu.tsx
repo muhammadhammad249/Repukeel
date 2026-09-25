@@ -146,7 +146,7 @@ export default function AccountMenu({
                 <button
                   type="button"
                   role="menuitem"
-                  onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin/cases'); }}
+                  onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
                   className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
                 >
                   Admin Panel

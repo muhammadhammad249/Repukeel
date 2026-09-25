@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { categories } from '@/data/services';
 
 export default function NewCasePage() {
   const router = useRouter();
@@ -50,14 +51,15 @@ export default function NewCasePage() {
             onChange={(e) => setIssueType(e.target.value)}
             className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           >
-            <option>Content Removal</option>
-            <option>Dating Reputation</option>
-            <option>Job Reputation</option>
-            <option>Monitoring & Alerts</option>
-            <option>Reputation Management</option>
-            <option>Search Result Cleanup</option>
-            <option>Reputation Audit</option>
-            <option>Industries</option>
+            <option value="" disabled>Select an issue type...</option>
+            {categories.map((category) => (
+              <optgroup key={category.slug} label={category.name}>
+                {category.subServices.map((sub) => (
+                  <option key={sub.slug} value={sub.name}>{sub.name}</option>
+                ))}
+              </optgroup>
+            ))}
+            <option value="Other">Other</option>
           </select>
         </div>
         <div>
