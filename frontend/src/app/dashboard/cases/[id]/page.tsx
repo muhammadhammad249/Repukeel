@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { STATUS_LABELS } from '@/lib/auth';
 
-type Tab = 'timeline' | 'messages' | 'files' | 'invoice';
+type Tab = 'timeline' | 'files' | 'invoice';
 
 export default function CaseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,83 +15,27 @@ export default function CaseDetailPage() {
 
   const [caseData, setCaseData] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
   const [invoice, setInvoice] = useState<any>(null);
-  const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('timeline');
-  const [sendingMsg, setSendingMsg] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) setCurrentUserId(user.id);
-
-        const [{ data: c }, { data: u }, { data: m }, { data: inv }] = await Promise.all([
+        const [{ data: c }, { data: u }, { data: inv }] = await Promise.all([
           supabase.from('cases').select('*').eq('id', id).single(),
           supabase.from('case_updates').select('*').eq('case_id', id).order('created_at', { ascending: true }),
-          supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true }),
           supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
         ]);
         setCaseData(c);
         setUpdates(u || []);
-        setMessages(m || []);
         setInvoice(inv);
       } finally {
         setLoading(false);
       }
     }
     if (id) load();
-
-    // Realtime: listen for new messages from admin
-    const channel = supabase.channel(`messages-case-${id}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `case_id=eq.${id}` }, (payload) => {
-        setMessages((prev) => {
-          // avoid duplicate if optimistic message already exists
-          if (prev.find(m => m.id === payload.new.id)) return prev;
-          return [...prev, payload.new];
-        });
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
   }, [id]);
-
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || sendingMsg) return;
-    const text = newMessage.trim();
-    setNewMessage('');
-
-    // Optimistic: show message instantly
-    const optimistic = {
-      id: `opt-${Date.now()}`,
-      case_id: id,
-      sender_id: currentUserId,
-      message: text,
-      created_at: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, optimistic]);
-    setTimeout(() => {
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-      }
-    }, 50);
-
-    // Insert to DB in background
-    const { data: inserted } = await supabase.from('messages').insert({
-      case_id: id,
-      sender_id: currentUserId,
-      message: text,
-    }).select().single();
-
-    // Replace optimistic with real record
-    if (inserted) {
-      setMessages((prev) => prev.map(m => m.id === optimistic.id ? inserted : m));
-    }
-  };
 
   if (loading) {
     return (
@@ -116,7 +60,7 @@ export default function CaseDetailPage() {
   const statusInfo = STATUS_LABELS[caseData.status] || { label: caseData.status, color: 'bg-gray-100 text-gray-700' };
   const tabs: { key: Tab; label: string }[] = [
     { key: 'timeline', label: '📋 Timeline' },
-    { key: 'messages', label: `💬 Messages ${messages.length > 0 ? `(${messages.length})` : ''}` },
+    
     { key: 'files', label: '🗂️ Files' },
     { key: 'invoice', label: '💳 Invoice' },
   ];
@@ -232,97 +176,6 @@ export default function CaseDetailPage() {
                 })}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Messages */}
-        {activeTab === 'messages' && (
-          <div className="flex flex-col" style={{ height: '520px' }}>
-            {/* Chat background */}
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className="text-[40px] mb-3">💬</div>
-                    <p className="text-gray-500 text-[14px] font-[600]">No messages yet</p>
-                    <p className="text-gray-400 text-[13px] mt-1">Send a message to start the conversation with our team.</p>
-                  </div>
-                </div>
-              ) : (
-                messages.map((m) => {
-                  const isAdminMsg = m.message.startsWith('||ADMIN||');
-                  // If testing on the same account, fallback to marker. If not, use standard logic.
-                  const isMe = isAdminMsg ? false : (currentUserId ? m.sender_id === currentUserId : m.sender_id === caseData?.client_id);
-                  
-                  const displayMessage = m.message.replace('||ADMIN||', '');
-
-                  return (
-                    <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      {/* Admin avatar */}
-                      {!isMe && (
-                        <div className="w-8 h-8 rounded-full bg-[#0c1940] flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[10px] font-[800]">RK</span>
-                        </div>
-                      )}
-                      <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
-                        isMe
-                          ? 'bg-[#25d366] text-white rounded-br-sm'
-                          : 'bg-white text-gray-800 rounded-bl-sm'
-                      }`}>
-                        {!isMe && (
-                          <p className="text-[11px] font-[800] text-[#0c1940] mb-1">RepuKeel Team</p>
-                        )}
-                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{displayMessage}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-green-100' : 'text-gray-400'}`}>
-                          {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {isMe && <span className="ml-1">✓✓</span>}
-                        </p>
-                      </div>
-                      {/* Client avatar */}
-                      {isMe && (
-                        <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[10px] font-[800]">You</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            {/* Input bar */}
-            <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                placeholder="Type a message..."
-                className="flex-1 px-4 py-2.5 bg-[#f0f2f5] border-0 rounded-full text-[14px] outline-none focus:ring-2 focus:ring-[#d4af37] transition-all"
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={sendingMsg || !newMessage.trim()}
-                className="w-10 h-10 bg-[#d4af37] hover:bg-[#c19b2e] text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-              >
-                {sendingMsg ? (
-                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Files */}
-        {activeTab === 'files' && (
-          <div className="p-6">
-            <p className="text-gray-400 text-[14px] text-center py-8">File uploads will be available soon.</p>
           </div>
         )}
 

@@ -18,7 +18,7 @@ const navItems = [
   { label: 'Overview', icon: '⬛', path: '/dashboard' },
   { label: 'New Inquiry', icon: '➕', path: '/dashboard/new-inquiry' },
   { label: 'My Cases', icon: '📁', path: '/dashboard/cases' },
-  { label: 'Messages', icon: '💬', path: '/dashboard/messages' },
+  
   { label: 'Invoices & Payments', icon: '💳', path: '/dashboard/invoices' },
   { label: 'Files', icon: '🗂️', path: '/dashboard/files' },
   { label: 'Profile & Security', icon: '👤', path: '/dashboard/profile' },

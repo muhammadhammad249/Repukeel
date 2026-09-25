@@ -17,7 +17,7 @@ interface Case {
 
 export default function DashboardOverview() {
   const [cases, setCases] = useState<Case[]>([]);
-  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
   const router = useRouter();
@@ -39,13 +39,8 @@ export default function DashboardOverview() {
 
           if (cData && cData.length > 0) {
             const caseIds = cData.map(c => c.id);
-            const { data: mData } = await supabase
-              .from('messages')
-              .select('*')
-              .in('case_id', caseIds)
-              .order('created_at', { ascending: false })
-              .limit(5);
-            setRecentMessages(mData || []);
+            
+            
           }
         }
       } finally {
@@ -176,39 +171,6 @@ export default function DashboardOverview() {
         )}
       </div>
 
-      {/* Recent Messages */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-8">
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-[17px] font-[800] text-[#0a192f] flex items-center gap-2">💬 Recent Messages</h2>
-        </div>
-
-        {recentMessages.length === 0 ? (
-          <div className="px-6 py-12 text-center">
-            <p className="text-[15px] font-[700] text-gray-800 mb-1">No messages yet</p>
-            <p className="text-[14px] text-gray-500">Messages from our team will appear here.</p>
-          </div>
-        ) : (
-          <div className="flex flex-col">
-            {recentMessages.map((m) => {
-              const isAdmin = m.sender_id !== profile?.id;
-              const relatedCase = cases.find(c => c.id === m.case_id);
-              return (
-                <div key={m.id} onClick={() => router.push(`/dashboard/cases/${m.case_id}?tab=messages`)} className="px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <p className={`text-[12px] font-[700] ${isAdmin ? 'text-purple-600' : 'text-gray-500'}`}>
-                      {isAdmin ? 'RepuKeel Team' : 'You'} <span className="text-gray-400 font-[500] ml-1">on Case {relatedCase?.case_id}</span>
-                    </p>
-                    <p className="text-[11px] text-gray-400">
-                      {new Date(m.created_at).toLocaleDateString()} {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                  <p className="text-[14px] text-[#0a192f] line-clamp-2">{m.message}</p>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

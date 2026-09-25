@@ -30,11 +30,11 @@ export default function AdminCaseDetailPage() {
 
   // Tabs state
   const [activeTab, setActiveTab] = useState('timeline');
-  const [messages, setMessages] = useState<any[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [sendingMsg, setSendingMsg] = useState(false);
+  
+  
+  
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
 
   // Invoice state
   const [invoice, setInvoice] = useState<any>(null);
@@ -73,11 +73,7 @@ export default function AdminCaseDetailPage() {
         .eq('case_id', id)
         .order('created_at', { ascending: true });
         
-      const { data: m } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('case_id', id)
-        .order('created_at', { ascending: true });
+      
 
       const { data: inv } = await supabase
         .from('invoices')
@@ -86,7 +82,7 @@ export default function AdminCaseDetailPage() {
         .maybeSingle();
 
       setUpdates(u || []);
-      setMessages(m || []);
+      
       setInvoice(inv);
       if (inv) {
         setInvoiceForm({
@@ -101,17 +97,9 @@ export default function AdminCaseDetailPage() {
     }
     if (id) load();
 
-    // Realtime: listen for new messages from client
-    const channel = supabase.channel(`admin-messages-case-${id}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `case_id=eq.${id}` }, (payload) => {
-        setMessages((prev) => {
-          if (prev.find(m => m.id === payload.new.id)) return prev;
-          return [...prev, payload.new];
-        });
-      })
-      .subscribe();
+    
 
-    return () => { supabase.removeChannel(channel); };
+    
   }, [id]);
 
   const handleUpdateStatus = async (e: React.FormEvent) => {
@@ -153,38 +141,6 @@ export default function AdminCaseDetailPage() {
     setIsUpdating(false);
   };
 
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || sendingMsg) return;
-    const text = newMessage.trim();
-    setNewMessage('');
-
-    // Optimistic: show message instantly
-    const optimistic = {
-      id: `opt-${Date.now()}`,
-      case_id: id,
-      sender_id: currentUserId,
-      message: text,
-      created_at: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, optimistic]);
-    setTimeout(() => {
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-      }
-    }, 50);
-
-    // Insert to DB in background
-    const { data: inserted } = await supabase.from('messages').insert({
-      case_id: id,
-      sender_id: currentUserId,
-      message: '||ADMIN||' + text,
-    }).select().single();
-
-    // Replace optimistic with real record
-    if (inserted) {
-      setMessages((prev) => prev.map(m => m.id === optimistic.id ? inserted : m));
-    }
-  };
 
   const handleSaveInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -298,7 +254,7 @@ export default function AdminCaseDetailPage() {
           {/* Tabs */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="border-b border-gray-100 flex overflow-x-auto">
-              {['timeline', 'messages', 'invoice'].map((tab) => (
+              {['timeline', 'invoice'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -308,7 +264,7 @@ export default function AdminCaseDetailPage() {
                       : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  {tab === 'timeline' ? '📋 Timeline' : tab === 'messages' ? `💬 Messages (${messages.length})` : '💳 Invoice'}
+                  {tab === 'timeline' ? '📋 Timeline' : '💳 Invoice'}
                 </button>
               ))}
             </div>
@@ -348,95 +304,6 @@ export default function AdminCaseDetailPage() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-        )}
-
-        {/* Messages Tab */}
-        {activeTab === 'messages' && (
-          <div className="flex flex-col" style={{ height: '520px' }}>
-            {/* Chat background */}
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className="text-[40px] mb-3">💬</div>
-                    <p className="text-gray-500 text-[14px] font-[600]">No messages yet</p>
-                    <p className="text-gray-400 text-[13px] mt-1">Send a message to start the conversation with the client.</p>
-                  </div>
-                </div>
-              ) : (
-                messages.map((m) => {
-                  // Admin panel: client messages go LEFT, admin messages go RIGHT
-                  const isAdminMsg = m.message.startsWith('||ADMIN||');
-                  
-                  // If testing on same account, fallback to the marker. If not, use standard logic.
-                  const isClientMsg = isAdminMsg ? false : m.sender_id === caseData?.client_id;
-                  
-                  const displayMessage = m.message.replace('||ADMIN||', '');
-
-                  return (
-                    <div key={m.id} className={`flex items-end gap-2 ${isClientMsg ? 'justify-start' : 'justify-end'}`}>
-                      {/* Client avatar - LEFT */}
-                      {isClientMsg && (
-                        <div className="w-8 h-8 rounded-full bg-[#5b6b8a] flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[9px] font-[800]">CLT</span>
-                        </div>
-                      )}
-                      <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
-                        isClientMsg
-                          ? 'bg-white text-gray-800 rounded-bl-sm'
-                          : 'bg-[#25d366] text-white rounded-br-sm'
-                      }`}>
-                        {isClientMsg && (
-                          <p className="text-[11px] font-[800] text-[#5b6b8a] mb-1">Client</p>
-                        )}
-                        {!isClientMsg && (
-                          <p className="text-[11px] font-[800] text-green-100 mb-1">You (Admin)</p>
-                        )}
-                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{displayMessage}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isClientMsg ? 'text-gray-400' : 'text-green-100'}`}>
-                          {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {!isClientMsg && <span className="ml-1">✓✓</span>}
-                        </p>
-                      </div>
-                      {/* Admin avatar - RIGHT */}
-                      {!isClientMsg && (
-                        <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[9px] font-[800]">ADM</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            {/* Input bar */}
-            <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                placeholder="Type a message to the client..."
-                className="flex-1 px-4 py-2.5 bg-[#f0f2f5] border-0 rounded-full text-[14px] outline-none focus:ring-2 focus:ring-[#0c1940] transition-all"
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={sendingMsg || !newMessage.trim()}
-                className="w-10 h-10 bg-[#0c1940] hover:bg-[#0c1940]/90 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-              >
-                {sendingMsg ? (
-                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                  </svg>
-                )}
-              </button>
             </div>
           </div>
         )}

@@ -46,7 +46,11 @@ export default function SignupPage() {
     });
 
     if (signUpError) {
-      setError(signUpError.message);
+      if (signUpError.message.toLowerCase().includes('rate limit')) {
+        setError('Too many registration attempts. Please try again in a few minutes.');
+      } else {
+        setError(signUpError.message);
+      }
       setLoading(false);
       return;
     }
@@ -219,7 +223,7 @@ export default function SignupPage() {
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
             </svg>
           </div>
-          <h2 className="text-[32px] font-[900] mb-4">Your reputation, protected.</h2>
+          <h2 className="text-[32px] font-[900] mb-4 text-white">Your reputation, protected.</h2>
           <p className="text-blue-200 text-[16px] leading-relaxed mb-10">
             Access the RepuKeel client portal to submit cases, track progress in real-time and communicate directly with our team.
           </p>

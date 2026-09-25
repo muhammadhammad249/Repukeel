@@ -41,13 +41,7 @@ export default function AdminSubmissionsPage() {
       
       <div className="space-y-8">
         
-        {/* Contact Messages */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-          <h2 className="text-2xl font-bold mb-6">Contact Messages</h2>
-          <div className="border-2 border-dashed border-slate-200 rounded-xl p-10 text-center text-slate-400">
-            <p className="text-lg">No contact messages yet.</p>
-          </div>
-        </div>
+
 
         {/* Analysis Requests */}
         <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
