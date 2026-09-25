@@ -49,7 +49,7 @@ export default function AdminCaseDetailPage() {
     async function load() {
       const { data: c } = await supabase
         .from('cases')
-        .select('*, profiles!cases_client_id_fkey(full_name, email, whatsapp)')
+        .select('*')
         .eq('id', id)
         .single();
       
@@ -59,18 +59,18 @@ export default function AdminCaseDetailPage() {
       }
 
       setCaseData(c);
-      setClient(c.profiles);
+      setClient(null);
       setNewStatus(c.status);
 
       const { data: u } = await supabase
         .from('case_updates')
-        .select('*, profiles(full_name)')
+        .select('*')
         .eq('case_id', id)
         .order('created_at', { ascending: true });
         
       const { data: m } = await supabase
         .from('messages')
-        .select('*, profiles(full_name, role)')
+        .select('*')
         .eq('case_id', id)
         .order('created_at', { ascending: true });
 
@@ -123,7 +123,7 @@ export default function AdminCaseDetailPage() {
       // Refresh updates
       const { data: u } = await supabase
         .from('case_updates')
-        .select('*, profiles(full_name)')
+        .select('*')
         .eq('case_id', id)
         .order('created_at', { ascending: true });
         
@@ -148,7 +148,7 @@ export default function AdminCaseDetailPage() {
       message: newMessage.trim(),
     });
 
-    const { data: m } = await supabase.from('messages').select('*, profiles(full_name, role)').eq('case_id', id).order('created_at', { ascending: true });
+    const { data: m } = await supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true });
     setMessages(m || []);
     setNewMessage('');
     setSendingMsg(false);
