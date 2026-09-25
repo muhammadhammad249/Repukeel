@@ -34,24 +34,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     async function checkAuth() {
-      // Use getSession() which reads from localStorage — works even if DB is slow/failing
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.user) {
-        // No session at all → definitely not logged in → go to login
-        router.push(`/login?next=${encodeURIComponent(pathname)}`);
-        return;
-      }
-
-      // User IS authenticated. Build a basic profile from session data
-      const baseProfile: Profile = {
-        id: session.user.id,
-        full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        email: session.user.email || '',
-      };
-
-      // Try to enrich with DB profile (role etc.) — but don't redirect if it fails
       try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError || !session?.user) {
+          router.push(`/login?next=${encodeURIComponent(pathname)}`);
+          return;
+        }
+
+        const baseProfile: Profile = {
+          id: session.user.id,
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+        };
+
         const { data: dbProfile } = await supabase
           .from('profiles')
           .select('full_name, role')
@@ -62,12 +58,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
           baseProfile.role = dbProfile.role;
         }
-      } catch (_) {
-        // DB unreachable — still show dashboard, just without role
-      }
 
-      setProfile(baseProfile);
-      setLoading(false);
+        setProfile(baseProfile);
+      } finally {
+        setLoading(false);
+      }
     }
 
     checkAuth();
