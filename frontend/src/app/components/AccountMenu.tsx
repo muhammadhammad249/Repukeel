@@ -19,7 +19,6 @@ export default function AccountMenu({
   const router = useRouter();
   const pathname = usePathname();
 
-  // 3 states: true = loading, false = not logged in, AuthUser = logged in
   const [authState, setAuthState] = useState<'loading' | 'loggedOut' | AuthUser>('loading');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,7 +26,7 @@ export default function AccountMenu({
     let cancelled = false;
 
     async function refresh() {
-      // getSession() reads localStorage - no network, always fast
+      // getSession reads localStorage — no network, always fast & reliable
       const { data: { session } } = await supabase.auth.getSession();
 
       if (cancelled) return;
@@ -37,22 +36,35 @@ export default function AccountMenu({
         return;
       }
 
-      // Get name from profile or fallback to email
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, role')
-        .eq('id', session.user.id)
-        .single();
-
-      if (cancelled) return;
-
+      // Build name from session (guaranteed to work even if DB is down)
       const name =
-        profile?.full_name ||
         session.user.user_metadata?.full_name ||
-        session.user.email ||
+        session.user.email?.split('@')[0] ||
         'User';
 
-      setAuthState({ name, email: session.user.email || '', role: profile?.role });
+      // Set a base state immediately so UI shows fast
+      if (!cancelled) {
+        setAuthState({ name, email: session.user.email || '', role: undefined });
+      }
+
+      // Then try to enrich with DB role (best-effort, doesn't block rendering)
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!cancelled && profile) {
+          setAuthState({
+            name: profile.full_name || name,
+            email: session.user.email || '',
+            role: profile.role,
+          });
+        }
+      } catch (_) {
+        // DB unreachable — user stays logged in, just no role-based features
+      }
     }
 
     refresh();
@@ -83,7 +95,7 @@ export default function AccountMenu({
     navigateTo('/');
   };
 
-  // While checking session → show invisible placeholder (no layout shift)
+  // Loading state
   if (authState === 'loading') {
     return <span className="opacity-0 pointer-events-none select-none" aria-hidden>...</span>;
   }
@@ -108,6 +120,8 @@ export default function AccountMenu({
       ? `${words[0][0]}${words[1][0]}`
       : authState.name.slice(0, 2)
   ).toUpperCase();
+
+  const isAdmin = authState.role === 'admin' || authState.role === 'super_admin';
 
   return (
     <div className={`relative ${menuClassName}`}>
@@ -143,14 +157,14 @@ export default function AccountMenu({
               >
                 Dashboard
               </button>
-              {(authState.role === 'admin' || authState.role === 'super_admin') && (
+              {isAdmin && (
                 <button
                   type="button"
                   role="menuitem"
                   onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
                   className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
                 >
-                  Admin Panel
+                  🛡️ Admin Panel
                 </button>
               )}
               <button

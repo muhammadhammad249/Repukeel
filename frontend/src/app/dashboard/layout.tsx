@@ -5,7 +5,14 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { getCurrentProfile, UserProfile, signOut } from '@/lib/auth';
+import { signOut } from '@/lib/auth';
+
+interface Profile {
+  id: string;
+  full_name: string;
+  email: string;
+  role?: string;
+}
 
 const navItems = [
   { label: 'Overview', icon: '⬛', path: '/dashboard' },
@@ -21,22 +28,58 @@ const navItems = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
-      const p = await getCurrentProfile();
-      if (!p) {
-        await supabase.auth.signOut();
-        router.push(`/login?next=${pathname}`);
+      // Use getSession() which reads from localStorage — works even if DB is slow/failing
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.user) {
+        // No session at all → definitely not logged in → go to login
+        router.push(`/login?next=${encodeURIComponent(pathname)}`);
         return;
       }
-      setProfile(p);
+
+      // User IS authenticated. Build a basic profile from session data
+      const baseProfile: Profile = {
+        id: session.user.id,
+        full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+        email: session.user.email || '',
+      };
+
+      // Try to enrich with DB profile (role etc.) — but don't redirect if it fails
+      try {
+        const { data: dbProfile } = await supabase
+          .from('profiles')
+          .select('full_name, role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (dbProfile) {
+          baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
+          baseProfile.role = dbProfile.role;
+        }
+      } catch (_) {
+        // DB unreachable — still show dashboard, just without role
+      }
+
+      setProfile(baseProfile);
       setLoading(false);
     }
+
     checkAuth();
+
+    // Also listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        router.push('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
@@ -98,6 +141,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             );
           })}
+
+          {/* Admin Panel link — shown if role is admin or super_admin */}
+          {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
+            <Link
+              href="/dashboard/admin"
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 text-[14px] font-[600] transition-all mt-4 border border-purple-500/30 ${
+                pathname.startsWith('/dashboard/admin')
+                  ? 'bg-purple-600 text-white'
+                  : 'text-purple-300 hover:bg-purple-600/20 hover:text-purple-200'
+              }`}
+            >
+              <span className="text-[18px]">🛡️</span>
+              Admin Panel
+            </Link>
+          )}
         </nav>
 
         {/* User at bottom */}
