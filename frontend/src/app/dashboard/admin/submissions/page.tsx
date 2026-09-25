@@ -84,12 +84,12 @@ export default function AdminSubmissionsPage() {
                       <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                         <td className="py-4 px-6 font-bold text-slate-800">{c.case_id}</td>
                         <td className="py-4 px-6">
-                          <p className="font-semibold text-slate-800">{client?.full_name || '—'}</p>
+                          <p className="font-semibold text-slate-800">{client?.full_name || 'ï¿½'}</p>
                           <p className="text-sm text-slate-500">{client?.email || ''}</p>
                         </td>
                         <td className="py-4 px-6 text-slate-600">{c.service_type}</td>
                         <td className="py-4 px-6">
-                          <span className={\inline-flex items-center px-3 py-1 rounded-full text-xs font-bold \\}>
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${statusInfo.color}`}>
                             {statusInfo.label}
                           </span>
                         </td>
