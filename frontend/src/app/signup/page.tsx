@@ -49,24 +49,40 @@ export default function SignupPage() {
       const msg = signUpError.message.toLowerCase();
       if (msg.includes('rate limit')) {
         setError('Too many registration attempts. Please try again later.');
+        setLoading(false);
+        return;
       } else if (msg.includes('already registered') || msg.includes('user already exists')) {
         setError('This email is already registered. Please login instead.');
-      } else if (msg.includes('sending confirmation email') || msg.includes('email') || msg.includes('smtp')) {
-        // Email confirmation still ON in Supabase — try login anyway
-        const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
-        if (!loginError) {
+        setLoading(false);
+        return;
+      } else if (
+        msg.includes('database error') ||
+        msg.includes('sending confirmation email') ||
+        msg.includes('smtp') ||
+        msg.includes('email')
+      ) {
+        // Auth user may have been created — try logging in directly
+        const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+        if (!loginError && loginData.user) {
+          // Also try to upsert profile
+          await supabase.from('profiles').upsert({
+            id: loginData.user.id,
+            full_name: fullName,
+            whatsapp,
+            role: 'client',
+          }, { onConflict: 'id' });
           router.push('/dashboard');
           return;
         }
-        // Email not confirmed yet — show success with note
+        // Could not login — show success screen (account likely needs email confirm)
         setLoading(false);
         setSuccess(true);
         return;
       } else {
         setError(signUpError.message);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-      return;
     }
 
     // If user already existed (Supabase returns identities=[]) — duplicate email
