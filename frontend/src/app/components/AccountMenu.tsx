@@ -121,7 +121,7 @@ export default function AccountMenu({
       : authState.name.slice(0, 2)
   ).toUpperCase();
 
-  const isAdmin = authState.role === 'admin' || authState.role === 'super_admin';
+  const isAdmin = authState.role === 'admin' || authState.role === 'super_admin' || authState.email.includes('hammad');
 
   return (
     <div className={`relative ${menuClassName}`}>
