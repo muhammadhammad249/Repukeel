@@ -6,20 +6,6 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-async function getRedirectPath(userId: string, fallback: string): Promise<string> {
-  try {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .maybeSingle();
-    const role = profile?.role ?? 'client';
-    return (role === 'admin' || role === 'super_admin') ? '/dashboard/admin' : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -31,16 +17,15 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // If already logged in, redirect away from login page
+  // If already logged in, redirect away — NO DB QUERY, session only
   useEffect(() => {
-    let mounted = true;
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session || !mounted) return;
-      const path = await getRedirectPath(session.user.id, nextUrl);
-      if (mounted) router.replace(path);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        // Already logged in — go to dashboard (dashboard layout will handle admin redirect)
+        window.location.href = '/dashboard';
+      }
     });
-    return () => { mounted = false; };
-  }, []); // run once on mount only
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,30 +39,34 @@ function LoginContent() {
     setIsLoading(true);
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
       if (signInError) {
         let msg = signInError.message;
-        if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid credentials')) {
+        if (
+          msg.toLowerCase().includes('invalid login credentials') ||
+          msg.toLowerCase().includes('invalid credentials') ||
+          msg.toLowerCase().includes('email not confirmed')
+        ) {
           msg = 'Incorrect email or password. Please try again.';
-        } else if (msg.toLowerCase().includes('email not confirmed')) {
-          msg = 'Please verify your email before logging in.';
         }
         setError(msg);
         setIsLoading(false);
         return;
       }
 
-      if (!data.user) {
+      if (!data?.user) {
         setError('Login failed. Please try again.');
         setIsLoading(false);
         return;
       }
 
-      // ✅ IMPORTANT: Do NOT query profiles table here — it can hang on slow
-      // networks/other PCs causing infinite spinner.
-      // Instead redirect immediately to /dashboard. The dashboard layout will
-      // check the role and redirect admin users to /dashboard/admin automatically.
+      // ✅ Login successful — redirect to /dashboard immediately.
+      // NO extra DB queries here. Dashboard layout will detect admin role
+      // and redirect admins to /dashboard/admin automatically.
       window.location.href = '/dashboard';
 
     } catch (err: any) {
@@ -96,7 +85,7 @@ function LoginContent() {
         {/* Back Button + Logo */}
         <div className="absolute top-10 left-6 md:left-10 flex items-center gap-4">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => { window.location.href = '/'; }}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
             aria-label="Go Back"
           >
@@ -122,7 +111,7 @@ function LoginContent() {
 
           {error && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 mb-6 flex items-center gap-2">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 flex-shrink-0">
                 <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
               </svg>
               {error}
@@ -143,6 +132,7 @@ function LoginContent() {
                   placeholder="your.email@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                   className="w-full h-[52px] pl-12 pr-4 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm"
                 />
               </div>
@@ -164,6 +154,7 @@ function LoginContent() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
                   className="w-full h-[52px] pl-12 pr-12 bg-white border border-gray-200 rounded-[12px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all text-[15px] shadow-sm tracking-widest"
                 />
                 <button
@@ -233,7 +224,6 @@ function LoginContent() {
               style={{ mixBlendMode: 'screen' }}
             />
           </div>
-
           <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">Repukeel Portal</h2>
           <p className="text-[14px] text-blue-100/50 mt-6">
             Need help?{' '}
