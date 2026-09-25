@@ -33,10 +33,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.push(`/login?next=${pathname}`);
         return;
       }
-      if (p.role === 'admin' || p.role === 'super_admin') {
-        router.push('/dashboard/admin');
-        return;
-      }
       setProfile(p);
       setLoading(false);
     }
