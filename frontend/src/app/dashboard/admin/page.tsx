@@ -5,58 +5,174 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({ contacts: 0, analysis: 0, cases: 0 });
+  const [stats, setStats] = useState({ totalCases: 0, submitted: 0, inProgress: 0, completed: 0 });
+  const [recentCases, setRecentCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStats() {
-      const { count: casesCount } = await supabase
-        .from('cases')
-        .select('*', { count: 'exact', head: true });
+      try {
+        const { data: cases } = await supabase
+          .from('cases')
+          .select('*, profiles(full_name, email)')
+          .order('created_at', { ascending: false })
+          .limit(5);
 
-      setStats({
-        contacts: 0,
-        analysis: 0,
-        cases: casesCount || 0
-      });
+        const { count: total } = await supabase
+          .from('cases')
+          .select('*', { count: 'exact', head: true });
+
+        const { count: submitted } = await supabase
+          .from('cases')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'submitted');
+
+        const { count: inProg } = await supabase
+          .from('cases')
+          .select('*', { count: 'exact', head: true })
+          .in('status', ['in_progress', 'under_review', 'awaiting_client_action', 'quote_sent', 'awaiting_payment', 'payment_confirmed']);
+
+        const { count: done } = await supabase
+          .from('cases')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'completed');
+
+        setStats({
+          totalCases: total || 0,
+          submitted: submitted || 0,
+          inProgress: inProg || 0,
+          completed: done || 0,
+        });
+
+        setRecentCases(cases || []);
+      } finally {
+        setLoading(false);
+      }
     }
     loadStats();
-    
-    // Subscribe to realtime changes
-    const channel = supabase.channel('schema-db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'cases' }, () => {
-        loadStats();
-      })
-      .subscribe();
-      
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
+  const statCards = [
+    { label: 'New / Submitted', value: stats.submitted, icon: '📥', color: 'text-blue-600', bg: 'bg-blue-50', link: '/dashboard/admin/cases?status=submitted' },
+    { label: 'In Progress', value: stats.inProgress, icon: '⚙️', color: 'text-orange-600', bg: 'bg-orange-50', link: '/dashboard/admin/cases?status=in_progress' },
+    { label: 'Completed', value: stats.completed, icon: '✅', color: 'text-green-600', bg: 'bg-green-50', link: '/dashboard/admin/cases?status=completed' },
+    { label: 'Total Cases', value: stats.totalCases, icon: '📁', color: 'text-purple-600', bg: 'bg-purple-50', link: '/dashboard/admin/cases' },
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-32 min-h-[75vh] flex flex-col">
-      <h1 className="text-4xl font-bold mb-3">Admin Dashboard</h1>
-      <p className="text-slate-500 mb-12 text-lg">Manage all submissions, blog posts, and case studies.</p>
-      
-      <div className="grid md:grid-cols-3 gap-8 mb-12">
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-          <p className="text-4xl font-bold text-blue-600 mb-2">{stats.contacts}</p>
-          <p className="text-slate-600 font-medium text-lg">New Contacts</p>
-        </div>
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-          <p className="text-4xl font-bold text-blue-600 mb-2">{stats.analysis}</p>
-          <p className="text-slate-600 font-medium text-lg">Analysis Requests</p>
-        </div>
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-          <p className="text-4xl font-bold text-blue-600 mb-2">{stats.cases}</p>
-          <p className="text-slate-600 font-medium text-lg">Active Cases</p>
-        </div>
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-[28px] font-[800] text-[#0a192f]">Admin Dashboard</h1>
+        <p className="text-gray-500 text-[15px] mt-1">Manage all client cases, invoices, and messages.</p>
       </div>
-      
-      <div className="flex gap-4 mb-20">
-        <Link href="/dashboard/admin/submissions" className="bg-[#d4af37] hover:bg-[#c19b2e] text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-lg shadow-[#d4af37]/20">
-          View Submissions
+
+      {/* Quick Navigation */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        <Link href="/dashboard/admin/cases" className="flex items-center gap-2 bg-[#0c1940] hover:bg-[#0c1940]/90 text-white text-[13px] font-[700] px-4 py-2.5 rounded-lg transition-colors shadow-sm">
+          📁 All Cases
         </Link>
+        <Link href="/dashboard/admin/clients" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[#0a192f] text-[13px] font-[700] px-4 py-2.5 rounded-lg transition-colors shadow-sm border border-gray-200">
+          👥 Clients
+        </Link>
+        <Link href="/dashboard/admin/submissions" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[#0a192f] text-[13px] font-[700] px-4 py-2.5 rounded-lg transition-colors shadow-sm border border-gray-200">
+          📬 Submissions
+        </Link>
+        <Link href="/dashboard/admin/payments" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[#0a192f] text-[13px] font-[700] px-4 py-2.5 rounded-lg transition-colors shadow-sm border border-gray-200">
+          💳 Payments
+        </Link>
+      </div>
+
+      {/* Stat Cards — all clickable */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {statCards.map((s) => (
+          <Link
+            key={s.label}
+            href={s.link}
+            className={`${s.bg} border border-${s.color.split('-')[1]}-100 rounded-2xl p-5 hover:shadow-md transition-all group`}
+          >
+            <div className="text-[24px] mb-3">{s.icon}</div>
+            <div className={`text-[36px] font-[900] mb-1 ${s.color}`}>{loading ? '—' : s.value}</div>
+            <div className="text-[13px] text-gray-600 font-[600] group-hover:underline">{s.label}</div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Recent Cases */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-[16px] font-[800] text-[#0a192f]">Recent Cases</h2>
+          <Link href="/dashboard/admin/cases" className="text-[13px] font-[700] text-[#d4af37] hover:underline">View All →</Link>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center h-32">
+            <svg className="animate-spin h-6 w-6 text-[#d4af37]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        ) : recentCases.length === 0 ? (
+          <div className="py-12 text-center text-gray-400 text-[14px]">No cases yet.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50">
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Case ID</th>
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Client</th>
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Service</th>
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="py-3 px-6"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentCases.map((c) => {
+                  const statusColors: Record<string, string> = {
+                    submitted: 'bg-gray-100 text-gray-700',
+                    under_review: 'bg-blue-100 text-blue-700',
+                    in_progress: 'bg-indigo-100 text-indigo-700',
+                    awaiting_client_action: 'bg-orange-100 text-orange-700',
+                    completed: 'bg-green-100 text-green-700',
+                    closed: 'bg-red-100 text-red-700',
+                  };
+                  const statusLabels: Record<string, string> = {
+                    submitted: 'Submitted',
+                    under_review: 'Under Review',
+                    in_progress: 'In Progress',
+                    awaiting_client_action: 'Awaiting Client',
+                    quote_sent: 'Quote Sent',
+                    awaiting_payment: 'Awaiting Payment',
+                    payment_confirmed: 'Payment Confirmed',
+                    completed: 'Completed',
+                    closed: 'Closed',
+                  };
+                  const client = c.profiles as any;
+                  return (
+                    <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-6 text-[14px] font-[800] text-[#0a192f]">{c.case_id}</td>
+                      <td className="py-4 px-6">
+                        <p className="text-[13px] font-[600] text-gray-800">{client?.full_name || '—'}</p>
+                        <p className="text-[11px] text-gray-400">{client?.email}</p>
+                      </td>
+                      <td className="py-4 px-6 text-[13px] text-gray-600 max-w-[140px] truncate">{c.service_type}</td>
+                      <td className="py-4 px-6">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-[700] ${statusColors[c.status] || 'bg-gray-100 text-gray-700'}`}>
+                          {statusLabels[c.status] || c.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <Link href={`/dashboard/admin/cases/${c.id}`} className="text-[13px] font-[700] text-[#d4af37] hover:underline whitespace-nowrap">
+                          Manage →
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -200,88 +200,86 @@ export default function AdminCaseDetailPage() {
   const currentStatusInfo = STATUS_LABELS[caseData.status] || { label: caseData.status, color: 'bg-gray-100 text-gray-700' };
 
   return (
-    <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
-      
-      {/* Left Column: Details & Timeline */}
-      <div className="flex-1 flex flex-col gap-6">
-        
-        {/* Header */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Link href="/dashboard/admin/cases" className="text-gray-400 hover:text-gray-600 text-[13px] font-[600]">← All Cases</Link>
+    <div className="max-w-6xl mx-auto">
+
+      {/* Back + Header */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+        <Link href="/dashboard/admin/cases" className="text-gray-400 hover:text-gray-600 text-[13px] font-[600] mb-4 inline-block">← All Cases</Link>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-[24px] font-[800] text-[#0a192f] flex items-center gap-3">
+              {caseData.case_id}
+              <span className={`px-2.5 py-1 rounded-full text-[12px] font-[700] ${currentStatusInfo.color}`}>
+                {currentStatusInfo.label}
+              </span>
+            </h1>
+            <p className="text-gray-500 text-[14px] mt-1">{caseData.service_type}</p>
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-[24px] font-[800] text-[#0a192f] flex items-center gap-3">
-                {caseData.case_id}
-                <span className={`px-2.5 py-1 rounded-full text-[12px] font-[700] ${currentStatusInfo.color}`}>
-                  {currentStatusInfo.label}
-                </span>
-              </h1>
-              <p className="text-gray-500 text-[14px] mt-1">{caseData.service_type}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-[13px] font-[600] text-[#0a192f]">{client?.full_name}</p>
-              <p className="text-[12px] text-gray-500">{client?.email}</p>
-              {client?.whatsapp && <p className="text-[12px] text-[#d4af37]">WhatsApp: {client.whatsapp}</p>}
-            </div>
+          <div className="text-right">
+            <p className="text-[13px] font-[600] text-[#0a192f]">{client?.full_name}</p>
+            <p className="text-[12px] text-gray-500">{client?.email}</p>
+            {client?.whatsapp && <p className="text-[12px] text-[#d4af37]">WhatsApp: {client.whatsapp}</p>}
           </div>
         </div>
+      </div>
 
-        {/* Info Box */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">Case Details</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-1">Platform</p>
-              <p className="text-[14px] font-[600] text-[#0a192f]">{caseData.platform || '—'}</p>
-            </div>
-            <div>
-              <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-1">Urgency</p>
-              <p className={`text-[14px] font-[700] capitalize ${
-                caseData.urgency === 'emergency' ? 'text-red-600' : caseData.urgency === 'urgent' ? 'text-orange-500' : 'text-green-600'
-              }`}>
-                {caseData.urgency || 'normal'}
-              </p>
-            </div>
-          </div>
-          {caseData.description && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-2">Description</p>
-              <p className="text-[14px] text-gray-600 leading-relaxed whitespace-pre-wrap">{caseData.description}</p>
-            </div>
-          )}
-          {caseData.urls && caseData.urls.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-2">Submitted URLs</p>
-              <div className="flex flex-col gap-1">
-                {caseData.urls.map((url: string, i: number) => (
-                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-[#d4af37] hover:underline break-all font-mono">{url}</a>
-                ))}
+      <div className="flex flex-col lg:flex-row gap-6">
+
+        {/* Left Column: Details + Tabs */}
+        <div className="flex-1 flex flex-col gap-6">
+
+          {/* Info Box */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">Case Details</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-1">Platform</p>
+                <p className="text-[14px] font-[600] text-[#0a192f]">{caseData.platform || '—'}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-1">Urgency</p>
+                <p className={`text-[14px] font-[700] capitalize ${
+                  caseData.urgency === 'emergency' ? 'text-red-600' : caseData.urgency === 'urgent' ? 'text-orange-500' : 'text-green-600'
+                }`}>
+                  {caseData.urgency || 'normal'}
+                </p>
               </div>
             </div>
-          )}
-        </div>
+            {caseData.description && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-2">Description</p>
+                <p className="text-[14px] text-gray-600 leading-relaxed whitespace-pre-wrap">{caseData.description}</p>
+              </div>
+            )}
+            {caseData.urls && caseData.urls.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-2">Submitted URLs</p>
+                <div className="flex flex-col gap-1">
+                  {caseData.urls.map((url: string, i: number) => (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-[#d4af37] hover:underline break-all font-mono">{url}</a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
-      </div>
-      
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-6">
-        <div className="border-b border-gray-100 flex overflow-x-auto">
-          {['timeline', 'messages', 'invoice'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-4 text-[13px] font-[700] whitespace-nowrap transition-all border-b-2 capitalize ${
-                activeTab === tab
-                  ? 'border-[#d4af37] text-[#d4af37]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {tab === 'timeline' ? '📋 Timeline' : tab === 'messages' ? `💬 Messages (${messages.length})` : '💳 Invoice'}
-            </button>
-          ))}
-        </div>
+          {/* Tabs */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="border-b border-gray-100 flex overflow-x-auto">
+              {['timeline', 'messages', 'invoice'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-4 text-[13px] font-[700] whitespace-nowrap transition-all border-b-2 capitalize ${
+                    activeTab === tab
+                      ? 'border-[#d4af37] text-[#d4af37]'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {tab === 'timeline' ? '📋 Timeline' : tab === 'messages' ? `💬 Messages (${messages.length})` : '💳 Invoice'}
+                </button>
+              ))}
+            </div>
 
         {/* Timeline Tab */}
         {activeTab === 'timeline' && (
@@ -432,6 +430,76 @@ export default function AdminCaseDetailPage() {
             </form>
           </div>
         )}
+          </div>
+        </div>
+
+        {/* Right Column: Update Status */}
+        <div className="w-full lg:w-[320px] flex-shrink-0">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-[84px]">
+            <h3 className="text-[14px] font-[800] text-[#0a192f] mb-5">🔄 Update Status</h3>
+            <form onSubmit={handleUpdateStatus} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">New Status</label>
+                <select
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] transition-all"
+                >
+                  {ALL_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABELS[s]?.label || s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Message to Client</label>
+                <textarea
+                  value={updateNote}
+                  onChange={(e) => setUpdateNote(e.target.value)}
+                  rows={3}
+                  placeholder="Client will see this note..."
+                  className="w-full px-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] resize-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-[700] text-gray-600 mb-1.5">Internal Note (Admin Only)</label>
+                <textarea
+                  value={internalNote}
+                  onChange={(e) => setInternalNote(e.target.value)}
+                  rows={2}
+                  placeholder="Internal reference notes..."
+                  className="w-full px-4 py-3 bg-purple-50 border border-purple-200 rounded-xl text-[14px] outline-none focus:border-purple-400 resize-none transition-all"
+                />
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notifyClient}
+                  onChange={(e) => setNotifyClient(e.target.checked)}
+                  className="w-4 h-4 accent-[#d4af37]"
+                />
+                <span className="text-[13px] font-[600] text-gray-600">Notify client via portal</span>
+              </label>
+
+              <button
+                type="submit"
+                disabled={isUpdating}
+                className="w-full h-[46px] bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isUpdating ? (
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : '✓'} Save Update
+              </button>
+            </form>
+          </div>
+        </div>
 
       </div>
     </div>

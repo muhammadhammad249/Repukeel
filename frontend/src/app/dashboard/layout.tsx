@@ -107,16 +107,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200 h-[68px] flex items-center px-6 gap-4">
           <div className="flex-1">
-            <h1 className="text-[15px] font-[700] text-[#0a192f]">Client Portal</h1>
+            <h1 className="text-[15px] font-[700] text-[#0a192f]">
+              {pathname.startsWith('/dashboard/admin') ? 'Admin Portal' : 'Client Portal'}
+            </h1>
           </div>
 
-          <Link
-            href="/dashboard/new-inquiry"
-            className="hidden sm:flex items-center gap-2 bg-[#d4af37] hover:bg-[#c19b2e] text-white text-[13px] font-[700] px-4 py-2 rounded-lg transition-colors shadow-sm"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path d="M12 5v14M5 12h14" strokeLinecap="round"/></svg>
-            New Inquiry
-          </Link>
+          {!pathname.startsWith('/dashboard/admin') && (
+            <Link
+              href="/dashboard/new-inquiry"
+              className="hidden sm:flex items-center gap-2 bg-[#d4af37] hover:bg-[#c19b2e] text-white text-[13px] font-[700] px-4 py-2 rounded-lg transition-colors shadow-sm"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path d="M12 5v14M5 12h14" strokeLinecap="round"/></svg>
+              New Inquiry
+            </Link>
+          )}
 
         </header>
 
