@@ -11,7 +11,7 @@ export default function AdminSubmissionsPage() {
     async function loadCases() {
       const { data } = await supabase
         .from('cases')
-        .select('id, case_id, service_type, status, urgency, created_at, profiles(full_name, email)')
+        .select('id, case_id, service_type, status, urgency, created_at')
         .order('created_at', { ascending: false });
         
       setCases(data || []);
