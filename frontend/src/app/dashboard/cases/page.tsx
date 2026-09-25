@@ -38,18 +38,9 @@ export default function MyCasesPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-[26px] font-[800] text-[#0a192f]">My Cases</h1>
-          <p className="text-gray-500 text-[15px] mt-1">{cases.length} total cases</p>
-        </div>
-        <Link
-          href="/dashboard/new-inquiry"
-          className="flex items-center gap-2 bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[14px] px-5 py-3 rounded-xl transition-colors shadow-sm w-fit"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path d="M12 5v14M5 12h14" strokeLinecap="round"/></svg>
-          New Inquiry
-        </Link>
+      <div className="mb-8">
+        <h1 className="text-[26px] font-[800] text-[#0a192f]">My Cases</h1>
+        <p className="text-gray-500 text-[15px] mt-1">{cases.length} total cases</p>
       </div>
 
       {/* Status Filter */}
