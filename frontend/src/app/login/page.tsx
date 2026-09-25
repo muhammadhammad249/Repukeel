@@ -18,8 +18,9 @@ function LoginContent() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let mounted = true;
     const handleSession = async (session: any) => {
-      if (!session) return;
+      if (!session || !mounted) return;
       
       try {
         const { data: profile } = await supabase
@@ -28,6 +29,7 @@ function LoginContent() {
           .eq('id', session.user.id)
           .maybeSingle();
           
+        if (!mounted) return;
         const role = profile?.role ?? 'client';
         
         if (role === 'admin' || role === 'super_admin') {
@@ -37,25 +39,18 @@ function LoginContent() {
         }
       } catch (err) {
         console.error('Session handling error:', err);
-        // Fallback to client role on error
+        if (!mounted) return;
         router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
       }
     };
 
-    // Check if already logged in
+    // Check if already logged in on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session);
     });
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        handleSession(session);
-      }
-    });
-
     return () => {
-      subscription.unsubscribe();
+      mounted = false;
     };
   }, [router, nextUrl]);
 
@@ -85,9 +80,21 @@ function LoginContent() {
         return;
       }
       
-      // Let the onAuthStateChange listener (in useEffect) handle the actual redirect.
-      // This prevents Next.js router race conditions (infinite spinner) caused by pushing routes simultaneously.
+      // Fetch role directly to redirect immediately upon manual login
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle();
 
+      const role = profile?.role ?? 'client';
+
+      if (role === 'admin' || role === 'super_admin') {
+        window.location.href = '/dashboard/admin'; // Hard redirect for ultimate reliability
+      } else {
+        window.location.href = nextUrl === '/dashboard' ? '/dashboard' : nextUrl; // Hard redirect for ultimate reliability
+      }
+      // Do not set isLoading false here, let the browser navigate while spinner shows
     } catch (err: any) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
