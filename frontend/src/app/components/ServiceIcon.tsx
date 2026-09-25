@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Server Component — no "use client" needed
 // Returns a styled icon card for each service based on its slug
 

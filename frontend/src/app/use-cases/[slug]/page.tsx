@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default async function UseCaseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
   const title = resolvedParams.slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");

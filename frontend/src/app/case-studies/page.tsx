@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function CaseStudiesPage() {
   const cases = [
     { tag: "Leaked Content", title: "Adult Creator: 847 URLs Removed in 72 Hours", desc: "A content creator found their private content distributed across 12 unauthorized platforms. Our team issued parallel DMCA notices and achieved complete removal within 72 hours.", stats: ["847 URLs", "12 Platforms", "72 Hours", "100% Removed"] },

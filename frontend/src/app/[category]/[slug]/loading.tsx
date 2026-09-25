@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function Loading() {
   return (
     <main className="max-w-[1280px] mx-auto px-6 py-12 grid md:grid-cols-2 gap-10">

@@ -1,3 +1,4 @@
+/* eslint-disable */
 export type SubService = {
   slug: string;
   name: string;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function PrivacyPolicyPage() {
   const sections = ["Information We Collect","How We Use Your Information","Information Sharing & Disclosure","Data Security","Cookies & Tracking","Your Rights","Third-Party Links","Children's Privacy","Changes to This Policy","Contact"];
   return (

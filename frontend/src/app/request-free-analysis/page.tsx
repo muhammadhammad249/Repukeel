@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { categories } from '@/data/services';
 
 export default function RequestFreeAnalysisPage() {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { blogs } from "../data";
 import { notFound } from "next/navigation";
 

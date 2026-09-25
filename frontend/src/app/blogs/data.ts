@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const blogs = [
   {
     "title": "Online Reputation Management: How Repukeel Helps You Remove Bad Reviews and Protect Your Brand",

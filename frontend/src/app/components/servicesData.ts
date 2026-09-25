@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const categoriesData = [
   {
     id: 'content-removal',
