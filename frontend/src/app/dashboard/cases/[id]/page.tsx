@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { STATUS_LABELS } from '@/lib/auth';
 
-type Tab = 'timeline' | 'files' | 'invoice';
+type Tab = 'timeline' | 'invoice';
 
 export default function CaseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -58,12 +58,7 @@ export default function CaseDetailPage() {
   }
 
   const statusInfo = STATUS_LABELS[caseData.status] || { label: caseData.status, color: 'bg-gray-100 text-gray-700' };
-  const tabs: { key: Tab; label: string }[] = [
-    { key: 'timeline', label: '📋 Timeline' },
-    
-    { key: 'files', label: '🗂️ Files' },
-    { key: 'invoice', label: '💳 Invoice' },
-  ];
+
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -131,88 +126,7 @@ export default function CaseDetailPage() {
         )}
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="border-b border-gray-100 flex overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-6 py-4 text-[13px] font-[700] whitespace-nowrap transition-all border-b-2 ${
-                activeTab === tab.key
-                  ? 'border-[#d4af37] text-[#d4af37]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
 
-        {/* Timeline */}
-        {activeTab === 'timeline' && (
-          <div className="p-6">
-            {updates.length === 0 ? (
-              <p className="text-gray-400 text-[14px] text-center py-8">No updates yet.</p>
-            ) : (
-              <div className="flex flex-col">
-                {updates.map((u, i) => {
-                  const si = STATUS_LABELS[u.status] || { label: u.status, color: 'bg-gray-100 text-gray-700' };
-                  return (
-                    <div key={u.id} className="flex gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full mt-1 flex-shrink-0 ${i === updates.length - 1 ? 'bg-[#d4af37]' : 'bg-gray-300'}`}></div>
-                        {i < updates.length - 1 && <div className="w-px flex-1 bg-gray-200 my-1"></div>}
-                      </div>
-                      <div className="pb-6 flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-[700] ${si.color}`}>{si.label}</span>
-                          <span className="text-[12px] text-gray-400">{new Date(u.created_at).toLocaleString()}</span>
-                        </div>
-                        {u.note && <p className="text-[14px] text-gray-700 leading-relaxed">{u.note}</p>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Invoice */}
-        {activeTab === 'invoice' && (
-          <div className="p-6">
-            {!invoice ? (
-              <div className="text-center py-8">
-                <div className="text-[48px] mb-4">🧾</div>
-                <p className="text-[15px] font-[700] text-gray-700 mb-2">No invoice yet</p>
-                <p className="text-[13px] text-gray-400">An invoice will appear here once our team has reviewed your case and sent you a quote.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { label: 'Amount', value: `$${invoice.amount} ${invoice.currency}` },
-                    { label: 'Status', value: invoice.status },
-                    { label: 'Payment Method', value: invoice.payment_method || '—' },
-                    { label: 'Reference', value: invoice.payment_reference || '—' },
-                  ].map((item) => (
-                    <div key={item.label} className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-1">{item.label}</p>
-                      <p className="text-[15px] font-[700] text-[#0a192f] capitalize">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-                {invoice.notes && (
-                  <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                    <p className="text-[13px] text-blue-700">{invoice.notes}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
