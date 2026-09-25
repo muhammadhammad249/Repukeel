@@ -46,11 +46,29 @@ export default function SignupPage() {
     });
 
     if (signUpError) {
-      if (signUpError.message.toLowerCase().includes('rate limit')) {
-        setError('Too many registration attempts. Please wait 1 hour or change your IP address.');
+      const msg = signUpError.message.toLowerCase();
+      if (msg.includes('rate limit')) {
+        setError('Too many registration attempts. Please try again later.');
+      } else if (msg.includes('already registered') || msg.includes('user already exists')) {
+        setError('This email is already registered. Please login instead.');
+      } else if (msg.includes('sending confirmation email') || msg.includes('email') || msg.includes('smtp')) {
+        // Email confirmation disabled or SMTP not configured — attempt direct login
+        const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+        if (!loginError) {
+          router.push('/dashboard');
+          return;
+        }
+        setError('Account created but could not log in automatically. Please try logging in.');
       } else {
         setError(signUpError.message);
       }
+      setLoading(false);
+      return;
+    }
+
+    // If user already existed (Supabase returns identities=[]) — duplicate email
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setError('This email is already registered. Please login instead.');
       setLoading(false);
       return;
     }
@@ -61,6 +79,13 @@ export default function SignupPage() {
         .from('profiles')
         .update({ full_name: fullName, whatsapp, role: 'client' })
         .eq('id', data.user.id);
+    }
+
+    // No email confirmation needed — sign in directly
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+    if (!loginError) {
+      router.push('/dashboard');
+      return;
     }
 
     setLoading(false);
