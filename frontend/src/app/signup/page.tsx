@@ -47,7 +47,7 @@ export default function SignupPage() {
 
     if (signUpError) {
       if (signUpError.message.toLowerCase().includes('rate limit')) {
-        setError('Too many registration attempts. Please try again in a few minutes.');
+        setSuccess(true);
       } else {
         setError(signUpError.message);
       }
