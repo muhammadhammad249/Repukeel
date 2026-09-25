@@ -78,7 +78,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[12px] uppercase tracking-wider font-[600] text-blue-200 mb-1">Phone (24/7)</p>
-                    <a href="https://wa.me/923451644916" target="_blank" rel="noopener noreferrer" className="text-[16px] font-[700] hover:text-[var(--gold)] transition-colors">+92 345 1644916</a>
+                    <a href="https://wa.me/92087525510" target="_blank" rel="noopener noreferrer" className="text-[16px] font-[700] hover:text-[var(--gold)] transition-colors">+92 087525510</a>
                   </div>
                 </div>
                 
@@ -243,7 +243,7 @@ export default function ContactPage() {
         headingGold="assistance?"
         subtext="Our emergency response team is available 24/7 to handle critical content leaks and severe copyright infringements."
         primaryBtnText="Call Emergency Line"
-        primaryBtnLink="tel:+923451644916"
+        primaryBtnLink="tel:+92087525510"
         secondaryBtnText="Submit Urgent Case"
         secondaryBtnLink="/protection"
       />

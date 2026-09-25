@@ -374,12 +374,12 @@ export default function Footer() {
                   </span>
 
                   <a
-                    href="https://wa.me/923451644916"
+                    href="https://wa.me/92087525510"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[var(--gold)] transition-colors"
                   >
-                    +923451644916
+                    +92087525510
                   </a>
                 </div>
               </li>

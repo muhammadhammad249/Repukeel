@@ -31,7 +31,7 @@ const faqCategories: { title: string; items: FAQItem[] }[] = [
       { q: 'Do you help protect minors and families?', a: 'Yes. Content involving minors is treated as urgent. We also advise reporting to local authorities and the platform\'s child-safety channels where appropriate.' },
       { q: 'Do you offer 24/7 support?', a: 'Emergency DMCA and urgent exposure requests can be sent by WhatsApp or email at any hour. Routine cases are handled during business hours.' },
       { q: 'Will I receive a report at the end?', a: 'Yes. You receive a summary of the actions taken, links removed, links pending and recommended next steps.' },
-      { q: 'How do I book a consultation?', a: 'Use the Contact page or Request Free Analysis page on our website, message us on WhatsApp at +92 345 1644916, or email Legal@Repukeel.com.' },
+      { q: 'How do I book a consultation?', a: 'Use the Contact page or Request Free Analysis page on our website, message us on WhatsApp at +92 087525510, or email Legal@Repukeel.com.' },
     ],
   },
   {
@@ -241,8 +241,8 @@ export default function FAQPage() {
               Request a free analysis →
             </a>
             <span className="hidden sm:block text-gray-600">|</span>
-            <a href="https://wa.me/923451644916" target="_blank" rel="noopener noreferrer" className="text-[#d4af37] hover:underline font-semibold">
-              WhatsApp: +92 345 1644916
+            <a href="https://wa.me/92087525510" target="_blank" rel="noopener noreferrer" className="text-[#d4af37] hover:underline font-semibold">
+              WhatsApp: +92 087525510
             </a>
             <span className="hidden sm:block text-gray-600">|</span>
             <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline font-semibold">
