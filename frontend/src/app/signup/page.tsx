@@ -47,7 +47,7 @@ export default function SignupPage() {
 
     if (signUpError) {
       if (signUpError.message.toLowerCase().includes('rate limit')) {
-        setSuccess(true);
+        setError('Too many registration attempts. Please wait 1 hour or change your IP address.');
       } else {
         setError(signUpError.message);
       }
