@@ -250,7 +250,12 @@ export default function CaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isMe = currentUserId ? m.sender_id === currentUserId : m.sender_id === caseData?.client_id;
+                  const isAdminMsg = m.message.startsWith('||ADMIN||');
+                  // If testing on the same account, fallback to marker. If not, use standard logic.
+                  const isMe = isAdminMsg ? false : (currentUserId ? m.sender_id === currentUserId : m.sender_id === caseData?.client_id);
+                  
+                  const displayMessage = m.message.replace('||ADMIN||', '');
+
                   return (
                     <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
                       {/* Admin avatar */}
@@ -267,7 +272,7 @@ export default function CaseDetailPage() {
                         {!isMe && (
                           <p className="text-[11px] font-[800] text-[#0c1940] mb-1">RepuKeel Team</p>
                         )}
-                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
+                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{displayMessage}</p>
                         <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-green-100' : 'text-gray-400'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           {isMe && <span className="ml-1">✓✓</span>}

@@ -177,7 +177,7 @@ export default function AdminCaseDetailPage() {
     const { data: inserted } = await supabase.from('messages').insert({
       case_id: id,
       sender_id: currentUserId,
-      message: text,
+      message: '||ADMIN||' + text,
     }).select().single();
 
     // Replace optimistic with real record
@@ -368,8 +368,13 @@ export default function AdminCaseDetailPage() {
               ) : (
                 messages.map((m) => {
                   // Admin panel: client messages go LEFT, admin messages go RIGHT
-                  // Use client_id from the case to determine which is which
-                  const isClientMsg = m.sender_id === caseData?.client_id;
+                  const isAdminMsg = m.message.startsWith('||ADMIN||');
+                  
+                  // If testing on same account, fallback to the marker. If not, use standard logic.
+                  const isClientMsg = isAdminMsg ? false : m.sender_id === caseData?.client_id;
+                  
+                  const displayMessage = m.message.replace('||ADMIN||', '');
+
                   return (
                     <div key={m.id} className={`flex items-end gap-2 ${isClientMsg ? 'justify-start' : 'justify-end'}`}>
                       {/* Client avatar - LEFT */}
@@ -389,7 +394,7 @@ export default function AdminCaseDetailPage() {
                         {!isClientMsg && (
                           <p className="text-[11px] font-[800] text-green-100 mb-1">You (Admin)</p>
                         )}
-                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
+                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{displayMessage}</p>
                         <p className={`text-[10px] mt-1 text-right ${isClientMsg ? 'text-gray-400' : 'text-green-100'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           {!isClientMsg && <span className="ml-1">✓✓</span>}
