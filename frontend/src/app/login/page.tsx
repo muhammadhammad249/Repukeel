@@ -6,6 +6,20 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
+async function getRedirectPath(userId: string, fallback: string): Promise<string> {
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .maybeSingle();
+    const role = profile?.role ?? 'client';
+    return (role === 'admin' || role === 'super_admin') ? '/dashboard/admin' : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -17,42 +31,16 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // If already logged in, redirect away from login page
   useEffect(() => {
     let mounted = true;
-    const handleSession = async (session: any) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session || !mounted) return;
-      
-      try {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .maybeSingle();
-          
-        if (!mounted) return;
-        const role = profile?.role ?? 'client';
-        
-        if (role === 'admin' || role === 'super_admin') {
-          router.push('/dashboard/admin');
-        } else {
-          router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
-        }
-      } catch (err) {
-        console.error('Session handling error:', err);
-        if (!mounted) return;
-        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
-      }
-    };
-
-    // Check if already logged in on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      handleSession(session);
+      const path = await getRedirectPath(session.user.id, nextUrl);
+      if (mounted) router.replace(path);
     });
-
-    return () => {
-      mounted = false;
-    };
-  }, [router, nextUrl]);
+    return () => { mounted = false; };
+  }, []); // run once on mount only
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +57,13 @@ function LoginContent() {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
       if (signInError) {
-        setError(signInError.message);
+        let msg = signInError.message;
+        if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid credentials')) {
+          msg = 'Incorrect email or password. Please try again.';
+        } else if (msg.toLowerCase().includes('email not confirmed')) {
+          msg = 'Please verify your email before logging in.';
+        }
+        setError(msg);
         setIsLoading(false);
         return;
       }
@@ -79,23 +73,15 @@ function LoginContent() {
         setIsLoading(false);
         return;
       }
-      
-      // Fetch role directly to redirect immediately upon manual login
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .maybeSingle();
 
-      const role = profile?.role ?? 'client';
-
-      if (role === 'admin' || role === 'super_admin') {
-        router.push('/dashboard/admin');
-      } else {
-        router.push(nextUrl === '/dashboard' ? '/dashboard' : nextUrl);
-      }
+      // Get redirect path based on role
+      const redirectPath = await getRedirectPath(data.user.id, nextUrl);
       
-      // Keep loading state true until page transition completes
+      // Use window.location for a full page reload — this ensures the
+      // browser loads the protected page AFTER Supabase has stored
+      // the session token in localStorage, preventing the auth loop.
+      window.location.href = redirectPath;
+
     } catch (err: any) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
