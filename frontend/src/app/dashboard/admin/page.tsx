@@ -7,7 +7,9 @@ import Link from 'next/link';
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ totalCases: 0, submitted: 0, inProgress: 0, completed: 0 });
   const [recentCases, setRecentCases] = useState<any[]>([]);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileId, setProfileId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadStats() {
@@ -45,6 +47,17 @@ export default function AdminDashboardPage() {
         });
 
         setRecentCases(cases || []);
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) setProfileId(user.id);
+
+        const { data: messages } = await supabase
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+          
+        setRecentMessages(messages || []);
       } finally {
         setLoading(false);
       }
@@ -171,6 +184,47 @@ export default function AdminDashboardPage() {
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+      </div>
+
+      {/* Recent Messages */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-8">
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-[17px] font-[800] text-[#0a192f] flex items-center gap-2">💬 Recent Messages</h2>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center h-32">
+            <svg className="animate-spin h-6 w-6 text-[#d4af37]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        ) : recentMessages.length === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="text-[15px] font-[700] text-gray-800 mb-1">No messages yet</p>
+            <p className="text-[14px] text-gray-500">Messages will appear here once clients start chatting.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            {recentMessages.map((m) => {
+              const isAdmin = m.sender_id === profileId;
+              const relatedCase = recentCases.find(c => c.id === m.case_id);
+              return (
+                <Link key={m.id} href={`/dashboard/admin/cases/${m.case_id}?tab=messages`} className="px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <p className={`text-[12px] font-[700] ${isAdmin ? 'text-purple-600' : 'text-gray-500'}`}>
+                      {isAdmin ? 'You (Admin)' : 'Client'} <span className="text-gray-400 font-[500] ml-1">on Case {relatedCase?.case_id || '—'}</span>
+                    </p>
+                    <p className="text-[11px] text-gray-400">
+                      {new Date(m.created_at).toLocaleDateString()} {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  <p className="text-[14px] text-[#0a192f] line-clamp-2">{m.message}</p>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

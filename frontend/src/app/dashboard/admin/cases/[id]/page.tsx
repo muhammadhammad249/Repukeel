@@ -322,48 +322,78 @@ export default function AdminCaseDetailPage() {
 
         {/* Messages Tab */}
         {activeTab === 'messages' && (
-          <div className="flex flex-col h-[500px]">
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+          <div className="flex flex-col" style={{ height: '520px' }}>
+            {/* Chat background */}
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-gray-400 text-[14px]">No messages yet. Send a message to the client.</p>
+                  <div className="text-center">
+                    <div className="text-[40px] mb-3">💬</div>
+                    <p className="text-gray-500 text-[14px] font-[600]">No messages yet</p>
+                    <p className="text-gray-400 text-[13px] mt-1">Send a message to start the conversation with the client.</p>
+                  </div>
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isAdmin = m.sender_id !== caseData.client_id;
+                  const isMe = m.sender_id !== caseData.client_id; // admin = not the client
                   return (
-                    <div key={m.id} className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
-                        isAdmin ? 'bg-[#0c1940] text-white' : 'bg-gray-100 text-gray-800'
+                    <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
+                      {/* Avatar for client */}
+                      {!isMe && (
+                        <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mb-1">
+                          <span className="text-white text-[10px] font-[800]">C</span>
+                        </div>
+                      )}
+                      <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
+                        isMe
+                          ? 'bg-[#0c1940] text-white rounded-br-sm'
+                          : 'bg-white text-gray-800 rounded-bl-sm'
                       }`}>
-                        <p className={`text-[11px] font-[700] mb-1 ${isAdmin ? 'text-blue-200' : 'text-gray-500'}`}>
-                          {isAdmin ? 'You (Admin)' : client?.full_name || 'Client'}
-                        </p>
-                        <p className="text-[14px] leading-relaxed">{m.message}</p>
-                        <p className={`text-[11px] mt-1 ${isAdmin ? 'text-blue-300' : 'text-gray-400'}`}>
+                        {!isMe && (
+                          <p className="text-[11px] font-[700] text-gray-500 mb-1">Client</p>
+                        )}
+                        <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
+                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-blue-300' : 'text-gray-400'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {isMe && <span className="ml-1">✓✓</span>}
                         </p>
                       </div>
+                      {/* Admin avatar */}
+                      {isMe && (
+                        <div className="w-7 h-7 rounded-full bg-[#0c1940] flex items-center justify-center flex-shrink-0 mb-1">
+                          <span className="text-white text-[10px] font-[800]">A</span>
+                        </div>
+                      )}
                     </div>
                   );
                 })
               )}
             </div>
-            <div className="border-t border-gray-100 p-4 flex gap-3 bg-gray-50">
+            {/* Input bar */}
+            <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
                 placeholder="Type a message to the client..."
-                className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#0c1940] focus:ring-1 focus:ring-[#0c1940] transition-all"
+                className="flex-1 px-4 py-2.5 bg-[#f0f2f5] border-0 rounded-full text-[14px] outline-none focus:ring-2 focus:ring-[#0c1940] transition-all"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={sendingMsg || !newMessage.trim()}
-                className="bg-[#0c1940] hover:bg-[#0c1940]/90 text-white font-[700] px-5 py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-10 h-10 bg-[#0c1940] hover:bg-[#0c1940]/90 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
-                {sendingMsg ? '...' : 'Send'}
+                {sendingMsg ? (
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                  </svg>
+                )}
               </button>
             </div>
           </div>
