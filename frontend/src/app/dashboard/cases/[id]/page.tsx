@@ -22,7 +22,7 @@ export default function CaseDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>('timeline');
   const [sendingMsg, setSendingMsg] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const msgEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function load() {
@@ -74,7 +74,11 @@ export default function CaseDetailPage() {
       created_at: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, optimistic]);
-    setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+    setTimeout(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    }, 50);
 
     // Insert to DB in background
     const { data: inserted } = await supabase.from('messages').insert({
@@ -235,7 +239,7 @@ export default function CaseDetailPage() {
         {activeTab === 'messages' && (
           <div className="flex flex-col" style={{ height: '520px' }}>
             {/* Chat background */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
@@ -279,7 +283,6 @@ export default function CaseDetailPage() {
                   );
                 })
               )}
-              <div ref={msgEndRef} />
             </div>
             {/* Input bar */}
             <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">

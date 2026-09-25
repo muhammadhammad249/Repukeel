@@ -34,7 +34,7 @@ export default function AdminCaseDetailPage() {
   const [newMessage, setNewMessage] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const msgEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Invoice state
   const [invoice, setInvoice] = useState<any>(null);
@@ -167,7 +167,11 @@ export default function AdminCaseDetailPage() {
       created_at: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, optimistic]);
-    setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+    setTimeout(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    }, 50);
 
     // Insert to DB in background
     const { data: inserted } = await supabase.from('messages').insert({
@@ -352,7 +356,7 @@ export default function AdminCaseDetailPage() {
         {activeTab === 'messages' && (
           <div className="flex flex-col" style={{ height: '520px' }}>
             {/* Chat background */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-2" style={{ background: '#f0f2f5' }}>
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
@@ -363,40 +367,44 @@ export default function AdminCaseDetailPage() {
                 </div>
               ) : (
                 messages.map((m) => {
-                  const isMe = currentUserId ? m.sender_id === currentUserId : m.sender_id !== caseData?.client_id;
+                  // Admin panel: client messages go LEFT, admin messages go RIGHT
+                  // Use client_id from the case to determine which is which
+                  const isClientMsg = m.sender_id === caseData?.client_id;
                   return (
-                    <div key={m.id} className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      {/* Client avatar */}
-                      {!isMe && (
-                        <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[10px] font-[800]">C</span>
+                    <div key={m.id} className={`flex items-end gap-2 ${isClientMsg ? 'justify-start' : 'justify-end'}`}>
+                      {/* Client avatar - LEFT */}
+                      {isClientMsg && (
+                        <div className="w-8 h-8 rounded-full bg-[#5b6b8a] flex items-center justify-center flex-shrink-0 mb-1">
+                          <span className="text-white text-[9px] font-[800]">CLT</span>
                         </div>
                       )}
                       <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
-                        isMe
-                          ? 'bg-[#25d366] text-white rounded-br-sm'
-                          : 'bg-white text-gray-800 rounded-bl-sm'
+                        isClientMsg
+                          ? 'bg-white text-gray-800 rounded-bl-sm'
+                          : 'bg-[#25d366] text-white rounded-br-sm'
                       }`}>
-                        {!isMe && (
-                          <p className="text-[11px] font-[800] text-gray-500 mb-1">Client</p>
+                        {isClientMsg && (
+                          <p className="text-[11px] font-[800] text-[#5b6b8a] mb-1">Client</p>
+                        )}
+                        {!isClientMsg && (
+                          <p className="text-[11px] font-[800] text-green-100 mb-1">You (Admin)</p>
                         )}
                         <p className="text-[14px] leading-relaxed whitespace-pre-wrap">{m.message}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-green-100' : 'text-gray-400'}`}>
+                        <p className={`text-[10px] mt-1 text-right ${isClientMsg ? 'text-gray-400' : 'text-green-100'}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {isMe && <span className="ml-1">✓✓</span>}
+                          {!isClientMsg && <span className="ml-1">✓✓</span>}
                         </p>
                       </div>
-                      {/* Admin avatar */}
-                      {isMe && (
+                      {/* Admin avatar - RIGHT */}
+                      {!isClientMsg && (
                         <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center flex-shrink-0 mb-1">
-                          <span className="text-white text-[10px] font-[800]">A</span>
+                          <span className="text-white text-[9px] font-[800]">ADM</span>
                         </div>
                       )}
                     </div>
                   );
                 })
               )}
-              <div ref={msgEndRef} />
             </div>
             {/* Input bar */}
             <div className="border-t border-gray-200 p-3 flex gap-2 items-center bg-white">
