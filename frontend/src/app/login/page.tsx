@@ -74,13 +74,11 @@ function LoginContent() {
         return;
       }
 
-      // Get redirect path based on role
-      const redirectPath = await getRedirectPath(data.user.id, nextUrl);
-      
-      // Use window.location for a full page reload — this ensures the
-      // browser loads the protected page AFTER Supabase has stored
-      // the session token in localStorage, preventing the auth loop.
-      window.location.href = redirectPath;
+      // ✅ IMPORTANT: Do NOT query profiles table here — it can hang on slow
+      // networks/other PCs causing infinite spinner.
+      // Instead redirect immediately to /dashboard. The dashboard layout will
+      // check the role and redirect admin users to /dashboard/admin automatically.
+      window.location.href = '/dashboard';
 
     } catch (err: any) {
       console.error('Login error:', err);
