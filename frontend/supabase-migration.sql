@@ -75,6 +75,10 @@ CREATE POLICY "cases_client_own" ON public.cases
 CREATE POLICY "cases_client_insert" ON public.cases
   FOR INSERT WITH CHECK (auth.uid() = client_id);
 
+-- Client: can delete their OWN case only
+CREATE POLICY "cases_client_delete_own" ON public.cases
+  FOR DELETE USING (auth.uid() = client_id);
+
 -- Admin: all cases
 CREATE POLICY "cases_admin_all" ON public.cases
   FOR ALL USING (

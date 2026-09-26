@@ -11,6 +11,66 @@ const ALL_STATUSES = [
   'payment_confirmed', 'in_progress', 'awaiting_client_action', 'completed', 'closed'
 ];
 
+// ─── Confirmation Modal ───────────────────────────────────────────────────────
+function DeleteModal({
+  caseLabel,
+  onCancel,
+  onConfirm,
+  isDeleting,
+}: {
+  caseLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md p-8">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-red-600">
+              <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-[18px] font-[800] text-[#0a192f]">Delete Case?</h3>
+            <p className="text-[13px] text-gray-500 mt-0.5">Case <strong>{caseLabel}</strong></p>
+          </div>
+        </div>
+        <p className="text-[14px] text-gray-600 mb-8 leading-relaxed">
+          This will permanently delete this case along with all its updates, messages, and invoices. <strong>This action cannot be undone.</strong>
+        </p>
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            disabled={isDeleting}
+            className="flex-1 h-[46px] bg-gray-100 hover:bg-gray-200 text-gray-700 font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={isDeleting}
+            className="flex-1 h-[46px] bg-red-600 hover:bg-red-700 text-white font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {isDeleting ? (
+              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            )}
+            {isDeleting ? 'Deleting...' : 'Delete Case'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminCaseDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -18,7 +78,6 @@ export default function AdminCaseDetailPage() {
   const [caseData, setCaseData] = useState<any>(null);
   const [client, setClient] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
-  
   const [loading, setLoading] = useState(true);
 
   // Update Status Form
@@ -30,11 +89,7 @@ export default function AdminCaseDetailPage() {
 
   // Tabs state
   const [activeTab, setActiveTab] = useState('timeline');
-  
-  
-  
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  
 
   // Invoice state
   const [invoice, setInvoice] = useState<any>(null);
@@ -46,6 +101,11 @@ export default function AdminCaseDetailPage() {
     payment_method: '',
     payment_reference: ''
   });
+
+  // Delete state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -72,8 +132,6 @@ export default function AdminCaseDetailPage() {
         .select('*')
         .eq('case_id', id)
         .order('created_at', { ascending: true });
-        
-      
 
       const { data: inv } = await supabase
         .from('invoices')
@@ -82,7 +140,6 @@ export default function AdminCaseDetailPage() {
         .maybeSingle();
 
       setUpdates(u || []);
-      
       setInvoice(inv);
       if (inv) {
         setInvoiceForm({
@@ -96,11 +153,12 @@ export default function AdminCaseDetailPage() {
       setLoading(false);
     }
     if (id) load();
-
-    
-
-    
   }, [id]);
+
+  const showToastMsg = (type: 'success' | 'error', msg: string) => {
+    setToast({ type, msg });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const handleUpdateStatus = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +169,6 @@ export default function AdminCaseDetailPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Insert update
     const { error: updateError } = await supabase.from('case_updates').insert({
       case_id: id,
       admin_id: user.id,
@@ -122,10 +179,8 @@ export default function AdminCaseDetailPage() {
     });
 
     if (!updateError) {
-      // Update case status
       await supabase.from('cases').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', id);
 
-      // Refresh updates
       const { data: u } = await supabase
         .from('case_updates')
         .select('*')
@@ -140,7 +195,6 @@ export default function AdminCaseDetailPage() {
     
     setIsUpdating(false);
   };
-
 
   const handleSaveInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,6 +217,20 @@ export default function AdminCaseDetailPage() {
     const { data: inv } = await supabase.from('invoices').select('*').eq('case_id', id).maybeSingle();
     setInvoice(inv);
     setIsSavingInvoice(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
+    const { error } = await supabase.from('cases').delete().eq('id', id);
+    setIsDeleting(false);
+    setShowDeleteModal(false);
+
+    if (error) {
+      showToastMsg('error', `Failed to delete case: ${error.message}`);
+    } else {
+      // Navigate back to cases list after deletion
+      router.push('/dashboard/admin/cases');
+    }
   };
 
   if (loading) {
@@ -190,6 +258,23 @@ export default function AdminCaseDetailPage() {
   return (
     <div className="max-w-6xl mx-auto">
 
+      {/* Toast */}
+      {toast && (
+        <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg text-white text-[14px] font-[600] ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+          {toast.msg}
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <DeleteModal
+          caseLabel={caseData.case_id}
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteConfirm}
+          isDeleting={isDeleting}
+        />
+      )}
+
       {/* Back + Header */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
         <Link href="/dashboard/admin/cases" className="text-gray-400 hover:text-gray-600 text-[13px] font-[600] mb-4 inline-block">← All Cases</Link>
@@ -203,10 +288,22 @@ export default function AdminCaseDetailPage() {
             </h1>
             <p className="text-gray-500 text-[14px] mt-1">{caseData.service_type}</p>
           </div>
-          <div className="text-right">
-            <p className="text-[13px] font-[600] text-[#0a192f]">{client?.full_name}</p>
-            <p className="text-[12px] text-gray-500">{client?.email}</p>
-            {client?.whatsapp && <p className="text-[12px] text-[#d4af37]">WhatsApp: {client.whatsapp}</p>}
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-[13px] font-[600] text-[#0a192f]">{client?.full_name}</p>
+              <p className="text-[12px] text-gray-500">{client?.email}</p>
+              {client?.whatsapp && <p className="text-[12px] text-[#d4af37]">WhatsApp: {client.whatsapp}</p>}
+            </div>
+            {/* Delete button */}
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-[700] text-[13px] rounded-xl border border-red-200 transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+              Delete Case
+            </button>
           </div>
         </div>
       </div>
@@ -249,7 +346,7 @@ export default function AdminCaseDetailPage() {
                 </div>
               </div>
             )}
-        </div>
+          </div>
         </div>
 
         {/* Right Column: Update Status */}
