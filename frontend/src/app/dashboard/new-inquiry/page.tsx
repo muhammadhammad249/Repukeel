@@ -107,6 +107,11 @@ export default function NewInquiryPage() {
         console.error('Failed to send notification email:', err);
       }
 
+      if (form.contact_preference === 'whatsapp') {
+        const text = encodeURIComponent(`Hello RepuKeel, I just submitted Case ID: ${caseId} (${form.service_type}). My email is ${profile.email}.`);
+        window.open(`https://wa.me/923087525510?text=${text}`, '_blank');
+      }
+
       router.push(`/dashboard/cases/${data.id}?new=1`);
     } finally {
       setLoading(false);

@@ -84,7 +84,7 @@ export default function AdminAllCasesPage() {
   async function load() {
     const { data } = await supabase
       .from('cases')
-      .select('*, profiles(full_name, email)')
+      .select('*, profiles:profiles!client_id(full_name, email)')
       .order('created_at', { ascending: false });
     setCases(data || []);
     setLoading(false);

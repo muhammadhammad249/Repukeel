@@ -12,7 +12,7 @@ export default function AdminPaymentsPage() {
     async function load() {
       const { data } = await supabase
         .from('invoices')
-        .select('*, cases(case_id, profiles(full_name, email))')
+        .select('*, cases(case_id, profiles:profiles!client_id(full_name, email))')
         .order('created_at', { ascending: false });
 
       setInvoices(data || []);
