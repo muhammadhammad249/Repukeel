@@ -10,7 +10,7 @@ coverage/
 *.zip
 .DS_Store
 .vscode/
+**/.vscode/
 *.mjs
-backend/.vscode/
-frontend/.vscode/
-node_modules
+test-smtp.js
+analyze_colors.js

@@ -138,6 +138,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true });
     }
 
+    if (type === 'chatbot_lead') {
+      const { name, email, phone, category, contentType, location, volume, description, urgency, contactPreference } = body;
+
+      await transporter.sendMail({
+        from: FROM_ADDRESS,
+        to:   ADMIN_EMAIL,
+        replyTo: email || undefined,
+        subject: `New Chatbot Lead — ${name || 'Unknown'} (${category || 'General'})`,
+        html: `
+          <h2 style="color:#1e3a8a;">New Chatbot Lead Captured</h2>
+          <table style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:14px;">
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Name</td><td style="padding:8px;border:1px solid #e5e7eb;">${name || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Email</td><td style="padding:8px;border:1px solid #e5e7eb;">${email || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Phone</td><td style="padding:8px;border:1px solid #e5e7eb;">${phone || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Issue Category</td><td style="padding:8px;border:1px solid #e5e7eb;">${category || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Content Type</td><td style="padding:8px;border:1px solid #e5e7eb;">${contentType || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Location</td><td style="padding:8px;border:1px solid #e5e7eb;">${location || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Volume</td><td style="padding:8px;border:1px solid #e5e7eb;">${volume || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Urgency</td><td style="padding:8px;border:1px solid #e5e7eb;">${urgency || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Contact Preference</td><td style="padding:8px;border:1px solid #e5e7eb;">${contactPreference || 'N/A'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:bold;background:#f9fafb;">Description</td><td style="padding:8px;border:1px solid #e5e7eb;">${description || 'N/A'}</td></tr>
+          </table>
+        `,
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
     return NextResponse.json({ error: 'Unknown notification type' }, { status: 400 });
 
   } catch (err: any) {
