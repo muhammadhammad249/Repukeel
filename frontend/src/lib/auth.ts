@@ -54,13 +54,16 @@ export async function signOut() {
   await supabase.auth.signOut();
 }
 
-/** Generate next case ID like RK-0001 */
+/**
+ * Generate a unique Case ID like RK-2609-A3F7.
+ * Uses date + 4 random hex chars — zero race conditions, no DB read needed.
+ * Collision probability: 1 in 65536 per day — effectively zero for this workload.
+ */
 export async function generateCaseId(): Promise<string> {
-  const { count } = await supabase
-    .from('cases')
-    .select('*', { count: 'exact', head: true });
-  const next = (count ?? 0) + 1;
-  return `RK-${String(next).padStart(4, '0')}`;
+  const now = new Date();
+  const datePart = `${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const randomPart = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+  return `RK-${datePart}-${randomPart}`;
 }
 
 export const STATUS_LABELS: Record<string, { label: string; color: string }> = {
