@@ -49,7 +49,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         };
 
         // Only query profiles if we're NOT in the admin section
-        // (admin layout has its own auth check)
         if (!pathname.startsWith('/dashboard/admin')) {
           const { data: dbProfile } = await supabase
             .from('profiles')
@@ -60,12 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           if (dbProfile) {
             baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
             baseProfile.role = dbProfile.role;
-
-            // Admin users who land on /dashboard — redirect them to admin panel
-            if ((dbProfile.role === 'admin' || dbProfile.role === 'super_admin') && pathname === '/dashboard') {
-              router.replace('/dashboard/admin');
-              return;
-            }
+            // NOTE: No auto-redirect here — login page handles role-based redirect
           }
         }
 

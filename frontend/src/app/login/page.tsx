@@ -46,10 +46,19 @@ function LoginContent() {
         return;
       }
 
-      // Full page load instead of client-side navigation,
-      // so the session is guaranteed to be saved before
-      // the dashboard's auth check runs.
-      window.location.href = '/dashboard';
+      // Check role and redirect accordingly
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      const role = profile?.role ?? 'client';
+      if (role === 'admin' || role === 'super_admin') {
+        window.location.href = '/dashboard/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (err: any) {
       console.error('Login error:', err);
       setError('Something went wrong. Please check your internet connection and try again.');
