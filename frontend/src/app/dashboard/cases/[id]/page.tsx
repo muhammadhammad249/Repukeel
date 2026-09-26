@@ -8,65 +8,6 @@ import { STATUS_LABELS } from '@/lib/auth';
 
 type Tab = 'timeline' | 'invoice';
 
-// ─── Confirmation Modal ───────────────────────────────────────────────────────
-function DeleteModal({
-  caseLabel,
-  onCancel,
-  onConfirm,
-  isDeleting,
-}: {
-  caseLabel: string;
-  onCancel: () => void;
-  onConfirm: () => void;
-  isDeleting: boolean;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-red-600">
-              <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-[18px] font-[800] text-[#0a192f]">Delete Case?</h3>
-            <p className="text-[13px] text-gray-500 mt-0.5">Case <strong>{caseLabel}</strong></p>
-          </div>
-        </div>
-        <p className="text-[14px] text-gray-600 mb-8 leading-relaxed">
-          This will permanently delete this case along with all its updates and invoices. <strong>This action cannot be undone.</strong>
-        </p>
-        <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            disabled={isDeleting}
-            className="flex-1 h-[46px] bg-gray-100 hover:bg-gray-200 text-gray-700 font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isDeleting}
-            className="flex-1 h-[46px] bg-red-600 hover:bg-red-700 text-white font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {isDeleting ? (
-              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
-              </svg>
-            )}
-            {isDeleting ? 'Deleting...' : 'Delete Case'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function CaseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -80,9 +21,7 @@ export default function CaseDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('timeline');
 
-  // Delete state
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   useEffect(() => {
@@ -108,20 +47,6 @@ export default function CaseDetailPage() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const handleDeleteConfirm = async () => {
-    setIsDeleting(true);
-    // Client can only delete their own case — RLS enforces this at the DB level
-    const { error } = await supabase.from('cases').delete().eq('id', id);
-    setIsDeleting(false);
-    setShowDeleteModal(false);
-
-    if (error) {
-      showToastMsg('error', `Failed to delete: ${error.message}`);
-    } else {
-      // Navigate back to cases list
-      router.push('/dashboard/cases');
-    }
-  };
 
   if (loading) {
     return (
@@ -155,15 +80,6 @@ export default function CaseDetailPage() {
         </div>
       )}
 
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <DeleteModal
-          caseLabel={caseData.case_id}
-          onCancel={() => setShowDeleteModal(false)}
-          onConfirm={handleDeleteConfirm}
-          isDeleting={isDeleting}
-        />
-      )}
 
       {/* New case banner */}
       {isNew && (
@@ -192,16 +108,7 @@ export default function CaseDetailPage() {
             {statusInfo.label}
           </span>
           <p className="text-[12px] text-gray-400">Filed {new Date(caseData.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-          {/* Delete button — only for submitted cases (not yet in progress) */}
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="flex items-center gap-2 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-[700] text-[12px] rounded-xl border border-red-200 transition-colors mt-1"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
-              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
-            </svg>
-            Delete Case
-          </button>
+
         </div>
       </div>
 
