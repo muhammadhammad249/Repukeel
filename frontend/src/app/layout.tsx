@@ -2,7 +2,7 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import AuthGate from "./components/AuthGate";
+
 import GlobalLayoutWrapper from "./components/GlobalLayoutWrapper";
 import Chatbot from "./components/Chatbot";
 
@@ -106,9 +106,7 @@ export default function RootLayout({
             gtag('config', 'G-YJ5E3P9TVV');
           `}
         </Script>
-        <AuthGate>
-          <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
-        </AuthGate>
+        <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
         
         {/* Global Floating Action Buttons */}
         <div className="fixed bottom-8 right-8 z-[999] flex flex-row items-center gap-4">
