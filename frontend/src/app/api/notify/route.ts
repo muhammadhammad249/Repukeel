@@ -6,13 +6,30 @@ const FROM_ADDRESS = process.env.SMTP_USER || 'legal@repukeel.com';
 const ADMIN_EMAIL  = 'legal@repukeel.com';
 
 function makeTransport() {
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const smtpPort = Number(process.env.SMTP_PORT || 465);
+
+  // Diagnostic log — visible in Vercel Function Logs
+  console.log('[notify] SMTP config:', {
+    host: smtpHost,
+    port: smtpPort,
+    user: smtpUser ? smtpUser : 'MISSING',
+    pass: smtpPass ? '***SET***' : 'MISSING',
+  });
+
+  if (!smtpPass) {
+    throw new Error('SMTP_PASS environment variable is not set. Please configure it in Vercel Environment Variables.');
+  }
+
   return nodemailer.createTransport({
-    host:   process.env.SMTP_HOST || 'smtp.gmail.com',
-    port:   Number(process.env.SMTP_PORT || 465),
+    host:   smtpHost,
+    port:   smtpPort,
     secure: true,
     auth: {
-      user: process.env.SMTP_USER || 'legal@repukeel.com',
-      pass: process.env.SMTP_PASS,
+      user: smtpUser || 'legal@repukeel.com',
+      pass: smtpPass,
     },
   });
 }
