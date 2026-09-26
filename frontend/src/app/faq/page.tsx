@@ -241,8 +241,8 @@ export default function FAQPage() {
               Request a free analysis →
             </a>
             <span className="hidden sm:block text-gray-600">|</span>
-            <a href="https://wa.me/92087525510" target="_blank" rel="noopener noreferrer" className="text-[#d4af37] hover:underline font-semibold">
-              WhatsApp: +92 087525510
+            <a href="https://wa.me/923087525510" target="_blank" rel="noopener noreferrer" className="text-[#d4af37] hover:underline font-semibold">
+              WhatsApp: +92 308 752 5510
             </a>
             <span className="hidden sm:block text-gray-600">|</span>
             <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline font-semibold">

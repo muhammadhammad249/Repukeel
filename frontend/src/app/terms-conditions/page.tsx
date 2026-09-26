@@ -162,7 +162,7 @@ export default function TermsPage() {
           <section id="section-7">
             <h2 className="text-[22px] font-bold text-[#0a192f] mb-4">7. Communication</h2>
             <div className="space-y-3">
-              <p><strong>7.1</strong> We communicate by email and WhatsApp. Please use the contact details on our website: WhatsApp <a href="https://wa.me/92087525510" className="text-[#d4af37] hover:underline">+92 087525510</a>, email <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a>.</p>
+              <p><strong>7.1</strong> We communicate by email and WhatsApp. Please use the contact details on our website: WhatsApp <a href="https://wa.me/923087525510" className="text-[#d4af37] hover:underline">+92 308 752 5510</a>, email <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a>.</p>
               <p><strong>7.2</strong> Standard business hours are Monday to Friday, Pakistan Standard Time (PKT). Emergency DMCA and urgent exposure messages can be sent at any time and are prioritized.</p>
               <p><strong>7.3</strong> Messages received outside business hours are answered on the next business day unless marked urgent. We aim to reply to all messages within 24 hours.</p>
               <p><strong>7.4</strong> You are responsible for making sure that your contact details are accurate. We are not responsible for delays caused by unreachable or unmonitored contact details.</p>
@@ -277,7 +277,7 @@ export default function TermsPage() {
           {/* Section 18 */}
           <section id="section-18">
             <h2 className="text-[22px] font-bold text-[#0a192f] mb-4">18. Contact</h2>
-            <p><strong>18.1</strong> RepuKeel, P33H+GVV, G-7/4, Islamabad, Pakistan. WhatsApp: <a href="https://wa.me/92087525510" className="text-[#d4af37] hover:underline">+92 087525510</a>. Email: <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a>. Website: <a href="https://repukeel.vercel.app" className="text-[#d4af37] hover:underline">repukeel.vercel.app</a>.</p>
+            <p><strong>18.1</strong> RepuKeel, P33H+GVV, G-7/4, Islamabad, Pakistan. WhatsApp: <a href="https://wa.me/923087525510" className="text-[#d4af37] hover:underline">+92 308 752 5510</a>. Email: <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a>. Website: <a href="https://repukeel.vercel.app" className="text-[#d4af37] hover:underline">repukeel.vercel.app</a>.</p>
           </section>
 
           {/* Agreement footer */}

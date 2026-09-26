@@ -87,7 +87,7 @@ export default function FooterContactButton() {
 
         {/* WhatsApp */}
         <a
-          href="https://wa.me/92087525510"
+          href="https://wa.me/923087525510"
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => setIsOpen(false)}

@@ -82,7 +82,7 @@ export default function RootLayout({
               "description": "RepuKeel specializes in online reputation management, DMCA takedowns, and global brand protection.",
               "contactPoint": {
                 "@type": "ContactPoint",
-                "telephone": "+92087525510",
+                "telephone": "+923087525510",
                 "contactType": "customer service"
               },
               "sameAs": [
@@ -115,7 +115,7 @@ export default function RootLayout({
 
           {/* WhatsApp FAB */}
           <a 
-            href="https://wa.me/92087525510" 
+            href="https://wa.me/923087525510" 
             className="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(37,211,102,0.5)] transition-transform hover:scale-105 bg-[#25d366] text-white relative z-10 animate-bounce" 
             target="_blank" 
             rel="noopener noreferrer" 
