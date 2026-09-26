@@ -22,8 +22,13 @@ export default function SignupPage() {
     e.preventDefault();
     setError('');
 
-    if (!fullName || !email || !password) {
-      setError('Please fill in all required fields.');
+    if (!fullName || !email || !password || !whatsapp) {
+      setError('Please fill in all required fields (Full Name, Phone Number, Email, Password).');
+      return;
+    }
+    // Basic phone validation (at least 7 characters)
+    if (whatsapp.replace(/\D/g, '').length < 7) {
+      setError('Please enter a valid phone/WhatsApp number.');
       return;
     }
     if (password.length < 8) {
@@ -68,6 +73,7 @@ export default function SignupPage() {
           await supabase.from('profiles').upsert({
             id: loginData.user.id,
             full_name: fullName,
+            email,
             whatsapp,
             role: 'client',
           }, { onConflict: 'id' });
@@ -92,17 +98,23 @@ export default function SignupPage() {
       return;
     }
 
-    // Update profile with whatsapp — always force role to 'client'
+    // Update profile with whatsapp and email — always force role to 'client'
     if (data.user) {
       await supabase
         .from('profiles')
-        .update({ full_name: fullName, whatsapp, role: 'client' })
+        .update({ full_name: fullName, whatsapp, email, role: 'client' })
         .eq('id', data.user.id);
     }
 
     // No email confirmation needed — sign in directly
     const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
     if (!loginError) {
+      // Notify admin of new signup (fire and forget)
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'new_signup', name: fullName, email, phone: whatsapp }),
+      }).catch(() => {});
       router.push('/dashboard');
       return;
     }
@@ -169,13 +181,14 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-[13px] font-[700] text-[#0a192f] mb-1.5">WhatsApp Number</label>
+              <label className="block text-[13px] font-[700] text-[#0a192f] mb-1.5">WhatsApp / Phone Number *</label>
               <input
                 type="tel"
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 placeholder="+1 234 567 8900"
                 className="w-full h-[48px] px-4 bg-[#f8fafc] border border-gray-200 rounded-[10px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] text-[15px] transition-all"
+                required
               />
             </div>
 

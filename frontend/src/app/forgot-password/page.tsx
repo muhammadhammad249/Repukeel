@@ -2,27 +2,38 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!email) {
+    if (!email.trim()) {
       setError('Please enter your email address.');
       return;
     }
     setLoading(true);
-    // Dummy logic
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (resetError) {
+        // Per security best practice, show generic success even if email not found
+        console.error('Password reset error:', resetError);
+      }
+      // Always show success to avoid user enumeration
       setSubmitted(true);
-    }, 1500);
+    } catch (err) {
+      setError('Something went wrong. Please check your internet connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,7 +49,7 @@ export default function ForgotPasswordPage() {
           </Link>
           <h1 className="text-2xl font-[800] text-[var(--text-heading)] mb-2">Reset Password</h1>
           <p className="text-[14px] text-[var(--text-body)]">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we&apos;ll send you a link to reset your password.
           </p>
         </div>
 
@@ -48,7 +59,12 @@ export default function ForgotPasswordPage() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
             <h3 className="text-[15px] font-[700] text-green-800 mb-1">Check your email</h3>
-            <p className="text-[13px] text-green-700">We've sent password reset instructions to your email address.</p>
+            <p className="text-[13px] text-green-700">
+              If an account with that email exists, we&apos;ve sent password reset instructions to <strong>{email}</strong>.
+            </p>
+            <Link href="/login" className="mt-4 inline-block text-[13px] font-[600] text-green-700 hover:underline">
+              Back to Login
+            </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">

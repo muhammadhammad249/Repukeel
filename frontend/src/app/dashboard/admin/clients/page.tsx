@@ -81,9 +81,9 @@ export default function AdminClientsPage() {
                 <tr className="border-b border-gray-100 bg-gray-50">
                   <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Client Name</th>
                   <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Email Address</th>
-                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">WhatsApp</th>
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">WhatsApp / Phone</th>
                   <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider text-center">Cases</th>
-                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Joined Date</th>
+                  <th className="py-3 px-6 text-[12px] font-[700] text-gray-400 uppercase tracking-wider">Joined</th>
                 </tr>
               </thead>
               <tbody>

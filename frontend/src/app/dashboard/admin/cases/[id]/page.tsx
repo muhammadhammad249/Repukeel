@@ -125,8 +125,23 @@ export default function AdminCaseDetailPage() {
       }
 
       setCaseData(c);
-      setClient(null);
       setNewStatus(c.status);
+
+      // Fetch the client details
+      if (c.client_id) {
+        const { data: clientProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', c.client_id)
+          .single();
+        if (clientProfile) {
+          setClient(clientProfile);
+        } else {
+          setClient(null);
+        }
+      } else {
+        setClient(null);
+      }
 
       const { data: u } = await supabase
         .from('case_updates')
@@ -466,7 +481,67 @@ export default function AdminCaseDetailPage() {
         </div>
 
         {/* Right Column: Update Status */}
-        <div className="w-full lg:w-[320px] flex-shrink-0">
+        <div className="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-6">
+          
+          {/* Client Details Box */}
+          {client && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">👤 Client Details</h3>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-0.5">Name</p>
+                  <p className="text-[14px] font-[600] text-[#0a192f]">{client.full_name}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-0.5">Email</p>
+                  <a href={`mailto:${client.email}`} className="text-[14px] font-[600] text-[#d4af37] hover:underline break-all">{client.email}</a>
+                </div>
+                <div>
+                  <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-0.5">Phone / WhatsApp</p>
+                  {client.whatsapp ? (
+                    <a href={`https://wa.me/${client.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-[14px] font-[600] text-green-600 hover:underline">
+                      {client.whatsapp}
+                    </a>
+                  ) : (
+                    <span className="text-[14px] text-gray-500">Not provided</span>
+                  )}
+                </div>
+                {caseData.contact_preference && (
+                  <div>
+                    <p className="text-[11px] font-[700] text-gray-400 uppercase tracking-wider mb-0.5">Contact Preference</p>
+                    <p className="text-[14px] font-[600] text-[#0a192f] capitalize">{caseData.contact_preference}</p>
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={async () => {
+                  const isWhatsApp = client.whatsapp && client.whatsapp.replace(/\D/g, '').length >= 7;
+                  const defaultMessage = `Hello ${client.full_name}, regarding your case ${caseData.case_id} at RepuKeel: `;
+                  
+                  // Log the outgoing action
+                  await supabase.from('messages').insert({
+                    case_id: caseData.id,
+                    sender_id: currentUserId,
+                    message: `[System] Admin initiated direct contact via ${isWhatsApp ? 'WhatsApp' : 'Email'}.`
+                  });
+                  // Refresh messages
+                  const { data: msgs } = await supabase.from('messages').select('*').eq('case_id', caseData.id).order('created_at', { ascending: true });
+                  if (msgs) setMessages(msgs);
+
+                  if (isWhatsApp) {
+                    window.open(`https://wa.me/${client.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(defaultMessage)}`, '_blank');
+                  } else {
+                    window.open(`mailto:${client.email}?subject=Regarding your RepuKeel Case ${caseData.case_id}&body=${encodeURIComponent(defaultMessage)}`, '_blank');
+                  }
+                }}
+                className="w-full mt-5 h-[42px] bg-[#0a192f] hover:bg-[#112a52] text-white font-[700] text-[13px] rounded-xl flex items-center justify-center gap-2 transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Message Client
+              </button>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-[84px]">
             <h3 className="text-[14px] font-[800] text-[#0a192f] mb-5">🔄 Update Status</h3>
             <form onSubmit={handleUpdateStatus} className="flex flex-col gap-4">

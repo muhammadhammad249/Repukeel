@@ -21,6 +21,7 @@ export default function NewInquiryPage() {
     description: '',
     urls: '',
     urgency: 'normal',
+    contact_preference: '',
   });
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,11 @@ export default function NewInquiryPage() {
     setError('');
 
     if (!form.service_type || !form.description) {
-      setError('Please fill in all required fields.');
+      setError('Please fill in all required fields (Service Type and Description are required).');
+      return;
+    }
+    if (!form.contact_preference) {
+      setError('Please select your preferred contact method.');
       return;
     }
     if (!agreed) {
@@ -66,12 +71,13 @@ export default function NewInquiryPage() {
           urls: urlArray,
           urgency: form.urgency,
           status: 'submitted',
+          contact_preference: form.contact_preference,
         })
         .select()
         .single();
 
       if (insertError) {
-        setError(insertError.message);
+        setError(`Failed to submit: ${insertError.message}. Please try again.`);
         return;
       }
 
@@ -80,8 +86,22 @@ export default function NewInquiryPage() {
         case_id: data.id,
         status: 'submitted',
         note: 'Your inquiry has been received. Case ID has been assigned.',
-        notify_client: false,
+        notify_client: true,
       });
+
+      // Notify admin + send client confirmation email (fire and forget)
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'new_case',
+          caseId,
+          clientName: profile.full_name,
+          clientEmail: profile.email,
+          serviceType: form.service_type,
+          contactPreference: form.contact_preference,
+        }),
+      }).catch(() => {});
 
       router.push(`/dashboard/cases/${data.id}?new=1`);
     } finally {
@@ -186,6 +206,31 @@ export default function NewInquiryPage() {
                   className="accent-[#d4af37]"
                 />
                 <span className="text-[14px] font-[600] text-gray-700">{level.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact Preference */}
+        <div>
+          <label className="block text-[13px] font-[700] text-[#0a192f] mb-2">How should we contact you? *</label>
+          <div className="flex gap-4">
+            {['whatsapp', 'email'].map((method) => (
+              <label key={method} className={`flex items-center gap-3 flex-1 p-3 rounded-xl border cursor-pointer transition-all ${
+                form.contact_preference === method ? 'border-[#d4af37] bg-[#d4af37]/5' : 'border-gray-200 hover:border-gray-300'
+              }`}>
+                <input
+                  type="radio"
+                  name="contact_preference"
+                  value={method}
+                  checked={form.contact_preference === method}
+                  onChange={handleChange}
+                  className="accent-[#d4af37]"
+                  required
+                />
+                <span className="text-[14px] font-[600] text-gray-700 capitalize">
+                  {method === 'whatsapp' ? '📱 WhatsApp' : '✉️ Email'}
+                </span>
               </label>
             ))}
           </div>
