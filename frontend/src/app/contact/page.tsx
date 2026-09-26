@@ -21,7 +21,7 @@ export default function ContactPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
@@ -31,12 +31,34 @@ export default function ContactPage() {
     }
 
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'contact_form',
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          reason: formData.reason,
+          message: formData.message
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
       setSuccess(true);
       setFormData({ firstName: '', lastName: '', email: '', reason: '', message: '' });
-    }, 1500);
+    } catch (err: any) {
+      console.error(err);
+      setError('Something went wrong. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="flex flex-col min-h-screen">

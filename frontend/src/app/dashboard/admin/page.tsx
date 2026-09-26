@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
     try {
       const { data: cases } = await supabase
         .from('cases')
-        .select('*')
+        .select('*, profiles(full_name, email)')
         .order('created_at', { ascending: false })
         .limit(5);
 

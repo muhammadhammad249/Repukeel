@@ -2,8 +2,8 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-const FROM_ADDRESS = 'Legal@Repukeel.com';
-const ADMIN_EMAIL  = 'legal@repukeel.com';
+const FROM_ADDRESS = process.env.SMTP_USER || 'Legal@Repukeel.com';
+const ADMIN_EMAIL  = process.env.LEADS_INBOX || 'legal@repukeel.com';
 
 function makeTransport() {
   return nodemailer.createTransport({
@@ -94,6 +94,25 @@ export async function POST(req: Request) {
           <p><a href="${resetLink}" style="background:#d4af37;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;">Reset Password</a></p>
           <p>This link expires in 1 hour. If you did not request a reset, you can safely ignore this email.</p>
           <p>RepuKeel Legal Team</p>
+        `,
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
+    if (type === 'contact_form') {
+      const { firstName, lastName, email, reason, message } = body;
+
+      await transporter.sendMail({
+        from: FROM_ADDRESS,
+        to:   ADMIN_EMAIL,
+        subject: `New Contact Form Message — ${reason}`,
+        html: `
+          <h2>New Message from Contact Page</h2>
+          <p><b>Name:</b> ${firstName} ${lastName}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Reason for Inquiry:</b> ${reason}</p>
+          <p><b>Message:</b><br/>${message}</p>
         `,
       });
 

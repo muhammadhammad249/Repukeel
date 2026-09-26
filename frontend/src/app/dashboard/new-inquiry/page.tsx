@@ -89,19 +89,23 @@ export default function NewInquiryPage() {
         notify_client: true,
       });
 
-      // Notify admin + send client confirmation email (fire and forget)
-      fetch('/api/notify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'new_case',
-          caseId,
-          clientName: profile.full_name,
-          clientEmail: profile.email,
-          serviceType: form.service_type,
-          contactPreference: form.contact_preference,
-        }),
-      }).catch(() => {});
+      // Notify admin + send client confirmation email
+      try {
+        await fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'new_case',
+            caseId,
+            clientName: profile.full_name,
+            clientEmail: profile.email,
+            serviceType: form.service_type,
+            contactPreference: form.contact_preference,
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to send notification email:', err);
+      }
 
       router.push(`/dashboard/cases/${data.id}?new=1`);
     } finally {
