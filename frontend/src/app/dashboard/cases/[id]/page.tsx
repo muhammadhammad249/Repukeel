@@ -146,6 +146,59 @@ export default function CaseDetailPage() {
         </div>
       </div>
 
+      {/* Visual Progress Tracker */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+        <h3 className="text-[14px] font-[800] text-[#0a192f] mb-6">Live Tracking</h3>
+        <div className="relative flex items-center justify-between w-full">
+          {/* Connecting Line */}
+          <div className="absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-gray-100 -translate-y-1/2 z-0 hidden sm:block"></div>
+          
+          {[
+            { label: 'Submitted', statuses: ['submitted'] },
+            { label: 'Reviewing', statuses: ['under_review', 'quote_sent'] },
+            { label: 'Payment', statuses: ['awaiting_payment', 'payment_confirmed'] },
+            { label: 'In Progress', statuses: ['in_progress', 'awaiting_client_action'] },
+            { label: 'Completed', statuses: ['completed', 'closed'] }
+          ].map((step, index, array) => {
+            const stepStatusIndex = array.findIndex(s => s.statuses.includes(caseData.status));
+            const isCompleted = stepStatusIndex > index;
+            const isActive = stepStatusIndex === index;
+            const isPending = stepStatusIndex < index;
+            
+            return (
+              <div key={step.label} className="relative z-10 flex flex-col items-center flex-1">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                  isCompleted ? 'bg-green-500 border-green-500 text-white' : 
+                  isActive ? 'bg-blue-600 border-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 
+                  'bg-white border-gray-200 text-gray-300'
+                }`}>
+                  {isCompleted ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-4 h-4"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  ) : isActive ? (
+                    <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
+                  ) : (
+                    <span className="text-[12px] font-[700]">{index + 1}</span>
+                  )}
+                </div>
+                <p className={`mt-3 text-[12px] font-[700] text-center hidden sm:block ${
+                  isCompleted ? 'text-green-600' : 
+                  isActive ? 'text-blue-600' : 
+                  'text-gray-400'
+                }`}>
+                  {step.label}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+        {/* Mobile Labels */}
+        <div className="mt-4 sm:hidden text-center">
+          <p className="text-[14px] font-[700] text-[#0a192f]">
+            Current Stage: <span className="text-blue-600">{statusInfo.label}</span>
+          </p>
+        </div>
+      </div>
+
       {/* Case Info Card */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
         <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">Case Details</h3>
