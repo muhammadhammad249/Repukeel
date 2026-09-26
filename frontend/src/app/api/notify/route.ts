@@ -7,7 +7,7 @@ const ADMIN_EMAIL  = 'legal@repukeel.com';
 
 function makeTransport() {
   const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
+  const smtpPass = process.env.SMTP_PASS || process.env.SMTP_APP_PASSWORD;
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT || 465);
 
@@ -20,7 +20,7 @@ function makeTransport() {
   });
 
   if (!smtpPass) {
-    throw new Error('SMTP_PASS environment variable is not set. Please configure it in Vercel Environment Variables.');
+    throw new Error('SMTP_PASS or SMTP_APP_PASSWORD environment variable is not set. Please configure it in Vercel Environment Variables.');
   }
 
   return nodemailer.createTransport({
