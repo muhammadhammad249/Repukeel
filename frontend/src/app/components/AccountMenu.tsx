@@ -124,61 +124,73 @@ export default function AccountMenu({
   const isAdmin = (authState.role === 'admin' || authState.role === 'super_admin') && authState.role !== undefined;
 
   return (
-    <div className={`relative ${menuClassName}`}>
+    <div className={`flex items-center gap-3 ${menuClassName}`}>
+      {/* Standalone Dashboard Button */}
       <button
         type="button"
-        className="w-[40px] h-[40px] rounded-full bg-[var(--gold)] text-[var(--bg-navy)] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
-        aria-label="Open account menu"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((v) => !v)}
+        className="hidden sm:flex items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm"
+        onClick={() => navigateTo('/dashboard')}
       >
-        {initials}
+        Dashboard
       </button>
 
-      {isOpen && (
-        <>
-          <button
-            type="button"
-            className="fixed inset-0 w-full h-full cursor-default z-[90]"
-            aria-label="Close menu"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]">
-            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-              <p className="text-[14px] font-[700] text-[#0a192f] truncate">{authState.name}</p>
-              <p className="text-[12px] text-gray-500 truncate">{authState.email}</p>
-            </div>
-            <div className="p-2" role="menu">
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
-                className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0a192f] rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                Dashboard
-              </button>
-              {isAdmin && (
+      {/* Avatar & Dropdown */}
+      <div className="relative">
+        <button
+          type="button"
+          className="w-[40px] h-[40px] rounded-full bg-[#d4af37] text-[#0a192f] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
+          aria-label="Open account menu"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen((v) => !v)}
+        >
+          {initials}
+        </button>
+
+        {isOpen && (
+          <>
+            <button
+              type="button"
+              className="fixed inset-0 w-full h-full cursor-default z-[90]"
+              aria-label="Close menu"
+              onClick={() => setIsOpen(false)}
+            />
+            <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]">
+              <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                <p className="text-[14px] font-[700] text-[#0a192f] truncate">{authState.name}</p>
+                <p className="text-[12px] text-gray-500 truncate">{authState.email}</p>
+              </div>
+              <div className="p-2" role="menu">
                 <button
                   type="button"
                   role="menuitem"
-                  onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
-                  className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                  onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
+                  className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0a192f] rounded-lg hover:bg-gray-100 transition-colors sm:hidden"
                 >
-                  🛡️ Admin Panel
+                  Dashboard
                 </button>
-              )}
-              <button
-                type="button"
-                role="menuitem"
-                onClick={logout}
-                className="w-full text-left px-3 py-2 mt-1 text-[14px] font-[600] text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-              >
-                Sign out
-              </button>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
+                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                  >
+                    🛡️ Admin Panel
+                  </button>
+                )}
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={logout}
+                  className="w-full text-left px-3 py-2 mt-1 text-[14px] font-[600] text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  Sign out
+                </button>
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
