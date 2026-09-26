@@ -7,7 +7,7 @@ const ADMIN_EMAIL  = 'legal@repukeel.com';
 
 function makeTransport() {
   const smtpUser = process.env.SMTP_USER || 'legal@repukeel.com';
-  const smtpPass = process.env.SMTP_PASS || process.env.SMTP_APP_PASSWORD;
+  const smtpPass = (process.env.SMTP_PASS || process.env.SMTP_APP_PASSWORD || "").replace(/\s+/g, "");
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT || 465);
 
