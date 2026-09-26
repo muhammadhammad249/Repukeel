@@ -78,6 +78,7 @@ export default function AdminCaseDetailPage() {
   const [caseData, setCaseData] = useState<any>(null);
   const [client, setClient] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Update Status Form
@@ -139,7 +140,14 @@ export default function AdminCaseDetailPage() {
         .eq('case_id', id)
         .maybeSingle();
 
+      const { data: msgs } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('case_id', id)
+        .order('created_at', { ascending: true });
+
       setUpdates(u || []);
+      setMessages(msgs || []);
       setInvoice(inv);
       if (inv) {
         setInvoiceForm({
@@ -346,6 +354,61 @@ export default function AdminCaseDetailPage() {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Timeline Box */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">Timeline & Messages</h3>
+            <div className="space-y-6">
+              {[...updates, ...messages]
+                .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                .map((item, idx) => {
+                  const isMessage = 'message' in item;
+                  if (isMessage) {
+                    const isOwn = item.sender_id === currentUserId;
+                    return (
+                      <div key={`msg-${item.id}`} className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                        <div className={`px-4 py-3 rounded-2xl max-w-[85%] ${isOwn ? 'bg-[#d4af37] text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
+                          <p className="text-[14px] whitespace-pre-wrap">{item.message}</p>
+                        </div>
+                        <p className="text-[11px] text-gray-400 mt-1">
+                          {new Date(item.created_at).toLocaleString()} • {isOwn ? 'You' : 'Client'}
+                        </p>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={`upd-${item.id}`} className="flex gap-4">
+                        <div className="flex flex-col items-center">
+                          <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          </div>
+                          {idx !== updates.length - 1 && <div className="w-px h-full bg-gray-100 mt-2"></div>}
+                        </div>
+                        <div className="flex-1 pb-6">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-[700] text-[#0a192f] text-[14px]">Status changed to {STATUS_LABELS[item.status]?.label || item.status}</span>
+                            <span className="text-[11px] text-gray-400">{new Date(item.created_at).toLocaleString()}</span>
+                          </div>
+                          {item.note && (
+                            <div className="mt-2 bg-[#f8fafc] border border-gray-200 p-3 rounded-xl">
+                              <p className="text-[13px] text-gray-700 whitespace-pre-wrap"><span className="font-[600]">Message to Client:</span> {item.note}</p>
+                            </div>
+                          )}
+                          {item.internal_note && (
+                            <div className="mt-2 bg-purple-50 border border-purple-200 p-3 rounded-xl">
+                              <p className="text-[13px] text-purple-800 whitespace-pre-wrap"><span className="font-[600]">Internal Note:</span> {item.internal_note}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+              {updates.length === 0 && messages.length === 0 && (
+                <p className="text-gray-400 text-[13px] text-center">No updates or messages yet.</p>
+              )}
+            </div>
           </div>
         </div>
 

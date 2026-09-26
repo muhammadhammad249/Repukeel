@@ -17,23 +17,32 @@ export default function CaseDetailPage() {
 
   const [caseData, setCaseData] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [invoice, setInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('timeline');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
+  const [replyMessage, setReplyMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const [{ data: c }, { data: u }, { data: inv }] = await Promise.all([
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) setCurrentUserId(user.id);
+
+        const [{ data: c }, { data: u }, { data: inv }, { data: msgs }] = await Promise.all([
           supabase.from('cases').select('*').eq('id', id).single(),
           supabase.from('case_updates').select('*').eq('case_id', id).order('created_at', { ascending: true }),
           supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
+          supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true }),
         ]);
         setCaseData(c);
         setUpdates(u || []);
+        setMessages(msgs || []);
         setInvoice(inv);
       } finally {
         setLoading(false);
@@ -41,6 +50,31 @@ export default function CaseDetailPage() {
     }
     if (id) load();
   }, [id]);
+
+  const handleSendReply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!replyMessage.trim() || !currentUserId) return;
+    setIsSending(true);
+
+    const { error } = await supabase.from('messages').insert({
+      case_id: id,
+      sender_id: currentUserId,
+      message: replyMessage.trim()
+    });
+
+    if (!error) {
+      const { data: msgs } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('case_id', id)
+        .order('created_at', { ascending: true });
+      setMessages(msgs || []);
+      setReplyMessage('');
+    } else {
+      showToastMsg('error', 'Failed to send message.');
+    }
+    setIsSending(false);
+  };
 
   const showToastMsg = (type: 'success' | 'error', msg: string) => {
     setToast({ type, msg });
@@ -144,6 +178,79 @@ export default function CaseDetailPage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Timeline Box */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+        <h3 className="text-[14px] font-[800] text-[#0a192f] mb-4">Timeline & Messages</h3>
+        <div className="space-y-6">
+          {[...updates.filter(u => u.notify_client !== false), ...messages]
+            .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+            .map((item, idx, arr) => {
+              const isMessage = 'message' in item;
+              if (isMessage) {
+                const isOwn = item.sender_id === currentUserId;
+                return (
+                  <div key={`msg-${item.id}`} className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                    <div className={`px-4 py-3 rounded-2xl max-w-[85%] ${isOwn ? 'bg-[#d4af37] text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
+                      <p className="text-[14px] whitespace-pre-wrap">{item.message}</p>
+                    </div>
+                    <p className="text-[11px] text-gray-400 mt-1">
+                      {new Date(item.created_at).toLocaleString()} • {isOwn ? 'You' : 'Admin'}
+                    </p>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={`upd-${item.id}`} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </div>
+                      {idx !== arr.length - 1 && <div className="w-px h-full bg-gray-100 mt-2"></div>}
+                    </div>
+                    <div className="flex-1 pb-6">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-[700] text-[#0a192f] text-[14px]">Status changed to {STATUS_LABELS[item.status]?.label || item.status}</span>
+                        <span className="text-[11px] text-gray-400">{new Date(item.created_at).toLocaleString()}</span>
+                      </div>
+                      {item.note && (
+                        <div className="mt-2 bg-[#f8fafc] border border-gray-200 p-3 rounded-xl">
+                          <p className="text-[13px] text-gray-700 whitespace-pre-wrap">{item.note}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+            })}
+          {updates.length === 0 && messages.length === 0 && (
+            <p className="text-gray-400 text-[13px] text-center">No updates or messages yet.</p>
+          )}
+        </div>
+        
+        <form onSubmit={handleSendReply} className="mt-6 flex gap-3">
+          <textarea
+            value={replyMessage}
+            onChange={(e) => setReplyMessage(e.target.value)}
+            placeholder="Type your reply here..."
+            rows={2}
+            className="flex-1 px-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#d4af37] resize-none transition-all"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendReply(e);
+              }
+            }}
+          />
+          <button
+            type="submit"
+            disabled={isSending || !replyMessage.trim()}
+            className="self-end px-6 h-[48px] bg-[#d4af37] hover:bg-[#c19b2e] text-white font-[700] text-[14px] rounded-xl transition-colors disabled:opacity-50"
+          >
+            {isSending ? 'Sending...' : 'Send'}
+          </button>
+        </form>
       </div>
 
     </div>
