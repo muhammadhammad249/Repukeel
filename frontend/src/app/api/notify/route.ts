@@ -2,16 +2,16 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-const FROM_ADDRESS = process.env.SMTP_USER || 'Legal@Repukeel.com';
-const ADMIN_EMAIL  = process.env.LEADS_INBOX || 'legal@repukeel.com';
+const FROM_ADDRESS = process.env.SMTP_USER || 'legal@repukeel.com';
+const ADMIN_EMAIL  = 'legal@repukeel.com';
 
 function makeTransport() {
   return nodemailer.createTransport({
-    host:   process.env.SMTP_HOST,
+    host:   process.env.SMTP_HOST || 'smtp.gmail.com',
     port:   Number(process.env.SMTP_PORT || 465),
     secure: true,
     auth: {
-      user: process.env.SMTP_USER,
+      user: process.env.SMTP_USER || 'legal@repukeel.com',
       pass: process.env.SMTP_PASS,
     },
   });
@@ -54,6 +54,7 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: FROM_ADDRESS,
         to:   ADMIN_EMAIL,
+        replyTo: clientEmail,
         subject: `New Case Submitted — ${caseId}`,
         html: `
           <h2>A new case has been submitted</h2>
@@ -106,6 +107,7 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: FROM_ADDRESS,
         to:   ADMIN_EMAIL,
+        replyTo: email,
         subject: `New Contact Form Message — ${reason}`,
         html: `
           <h2>New Message from Contact Page</h2>
