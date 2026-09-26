@@ -28,12 +28,6 @@ export default function DashboardOverview() {
         const p = await getCurrentProfile();
         setProfile(p);
 
-        // Admins must not land on the client portal — redirect them to admin portal
-        if (p && (p.role === 'admin' || p.role === 'super_admin')) {
-          window.location.href = '/dashboard/admin';
-          return;
-        }
-
         if (p) {
           const { data: cData } = await supabase
             .from('cases')
