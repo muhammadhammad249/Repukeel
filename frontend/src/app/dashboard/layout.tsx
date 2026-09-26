@@ -18,7 +18,7 @@ const navItems = [
   { label: 'Overview', icon: '⬛', path: '/dashboard' },
   { label: 'New Inquiry', icon: '➕', path: '/dashboard/new-inquiry' },
   { label: 'My Cases', icon: '📁', path: '/dashboard/cases' },
-  
+
   { label: 'Invoices & Payments', icon: '💳', path: '/dashboard/invoices' },
   { label: 'Files', icon: '🗂️', path: '/dashboard/files' },
   { label: 'Profile & Security', icon: '👤', path: '/dashboard/profile' },
@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               href="/dashboard/new-inquiry"
               className="hidden sm:flex items-center gap-2 bg-[#d4af37] hover:bg-[#c19b2e] text-white text-[13px] font-[700] px-4 py-2 rounded-lg transition-colors shadow-sm"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path d="M12 5v14M5 12h14" strokeLinecap="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
               New Inquiry
             </Link>
           )}

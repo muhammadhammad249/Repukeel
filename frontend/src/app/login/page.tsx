@@ -46,9 +46,10 @@ function LoginContent() {
         return;
       }
 
-      // Session is now in memory and localStorage.
-      // Use client-side navigation — AuthGate will find the session immediately.
-      router.push('/dashboard');
+      // Full page load instead of client-side navigation,
+      // so the session is guaranteed to be saved before
+      // the dashboard's auth check runs.
+      window.location.href = '/dashboard';
     } catch (err: any) {
       console.error('Login error:', err);
       setError('Something went wrong. Please check your internet connection and try again.');
