@@ -48,18 +48,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           email: session.user.email || '',
         };
 
-        // Only query profiles if we're NOT in the admin section
-        if (!pathname.startsWith('/dashboard/admin')) {
-          const { data: dbProfile } = await supabase
-            .from('profiles')
-            .select('full_name, role')
-            .eq('id', session.user.id)
-            .maybeSingle();
+        // For BOTH admin and non-admin paths: fetch role to enforce access control
+        const { data: dbProfile } = await supabase
+          .from('profiles')
+          .select('full_name, role')
+          .eq('id', session.user.id)
+          .maybeSingle();
 
-          if (dbProfile) {
-            baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
-            baseProfile.role = dbProfile.role;
-            // NOTE: No auto-redirect here — login page handles role-based redirect
+        if (dbProfile) {
+          baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
+          baseProfile.role = dbProfile.role;
+
+          // If a client tries to access /dashboard/admin — kick them to client portal
+          if (pathname.startsWith('/dashboard/admin') && dbProfile.role === 'client') {
+            router.push('/dashboard');
+            return;
+          }
+
+          // If an admin lands on the client portal — redirect to admin portal
+          if (!pathname.startsWith('/dashboard/admin') && (dbProfile.role === 'admin' || dbProfile.role === 'super_admin')) {
+            router.push('/dashboard/admin');
+            return;
           }
         }
 
