@@ -60,7 +60,7 @@ const CONVERSATION_SCRIPT: ScriptStep[] = [
   },
   {
     id: 7,
-    botMessage: "And a phone number? Please include your country code (e.g. +1 for US). Numbers only.",
+    botMessage: "WhatsApp number",
     type: 'phone',
     key: "phone"
   },

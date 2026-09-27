@@ -277,7 +277,10 @@ export default function TermsPage() {
           {/* Section 18 */}
           <section id="section-18">
             <h2 className="text-[22px] font-bold text-[#0a192f] mb-4">18. Contact</h2>
-            <p><strong>18.1</strong> RepuKeel, P33H+GVV, G-7/4, Islamabad, Pakistan. WhatsApp: <a href="https://wa.me/923087525510" className="text-[#d4af37] hover:underline">+92 308 752 5510</a>. Email: <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a>. Website: <a href="https://repukeel.vercel.app" className="text-[#d4af37] hover:underline">repukeel.vercel.app</a>.</p>
+            <p><strong>18.1</strong> RepuKeel, P33H+GVV, G-7/4, Islamabad, Pakistan<br />
+            WhatsApp: <a href="https://wa.me/923087525510" className="text-[#d4af37] hover:underline">+92 308 752 5510</a><br />
+            Email: <a href="mailto:Legal@Repukeel.com" className="text-[#d4af37] hover:underline">Legal@Repukeel.com</a><br />
+            Website: <a href="https://repukeel.com" className="text-[#d4af37] hover:underline">repukeel.com</a></p>
           </section>
 
           {/* Agreement footer */}
