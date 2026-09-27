@@ -13,7 +13,33 @@ export const metadata: Metadata = {
     template: "%s | RepuKeel"
   },
   description: "Fast, effective reputation and DMCA takedown service. Protecting your intellectual property from piracy and unauthorized use across all platforms globally.",
-  keywords: ["Reputation Management", "DMCA Takedown", "Brand Protection", "Online Privacy", "Remove Defamation", "Anti-Piracy", "RepuKeel"],
+  keywords: ["Reputation Management", "DMCA Takedown", "Brand Protection", "Online Privacy", "Remove Defamation", "Anti-Piracy", "RepuKeel", "Content Removal", "Online Reputation", "Crisis Management", "Google Search Removal"],
+  authors: [{ name: "RepuKeel Team" }],
+  creator: "RepuKeel",
+  publisher: "RepuKeel",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "https://repukeel.com",
+    languages: {
+      'en-US': 'https://repukeel.com/en-US',
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -35,17 +61,6 @@ export const metadata: Metadata = {
     title: "RepuKeel | Premium Reputation & Brand Protection",
     description: "Defend your brand with RepuKeel. We remove harmful online content and protect your reputation globally.",
     images: ["/icon.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
 };
 
@@ -136,3 +151,4 @@ export default function RootLayout({
     </html>
   );
 }
+
