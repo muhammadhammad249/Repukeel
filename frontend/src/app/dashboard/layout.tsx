@@ -59,7 +59,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           if (dbProfile) {
             baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
             baseProfile.role = dbProfile.role;
-            // NOTE: No auto-redirect here — login page handles role-based redirect
+            
+            // Redirect admins to their portal if they try to access the client dashboard
+            if (dbProfile.role === 'admin' || dbProfile.role === 'super_admin') {
+              router.push('/dashboard/admin');
+              return;
+            }
           }
         }
 
