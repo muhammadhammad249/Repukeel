@@ -4,7 +4,16 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
+
+export const metadata: Metadata = {
+  title: 'RepuKeel | Online Reputation Management Company Worldwide',
+  description: 'At RepuKeel Reputation, we remove harmful online content, repair search results, and protect your reputation — fast, confidentially, and with proven results.',
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export default function Home() {
   return (
@@ -137,7 +146,7 @@ export default function Home() {
             {/* Bottom Left: Green Success Badge */}
             <div className="absolute bottom-[5%] left-[8%] z-20 shadow-[0_10px_24px_rgba(0,0,0,0.15)] bg-[#22c55e] rounded-[18px] py-[16px] px-[20px] text-left text-white w-[120px] anim-bob-3 pointer-events-none">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-6 h-6 mb-2"><path d="M22 7L13.5 15.5 8.5 10.5 2 17M16 7h6v6"/></svg>
-              <span className="block text-[26px] font-[800] leading-[1.1]">280+</span>
+              <span className="block text-[26px] font-[800] leading-[1.1]">99%</span>
               <span className="block text-[12px] font-[600] mt-[2px]">Success</span>
             </div>
             
@@ -156,8 +165,8 @@ export default function Home() {
       <section className="w-full bg-[var(--bg-navy)] py-12">
         <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { n: '30K+', l: 'Content Pieces Removed' },
-            { n: '200+', l: 'Clients Protected' },
+            { n: '500K+', l: 'Content Pieces Removed' },
+            { n: '2K+', l: 'Clients Protected' },
             { n: '99%', l: 'Success Rate' },
             { n: '150+', l: 'Countries Covered' }
           ].map((stat, i) => (
@@ -340,7 +349,7 @@ export default function Home() {
           {/* Right Column (Stats Grid) */}
           <div className="grid grid-cols-2 gap-4 lg:gap-6 lg:mt-8">
             {[
-              { n: '2K+', l: 'DMCA Takedowns Filed' },
+              { n: '500K+', l: 'DMCA Takedowns Filed' },
               { n: '24hrs', l: 'Avg Removal Time' },
               { n: '20+', l: 'Platforms Covered' },
               { n: '99%', l: 'Client Satisfaction' },
@@ -365,15 +374,15 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: 'Sarah M.', role: 'Content Creator' },
-              { name: 'Ahmed K.', role: 'Business Owner' },
-              { name: 'Jessica T.', role: 'Online Educator' },
-              { name: 'Mark D.', role: 'Brand Manager' }
+              { name: 'Sarah M.', role: 'Content Creator', text: 'Absolutely incredible service. They took down stolen copies of my course videos within 24 hours. Highly recommended!' },
+              { name: 'Ahmed K.', role: 'Business Owner', text: 'Repukeel saved our brand from a fake review attack. Their team acted immediately and restored our reputation.' },
+              { name: 'Jessica T.', role: 'Online Educator', text: 'I was overwhelmed by copied content across multiple platforms. Repukeel handled everything seamlessly.' },
+              { name: 'Mark D.', role: 'Brand Manager', text: 'Professional, confidential, and incredibly effective. The best investment we made for our digital security.' }
             ].map((t, i) => (
               <div key={i} className="bg-[#111a36] border border-[var(--border-navy)] rounded-2xl p-8 flex flex-col">
                 <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
                 <p className="italic text-[15px] mb-8 flex-1" style={{ color: '#f4f6fb' }}>
-                  "Absolutely incredible service. They took down stolen copies of my course videos within 24 hours. Highly recommended!"
+                  "{t.text}"
                 </p>
                 <div className="flex items-center gap-3 mt-auto">
                   <div className="w-10 h-10 rounded-full bg-[var(--gold)] flex items-center justify-center text-[var(--bg-navy)] font-bold">

@@ -1,6 +1,18 @@
 /* eslint-disable */
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const serviceName = params.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  return {
+    title: `${serviceName} | RepuKeel`,
+    description: `Professional ${serviceName} services by RepuKeel. We resolve and remove unauthorized content tailored specifically for this use-case.`,
+    alternates: {
+      canonical: `/services/${params.slug}`,
+    },
+  };
+}
 
 export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
   // Mock data for the layout demonstration

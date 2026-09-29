@@ -2,6 +2,21 @@
 import Link from "next/link";
 import { categories } from "@/data/services";
 import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category: categorySlug } = await params;
+  const category = categories.find((c) => c.slug === categorySlug);
+  if (!category) return {};
+
+  return {
+    title: `${category.name} | RepuKeel`,
+    description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
+    alternates: {
+      canonical: `/${category.slug}`,
+    },
+  };
+}
 
 export default async function CategoryPage({
   params,

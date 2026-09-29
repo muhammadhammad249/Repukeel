@@ -73,7 +73,7 @@ export default function ServicesPage() {
               <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Response</span>
             </div>
             <div className="absolute bottom-10 left-[10%] bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '1.5s' }}>
-              <span className="text-[16px] font-[800] text-[var(--green)] leading-none">280+</span>
+              <span className="text-[16px] font-[800] text-[var(--green)] leading-none">99%</span>
               <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Success</span>
             </div>
           </div>
@@ -157,14 +157,14 @@ export default function ServicesPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "Sarah O'Connor", role: "Content Creator, Marketing Firm" },
-              { name: "John Doe", role: "Photography" },
-              { name: "Elena R.", role: "E-Commerce Director" }
+              { name: "Sarah O'Connor", role: "Content Creator, Marketing Firm", text: "The Repukeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service." },
+              { name: "John Doe", role: "Photography", text: "Their monitoring system caught unauthorized use of my portfolio before it could spread. Highly responsive team." },
+              { name: "Elena R.", role: "E-Commerce Director", text: "We struggled with fake reviews for months. Repukeel cleaned up our Trustpilot and Google profiles permanently." }
             ].map((t, i) => (
               <div key={i} className="bg-[var(--bg-soft)] border border-[var(--border-light)] rounded-2xl p-8 flex flex-col">
                 <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
                 <p className="italic text-[15px] text-black mb-8 flex-1">
-                  "The Repukeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service."
+                  "{t.text}"
                 </p>
                 <div className="flex items-center gap-3 mt-auto">
                   <div className="w-10 h-10 rounded-full bg-[rgba(217,165,43,0.2)] flex items-center justify-center text-[var(--gold)] font-bold">
@@ -186,7 +186,7 @@ export default function ServicesPage() {
         <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { n: '500K+', l: 'Pieces of Content Removed' },
-            { n: '200+', l: 'Clients Protected' },
+            { n: '2K+', l: 'Clients Protected' },
             { n: '99%', l: 'Takedown Success Rate' },
             { n: '24hr', l: 'Average Response Time' }
           ].map((stat, i) => (

@@ -25,35 +25,6 @@ export default function Footer() {
               />
             </Link>
 
-            {/* System Status */}
-            <div className="bg-[#121c36] rounded-[14px] p-4 border border-white/5 shadow-sm inline-flex flex-col gap-1 w-max">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full border border-green-500 flex items-center justify-center">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#22c55e"
-                    strokeWidth="3"
-                    className="w-2.5 h-2.5"
-                  >
-                    <path
-                      d="M5 12l5 5L20 7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                <span className="text-[14px] font-[600] text-[#22c55e]">
-                  All systems operational
-                </span>
-              </div>
-
-              <span className="text-[12px] text-gray-400">
-                24/7 monitoring & protection active
-              </span>
-            </div>
-
             {/* Social Media */}
             <div>
               <p className="text-[14px] font-[600] text-white mb-4">

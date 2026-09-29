@@ -23,7 +23,6 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: "https://repukeel.com",
     languages: {
       'en-US': 'https://repukeel.com/en-US',
     },
@@ -92,6 +91,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "RepuKeel",
+              "alternateName": ["Repukeel", "Repukeel Reputation"],
               "url": "https://repukeel.com",
               "logo": "https://repukeel.com/icon.jpg",
               "description": "RepuKeel specializes in online reputation management, DMCA takedowns, and global brand protection.",
@@ -101,7 +101,10 @@ export default function RootLayout({
                 "contactType": "customer service"
               },
               "sameAs": [
-                "https://repukeel.com"
+                "https://www.facebook.com/RepuKeel/",
+                "https://x.com/Repukeel",
+                "https://www.linkedin.com/in/repu-keel-118157438",
+                "https://www.instagram.com/repukeel/"
               ]
             })
           }}

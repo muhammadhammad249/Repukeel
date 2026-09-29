@@ -3,6 +3,22 @@ import { categories } from "@/data/services";
 import RemoveRequestButton from "@/app/components/RemoveRequestButton";
 import ServiceIcon from "@/app/components/ServiceIcon";
 import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }): Promise<Metadata> {
+  const { category: categorySlug, slug } = await params;
+  const category = categories.find((c) => c.slug === categorySlug);
+  const service = category?.subServices.find((s) => s.slug === slug);
+  if (!category || !service) return {};
+
+  return {
+    title: `${service.name} | RepuKeel`,
+    description: service.intro,
+    alternates: {
+      canonical: `/${category.slug}/${service.slug}`,
+    },
+  };
+}
 
 export default async function SubServicePage({
   params,
