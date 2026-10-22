@@ -8,6 +8,10 @@ import authRouter from "./routes/auth";
 const app = express();
 
 app.use(helmet());
+app.use((_req, res, next) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  next();
+});
 app.use(
   cors({
     origin: (origin, callback) => {
