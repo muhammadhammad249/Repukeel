@@ -34,6 +34,11 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: "OK", message: "RepuKeel API is running 🚀" });
 });
 
+// Google Search Console verification
+app.get("/googlec3bb70e782680902.html", (req, res) => {
+  res.type("text/html").send("google-site-verification: googlec3bb70e782680902.html");
+});
+
 // API health check
 app.get("/api/v1/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "RepuKeel API is running" });
