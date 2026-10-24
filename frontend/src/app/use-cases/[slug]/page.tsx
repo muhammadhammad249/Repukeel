@@ -1,4 +1,23 @@
 /* eslint-disable */
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const title = resolvedParams.slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return {
+    title: `${title} | Case Support`,
+    description: `Specialized online reputation and content removal guidance for ${title.toLowerCase()}.`,
+    alternates: {
+      canonical: `https://repukeel.com/use-cases/${resolvedParams.slug}`,
+    },
+    openGraph: {
+      title: `${title} | RepuKeel`,
+      description: `Specialized online reputation and content removal guidance for ${title.toLowerCase()}.`,
+      url: `https://repukeel.com/use-cases/${resolvedParams.slug}`,
+    },
+  };
+}
+
 export default async function UseCaseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
   const title = resolvedParams.slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");

@@ -1,5 +1,19 @@
 /* eslint-disable */
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Terms and Conditions',
+  description: 'Terms and conditions governing the use of RepuKeel reputation management, DMCA takedowns, and brand protection services.',
+  alternates: {
+    canonical: 'https://repukeel.com/terms-conditions',
+  },
+  openGraph: {
+    title: 'Terms and Conditions | RepuKeel',
+    description: 'Terms and conditions governing the use of RepuKeel reputation management, DMCA takedowns, and brand protection services.',
+    url: 'https://repukeel.com/terms-conditions',
+  },
+};
 
 const sections = [
   { id: 1, title: 'Acceptance and Scope' },

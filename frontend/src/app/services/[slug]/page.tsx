@@ -3,20 +3,27 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const serviceName = params.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const serviceName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   return {
-    title: `${serviceName} | RepuKeel`,
+    title: `${serviceName} Protection`,
     description: `Professional ${serviceName} services by RepuKeel. We resolve and remove unauthorized content tailored specifically for this use-case.`,
     alternates: {
-      canonical: `/services/${params.slug}`,
+      canonical: `https://repukeel.com/services/${slug}`,
+    },
+    openGraph: {
+      title: `${serviceName} Protection | RepuKeel`,
+      description: `Professional ${serviceName} services by RepuKeel. We resolve and remove unauthorized content tailored specifically for this use-case.`,
+      url: `https://repukeel.com/services/${slug}`,
     },
   };
 }
 
-export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
+export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   // Mock data for the layout demonstration
-  const serviceName = params.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const serviceName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg-soft)]">

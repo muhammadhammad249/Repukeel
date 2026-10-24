@@ -1,5 +1,19 @@
 /* eslint-disable */
+import { Metadata } from 'next';
 import Navbar from '../components/Navbar';
+
+export const metadata: Metadata = {
+  title: 'Trusted by 200+ Creators & Brands',
+  description: 'Read reviews and testimonials from individuals and businesses protected by RepuKeel reputation management services.',
+  alternates: {
+    canonical: 'https://repukeel.com/clients',
+  },
+  openGraph: {
+    title: 'Our Clients & Testimonials | RepuKeel',
+    description: 'Read reviews and testimonials from individuals and businesses protected by RepuKeel reputation management services.',
+    url: 'https://repukeel.com/clients',
+  },
+};
 
 export default function ClientsPage() {
   const testimonials = [

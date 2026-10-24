@@ -10,10 +10,15 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!category) return {};
 
   return {
-    title: `${category.name} | RepuKeel`,
+    title: category.name,
     description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
     alternates: {
-      canonical: `/${category.slug}`,
+      canonical: `https://repukeel.com/${category.slug}`,
+    },
+    openGraph: {
+      title: `${category.name} | RepuKeel`,
+      description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
+      url: `https://repukeel.com/${category.slug}`,
     },
   };
 }

@@ -6,6 +6,14 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About Us | Reputation Experts',
   description: 'Learn about RepuKeel, the premier online reputation management and brand protection agency. Discover our values, philosophy, and process.',
+  alternates: {
+    canonical: 'https://repukeel.com/about',
+  },
+  openGraph: {
+    title: 'About Us | RepuKeel',
+    description: 'Learn about RepuKeel, the premier online reputation management and brand protection agency. Discover our values, philosophy, and process.',
+    url: 'https://repukeel.com/about',
+  },
 };
 
 export default function AboutPage() {

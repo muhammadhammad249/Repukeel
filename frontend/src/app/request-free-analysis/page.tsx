@@ -1,5 +1,19 @@
 /* eslint-disable */
+import { Metadata } from 'next';
 import { categories } from '@/data/services';
+
+export const metadata: Metadata = {
+  title: 'Request Free Reputation Analysis',
+  description: 'Get a confidential, 100% free reputation audit and action plan from RepuKeel experts.',
+  alternates: {
+    canonical: 'https://repukeel.com/request-free-analysis',
+  },
+  openGraph: {
+    title: 'Request Free Reputation Analysis | RepuKeel',
+    description: 'Get a confidential, 100% free reputation audit and action plan from RepuKeel experts.',
+    url: 'https://repukeel.com/request-free-analysis',
+  },
+};
 
 export default function RequestFreeAnalysisPage() {
   return (

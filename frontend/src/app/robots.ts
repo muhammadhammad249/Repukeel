@@ -10,8 +10,11 @@ export default function robots(): MetadataRoute.Robots {
         '/dashboard/', // Protect dashboard routes from indexing
         '/api/',       // Protect API routes
         '/checkout/',  // Protect checkout flows
+        '/checkout',
+        '/admin/',
       ],
     },
     sitemap: 'https://repukeel.com/sitemap.xml',
+    host: 'https://repukeel.com',
   };
 }

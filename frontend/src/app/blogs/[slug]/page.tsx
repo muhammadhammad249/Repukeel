@@ -1,6 +1,28 @@
 /* eslint-disable */
 import { blogs } from "../data";
 import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSlug = decodeURIComponent(resolvedParams.slug);
+  const blog = blogs.find((b) => b.slug === decodedSlug);
+  if (!blog) return {};
+
+  return {
+    title: blog.title,
+    description: blog.meta,
+    alternates: {
+      canonical: `https://repukeel.com/blogs/${blog.slug}`,
+    },
+    openGraph: {
+      title: `${blog.title} | RepuKeel`,
+      description: blog.meta,
+      url: `https://repukeel.com/blogs/${blog.slug}`,
+      type: 'article',
+    },
+  };
+}
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;

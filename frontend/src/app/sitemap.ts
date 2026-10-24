@@ -1,11 +1,12 @@
 /* eslint-disable */
 import { MetadataRoute } from 'next';
 import { categories } from '@/data/services';
+import { blogs } from '@/app/blogs/data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://repukeel.com';
 
-  // Core static pages
+  // Core indexable static pages
   const routes = [
     '',
     '/about',
@@ -17,13 +18,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/protection',
     '/blogs',
     '/case-studies',
-    '/login',
-    '/signup'
+    '/clients',
+    '/request-free-analysis',
+    '/privacy-policy',
+    '/terms-conditions',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
+    changeFrequency: (route === '' ? 'daily' : 'weekly') as 'daily' | 'weekly',
+    priority: route === '' ? 1.0 : 0.8,
   }));
 
   // Dynamic category and subservice pages
@@ -43,5 +46,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return [catRoute, ...subRoutes];
   });
 
-  return [...routes, ...dynamicRoutes];
+  // Dynamic blog post pages
+  const blogRoutes = blogs.map((blog) => ({
+    url: `${baseUrl}/blogs/${blog.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  return [...routes, ...dynamicRoutes, ...blogRoutes];
 }

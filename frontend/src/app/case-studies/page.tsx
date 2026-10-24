@@ -1,4 +1,19 @@
 /* eslint-disable */
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Case Studies & Results',
+  description: 'See how RepuKeel helps creators and brands worldwide recover stolen assets, delete fake profiles, and protect their digital footprint.',
+  alternates: {
+    canonical: 'https://repukeel.com/case-studies',
+  },
+  openGraph: {
+    title: 'Case Studies & Results | RepuKeel',
+    description: 'See how RepuKeel helps creators and brands worldwide recover stolen assets, delete fake profiles, and protect their digital footprint.',
+    url: 'https://repukeel.com/case-studies',
+  },
+};
+
 export default function CaseStudiesPage() {
   const cases = [
     { tag: "Leaked Content", title: "Adult Creator: 847 URLs Removed in 72 Hours", desc: "A content creator found their private content distributed across 12 unauthorized platforms. Our team issued parallel DMCA notices and achieved complete removal within 72 hours.", stats: ["847 URLs", "12 Platforms", "72 Hours", "100% Removed"] },

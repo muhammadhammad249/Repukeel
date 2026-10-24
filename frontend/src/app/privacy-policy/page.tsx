@@ -1,4 +1,19 @@
 /* eslint-disable */
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'RepuKeel Privacy Policy explaining how we collect, protect, and handle your data with complete confidentiality.',
+  alternates: {
+    canonical: 'https://repukeel.com/privacy-policy',
+  },
+  openGraph: {
+    title: 'Privacy Policy | RepuKeel',
+    description: 'RepuKeel Privacy Policy explaining how we collect, protect, and handle your data with complete confidentiality.',
+    url: 'https://repukeel.com/privacy-policy',
+  },
+};
+
 export default function PrivacyPolicyPage() {
   const sections = ["Information We Collect","How We Use Your Information","Information Sharing & Disclosure","Data Security","Cookies & Tracking","Your Rights","Third-Party Links","Children's Privacy","Changes to This Policy","Contact"];
   return (
@@ -22,7 +37,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-bold mb-4">{i+1}. {s}</h2>
               <div className="text-slate-600 leading-relaxed space-y-3">
                 <p>This section covers our policy regarding {s.toLowerCase()}. We are committed to protecting your privacy and handling your data in an open and transparent manner.</p>
-                <p>If you have any questions about how we handle this aspect of your privacy, please contact our Data Protection Officer at privacy@protectip-master.com.</p>
+                <p>If you have any questions about how we handle this aspect of your privacy, please contact our Data Protection Officer at privacy@repukeel.com.</p>
               </div>
             </section>
           ))}

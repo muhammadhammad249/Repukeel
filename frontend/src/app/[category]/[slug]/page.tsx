@@ -12,10 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!category || !service) return {};
 
   return {
-    title: `${service.name} | RepuKeel`,
+    title: `${service.name} - ${category.name}`,
     description: service.intro,
     alternates: {
-      canonical: `/${category.slug}/${service.slug}`,
+      canonical: `https://repukeel.com/${category.slug}/${service.slug}`,
+    },
+    openGraph: {
+      title: `${service.name} | RepuKeel`,
+      description: service.intro,
+      url: `https://repukeel.com/${category.slug}/${service.slug}`,
     },
   };
 }

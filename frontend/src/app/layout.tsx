@@ -22,11 +22,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  alternates: {
-    languages: {
-      'en-US': 'https://repukeel.com/en-US',
-    },
-  },
   robots: {
     index: true,
     follow: true,
