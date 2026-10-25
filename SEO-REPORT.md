@@ -202,6 +202,29 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-14: Performance baseline
+- **Status**: Completed (PASS)
+- **Files Created**:
+  - `seo/lh-home.json`
+  - `seo/lh-services.json`
+  - `seo/lh-service-page.json`
+- **Actions Taken**:
+  - Executed Google Lighthouse audits across three core representative routes: Homepage (`/`), Services Hub (`/services`), and Subservice Page (`/content-removal/google-review-removal`).
+  - Recorded Core Web Vitals (LCP, CLS, TBT) and Category Scores (SEO, Accessibility, Performance) under Mobile form-factor.
+- **Lighthouse Results Summary**:
+  | Route | SEO Score | Accessibility | Performance | LCP | TBT | CLS |
+  | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+  | **Homepage (`/`)** | **100** | 90 | 48 (dev) | 11.9s | 390ms | **0** |
+  | **Services (`/services`)** | **100** | 90 | 58 (dev) | 11.7s | 200ms | **0** |
+  | **Service Page (`/content-removal/...`)** | **100** | 92 | 58 (dev) | 9.5s | 200ms | **0** |
+- **Top 3 Performance Opportunities**:
+  1. *Production Minification & Chunking*: Current audit ran on local dev server. Running production server (`next start`) automatically minifies JS bundles and reduces chunk sizes.
+  2. *Next.js Image Optimization*: Ensure external images use Next/Image with responsive `sizes` attribute.
+  3. *Unused CSS Purging*: Clean unused legacy font weights.
+- **Open Questions**: None (per spec, performance changes are not applied without explicit user approval).
+
+---
+
 ## Task SEO-15: Per-page meta tags
 - **Status**: Completed (PASS)
 - **Files Changed**:
