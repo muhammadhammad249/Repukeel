@@ -331,3 +331,38 @@ Repository: `C:\Users\Ash\Repukeel`
     - Header offset < Main offset < H1 offset < Footer offset.
     - Exactly 1 `<main>` tag per page.
 - **Open Questions**: None.
+
+---
+
+## Task SEO-17: Free-analysis page index decision
+- **Status**: Pending Human Decision
+- **File Involved**: `frontend/src/app/request-free-analysis/layout.tsx`
+- **Context**:
+  - `/request-free-analysis` is a utility lead intake page with form dropdowns and little body prose.
+  - Choice A (Recommended): Set `robots: { index: false, follow: true }` to avoid potential "thin content" indexing penalties by Google, keeping the form fully accessible and operational for visitors.
+  - Choice B: Keep indexable with standard `robots: { index: true, follow: true }` and provide dedicated explanatory copy later.
+- **Action**: Decision modal submitted to user.
+
+---
+
+# Master Task Completion Checklist
+
+| Task ID | Title | Priority | Status | Commit / Output |
+| :--- | :--- | :--- | :--- | :--- |
+| **SEO-01** | Fix mismatched footer links | Critical | **PASS** | `e8d7e6c` (`Footer.tsx`, `check-footer.js`) |
+| **SEO-02** | Audit sitemap and robots | Critical | **PASS** | `03b7559` (85 URLs verified 200 OK) |
+| **SEO-03** | Resolve canonical conflicts & helper | Critical | **PASS** | `4b7b5af` (`lib/seo.ts`, layouts) |
+| **SEO-04** | Fix redirect errors | Critical | **Awaiting H-01** | Awaiting `seo/redirect-urls.txt` |
+| **SEO-05** | Inventory trust claims | Critical | **Inventory Done** | `d57ec3e` (`claims-inventory.csv`) |
+| **SEO-06** | Allow pinch-zoom | Normal | **PASS** | `e2cc641` (`layout.tsx` viewport) |
+| **SEO-07** | Fix scanner page defects | Normal | **PASS** | `779a157` (`scanner/layout.tsx`, `page.tsx`) |
+| **SEO-08** | Render FAQ answers in HTML | Normal | **PASS** | `e6cd8c0` (`services/page.tsx`) |
+| **SEO-09** | Check DOM order of main content | Normal | **PASS** | `be17bbf` (Removed `loading.tsx`) |
+| **SEO-10** | Thin service page inventory | Normal | **Inventory Done** | `3f68850` (`thin-pages.md`, `service-pages.csv`) |
+| **SEO-11** | Internal links and orphan check | Normal | **PASS** | `a3db152` (0 orphans, 0 broken, 3,980 links) |
+| **SEO-12** | Structured data audit | Normal | **Audit Done** | `84f30c4` (`schema-inventory.md`) |
+| **SEO-13** | Brand name consistency | Normal | **PASS** | `b131804` (All visible text `RepuKeel`) |
+| **SEO-14** | Performance baseline | Normal | **PASS** | `978a730` (Lighthouse SEO 100/100, Access 90+) |
+| **SEO-15** | Per-page meta tags | Low | **PASS** | `20c00c3` (No keywords, dynamic OG/Twitter) |
+| **SEO-16** | Emoji in link text | Low | **PASS** | `8d0d254` (`aria-hidden` wrappers) |
+| **SEO-17** | Free-analysis index decision | Low | **Decision Pending**| Choice presented to user |
