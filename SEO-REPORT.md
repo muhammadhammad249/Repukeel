@@ -62,3 +62,19 @@ Repository: `C:\Users\Ash\Repukeel`
   - Verified Description: `<meta name="description" content="Build focused search queries to investigate potential brand, text, and image misuse online with the RepuKeel AI Scanner.">`
   - Verified H1: `AI Scanner`
 - **Open Questions**: None.
+
+---
+
+## Task SEO-08: Render FAQ answers in HTML
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/services/page.tsx`
+- **Actions Taken**:
+  - Replaced conditional JavaScript rendering `{openFaq === i && <div>...</div>}` with persistent HTML rendering using CSS display toggle:
+    `<div className={`px-6 pb-5 text-[15px] text-black ${openFaq === i ? 'block' : 'hidden'}`}>`.
+  - Ensured all four FAQ question and answer pairs are fully present in the raw server-rendered HTML for search engine crawlers while preserving user accordion interactivity.
+- **Verification Commands Run**:
+  - Tested `$html = (Invoke-WebRequest -Uri "http://localhost:3000/services" -UseBasicParsing).Content`:
+    - Question present in raw HTML: `True`
+    - Answer present in raw HTML: `True`
+- **Open Questions**: None.

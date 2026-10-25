@@ -244,11 +244,9 @@ export default function ServicesPage() {
                   {faq.q}
                   <span className={`transform transition-transform text-[var(--gold)] ${openFaq === i ? 'rotate-180' : ''}`}>▼</span>
                 </button>
-                {openFaq === i && (
-                  <div className="px-6 pb-5 text-[15px] text-black">
-                    {faq.a}
-                  </div>
-                )}
+                <div className={`px-6 pb-5 text-[15px] text-black ${openFaq === i ? 'block' : 'hidden'}`}>
+                  {faq.a}
+                </div>
               </div>
             ))}
           </div>
