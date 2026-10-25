@@ -1,4 +1,6 @@
 /* eslint-disable */
+import { getServiceCta } from './serviceCtaConfig';
+
 export type SubService = {
   slug: string;
   name: string;
@@ -8,6 +10,10 @@ export type SubService = {
   bodySections: { heading: string; text: string }[];
   bulletPoints: string[];
   image: string;
+  ctaText?: string;
+  modalTitle?: string;
+  modalSubtitle?: string;
+  inputPlaceholder?: string;
 };
 
 export type Category = {
@@ -17,7 +23,7 @@ export type Category = {
   subServices: SubService[];
 };
 
-export const categories: Category[] = [
+const rawCategories: Category[] = [
   {
     slug: "content-removal",
     name: "Content Removal",
@@ -737,3 +743,11 @@ export const categories: Category[] = [
     ]
   }
 ];
+
+export const categories: Category[] = rawCategories.map(cat => ({
+  ...cat,
+  subServices: cat.subServices.map(sub => ({
+    ...sub,
+    ...getServiceCta(sub.slug, sub.name),
+  }))
+}));

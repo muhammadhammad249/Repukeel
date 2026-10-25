@@ -11,7 +11,21 @@ type FormData = {
   details: string;
 };
 
-export default function RemoveRequestButton({ serviceName }: { serviceName: string }) {
+interface RemoveRequestButtonProps {
+  serviceName: string;
+  ctaText?: string;
+  modalTitle?: string;
+  modalSubtitle?: string;
+  inputPlaceholder?: string;
+}
+
+export default function RemoveRequestButton({
+  serviceName,
+  ctaText,
+  modalTitle,
+  modalSubtitle,
+  inputPlaceholder,
+}: RemoveRequestButtonProps) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
@@ -46,13 +60,21 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
     }
   };
 
+  const displayCta = ctaText || `Get ${serviceName} Removed`;
+  const displayTitle = modalTitle || `Request ${serviceName}`;
+  const displaySubtitle = modalSubtitle || "Fill out the details below and our team will get to work.";
+  const displayPlaceholder = inputPlaceholder || "Link to the post, content, or review";
+
   return (
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full sm:w-auto bg-[#1e3a8a] text-white font-bold uppercase px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all text-[14px] sm:text-[15px] mb-8"
+        className="w-full sm:w-auto bg-[#1e3a8a] text-white font-bold uppercase px-8 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#152c6e] transition-all text-[14px] sm:text-[15px] mb-8 inline-flex items-center justify-center gap-2 group tracking-wide"
       >
-        Remove My {serviceName.replace(/\s*Removal\s*$/i, '').trim()}
+        <span>{displayCta}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 transition-transform group-hover:translate-x-1">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
       </button>
 
       {open && (
@@ -76,15 +98,15 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Request Received</h3>
                 <p className="text-gray-600 font-medium">
-                  Thank you — your removal request has been received. Our team will contact you shortly.
+                  Thank you — your request has been received. Our team will contact you shortly.
                 </p>
                 <button onClick={() => setOpen(false)} className="mt-6 text-[#1e3a8a] font-semibold hover:underline">Close Window</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-[#0a152e]">Remove My {serviceName} Post</h3>
-                  <p className="text-sm text-gray-500 mt-1">Fill out the details below and our team will get to work.</p>
+                  <h3 className="text-2xl font-bold text-[#0a152e]">{displayTitle}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{displaySubtitle}</p>
                 </div>
 
                 <div>
@@ -102,8 +124,8 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
                 </div>
 
                 <div>
-                  <input {...register("postUrl", { required: true })} placeholder="Link to the post/content" className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--gold)] focus:border-transparent transition-all text-black" />
-                  {errors.postUrl && <p className="text-red-500 text-xs font-semibold mt-1 ml-1">Link is required</p>}
+                  <input {...register("postUrl", { required: true })} placeholder={displayPlaceholder} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--gold)] focus:border-transparent transition-all text-black" />
+                  {errors.postUrl && <p className="text-red-500 text-xs font-semibold mt-1 ml-1">This link/field is required</p>}
                 </div>
 
                 <div>
@@ -111,7 +133,7 @@ export default function RemoveRequestButton({ serviceName }: { serviceName: stri
                 </div>
 
                 <button type="submit" disabled={status === "loading"} className="w-full bg-[var(--gold)] hover:bg-[#c19b2e] text-[#0a152e] font-[800] text-[16px] py-4 rounded-xl transition-all shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
-                  {status === "loading" ? "Submitting..." : "Submit Removal Request"}
+                  {status === "loading" ? "Submitting..." : displayCta}
                 </button>
 
                 {status === "error" && <p className="text-red-500 text-sm font-semibold text-center mt-2">Something went wrong. Please try again.</p>}

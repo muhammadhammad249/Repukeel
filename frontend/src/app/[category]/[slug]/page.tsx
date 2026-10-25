@@ -90,7 +90,13 @@ export default async function SubServicePage({
               </ul>
             </div>
 
-            <RemoveRequestButton serviceName={service.name} />
+            <RemoveRequestButton
+              serviceName={service.name}
+              ctaText={service.ctaText}
+              modalTitle={service.modalTitle}
+              modalSubtitle={service.modalSubtitle}
+              inputPlaceholder={service.inputPlaceholder}
+            />
           </article>
 
           {/* ===== RIGHT: Icon — shown below content on mobile, sticky on desktop ===== */}
