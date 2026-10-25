@@ -26,3 +26,18 @@ Repository: `C:\Users\Ash\Repukeel`
   - Parsed all 85 URLs from `http://localhost:3000/sitemap.xml` and tested each via HTTP request:
     - **Result**: `SUCCESS: All 85 URLs in sitemap returned HTTP 200 OK!`.
 - **Open Questions**: None.
+
+---
+
+## Task SEO-06: Allow pinch-zoom
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/layout.tsx`
+- **Actions Taken**:
+  - Removed `maximumScale: 1` from `export const viewport: Viewport`.
+  - Removed duplicate `<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />` tag from `<head>` in `RootLayout`.
+  - Kept standard accessible viewport configuration: `width: "device-width", initialScale: 1`.
+- **Verification Commands Run**:
+  - `(Invoke-WebRequest -Uri "http://localhost:3000/" -UseBasicParsing).Content | Select-String -Pattern '<meta name="viewport"[^>]*>'`
+    - **Result**: `<meta name="viewport" content="width=device-width, initial-scale=1"/>` (no `maximum-scale` or `user-scalable=no`).
+- **Open Questions**: None.
