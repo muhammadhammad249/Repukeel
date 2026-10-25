@@ -139,6 +139,31 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-11: Internal links and orphan check
+- **Status**: Completed (PASS)
+- **Files Changed / Created**:
+  - `scripts/crawl-links.js`
+  - `seo/links.csv`
+  - `seo/link-report.md`
+  - `frontend/src/app/components/ServicesMenuLayout.tsx`
+  - `frontend/src/app/protection/page.tsx`
+- **Actions Taken**:
+  - Wrote comprehensive internal link crawler in `scripts/crawl-links.js` to map internal link topology, inlink counts, click depth, and HTTP status codes from the local production build.
+  - Fixed 307 temporary redirect link on `/protection` (updated target from `/dashboard` to `/login`).
+  - Identified 14 previously orphaned pages (`/reputation-audit` and `/industries` subservices) that existed in the sitemap without any crawlable incoming links.
+  - Integrated a crawlable Category Directory navigation section into `frontend/src/app/components/ServicesMenuLayout.tsx`, linking to all category hubs directly from `/services`.
+  - Re-ran crawl audit across all 85 sitemap pages.
+- **Verification Commands Run**:
+  - `node scripts/crawl-links.js`:
+    - Total internal links mapped: 3,980.
+    - Broken internal links (4xx/5xx): **0**.
+    - Redirecting internal links (3xx): **0**.
+    - Orphan pages in sitemap (0 inlinks): **0** (All 85 sitemap pages now receive crawlable internal links).
+    - Maximum click depth: <= 2 (all pages within 2 clicks from homepage).
+- **Open Questions**: None.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:

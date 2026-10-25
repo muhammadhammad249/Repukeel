@@ -73,7 +73,7 @@ export default function ProtectionPage() {
             ))}
           </div>
 
-          <Link href="/dashboard" className="text-[13px] font-[500] text-[var(--text-muted-navy)] hover:text-[var(--gold)] transition-colors">
+          <Link href="/login" className="text-[13px] font-[500] text-[var(--text-muted-navy)] hover:text-[var(--gold)] transition-colors">
             Admin access &rarr;
           </Link>
           

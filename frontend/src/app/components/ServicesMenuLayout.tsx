@@ -119,6 +119,24 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
         </div>
       </div>
 
+      {/* Category Hubs Navigation */}
+      <div className="w-full bg-white rounded-2xl p-6 mt-4 border border-[var(--border-light)] shadow-sm">
+        <h4 className="text-[14px] font-[700] text-gray-900 mb-3">Browse Service Category Hubs:</h4>
+        <div className="flex flex-wrap gap-2.5">
+          {categories.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/${cat.slug}`}
+              onClick={handleLinkClick}
+              className="text-[13px] bg-[#f8f9fc] hover:bg-gray-200 text-gray-800 px-3.5 py-2 rounded-xl border border-gray-200 transition-all font-semibold flex items-center gap-2"
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.name}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Bottom Banner */}
       <div className="w-full bg-white border-t border-[var(--border-light)] mt-2 pt-6 pb-2 px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <h3 className="text-[18px] md:text-[20px] font-[900] text-black">
