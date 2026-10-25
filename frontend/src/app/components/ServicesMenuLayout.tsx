@@ -43,7 +43,7 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
                       : 'bg-transparent text-black hover:bg-gray-300 hover:translate-x-1 hover:shadow-md'
                   }`}
                 >
-                  <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px] text-black">
+                  <div className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center border border-[var(--border-light)] text-[15px] text-black" aria-hidden="true">
                     {cat.icon}
                   </div>
                   <span>{cat.name}</span>
@@ -130,7 +130,7 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
               onClick={handleLinkClick}
               className="text-[13px] bg-[#f8f9fc] hover:bg-gray-200 text-gray-800 px-3.5 py-2 rounded-xl border border-gray-200 transition-all font-semibold flex items-center gap-2"
             >
-              <span>{cat.icon}</span>
+              <span aria-hidden="true">{cat.icon}</span>
               <span>{cat.name}</span>
             </Link>
           ))}

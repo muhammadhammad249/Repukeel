@@ -223,6 +223,24 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-16: Emoji in link text
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/HomeClient.tsx`
+  - `frontend/src/app/components/ServicesMenuLayout.tsx`
+  - `frontend/src/app/[category]/page.tsx`
+- **Actions Taken**:
+  - Located category icon emojis rendered inside anchor links and service cards.
+  - Moved all icons into dedicated wrappers marked with `aria-hidden="true"`.
+  - Ensured link anchor text is purely semantic and accessible text without raw unicode emojis contaminating anchor signals.
+- **Verification Commands Run**:
+  - `curl -s http://localhost:3000/ | grep -P '<a [^>]*>[^<]*[\x{1F300}-\x{1FAFF}]'` -> 0 matches.
+  - `curl -s http://localhost:3000/services | grep -P '<a [^>]*>[^<]*[\x{1F300}-\x{1FAFF}]'` -> 0 matches.
+  - `npm run lint` & `npm run build` in `frontend` -> 0 errors, build passed.
+- **Open Questions**: None.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:

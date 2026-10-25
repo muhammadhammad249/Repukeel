@@ -200,7 +200,7 @@ export default function HomeClient() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
                 <Link href={`/${cat.slug}`} className="card-light flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-300 block">
-                  <div className="icon-box-light mb-6 text-2xl flex items-center justify-center">
+                  <div className="icon-box-light mb-6 text-2xl flex items-center justify-center" aria-hidden="true">
                     {cat.icon}
                   </div>
                   <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">{cat.name}</h4>

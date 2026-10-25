@@ -31,7 +31,7 @@ export default async function CategoryPage({
   return (
     <div className="max-w-[1280px] mx-auto px-6 py-12">
       <div className="bg-[#0a152e] rounded-lg px-6 py-5 flex items-center gap-3 mb-8">
-        <span className="text-2xl">{category.icon}</span>
+        <span className="text-2xl" aria-hidden="true">{category.icon}</span>
         <h1 className="text-white text-2xl font-bold">{category.name}</h1>
       </div>
 
