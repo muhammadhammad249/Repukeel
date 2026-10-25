@@ -34,7 +34,7 @@ export default async function SubServicePage({
 
   return (
     <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
-      <main className="container py-6 sm:py-8 lg:py-12">
+      <div className="container py-6 sm:py-8 lg:py-12">
 
         {/* Breadcrumb */}
         <div className="flex flex-wrap items-center gap-1.5 mb-6 sm:mb-8 text-[12px] sm:text-[13px] font-[600] text-[var(--text-muted-navy)]">
@@ -105,7 +105,7 @@ export default async function SubServicePage({
           </div>
 
         </div>
-      </main>
+      </div>
     </div>
   );
 }

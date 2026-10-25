@@ -78,3 +78,21 @@ Repository: `C:\Users\Ash\Repukeel`
     - Question present in raw HTML: `True`
     - Answer present in raw HTML: `True`
 - **Open Questions**: None.
+
+---
+
+## Task SEO-09: Check DOM order of main content
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/[category]/[slug]/page.tsx`
+  - `frontend/src/app/[category]/page.tsx`
+  - `frontend/src/app/[category]/[slug]/loading.tsx` (Deleted)
+- **Actions Taken**:
+  - Identified cause of inverted DOM order: `[category]/[slug]/loading.tsx` created a Suspense streaming boundary that emitted a loading skeleton first, followed by `<footer>`, while deferring the actual page `<article>` and `<h1>` into a streamed payload after the footer.
+  - Removed `[category]/[slug]/loading.tsx` so the synchronous in-memory service content renders immediately in the main content flow.
+  - Replaced nested `<main>` wrappers inside `[category]/page.tsx` and `[category]/[slug]/page.tsx` with standard container `<div>` tags, ensuring exactly one semantic `<main>` tag exists per page (managed by `GlobalLayoutWrapper.tsx`).
+- **Verification Commands Run**:
+  - Verified byte order across 5 sampled routes (`/search-result-cleanup/google-suppression-de-indexing`, `/`, `/services`, `/about`, `/content-removal/facebook-review-removal`):
+    - Header offset < Main offset < H1 offset < Footer offset.
+    - Exactly 1 `<main>` tag per page.
+- **Open Questions**: None.
