@@ -119,6 +119,26 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-10: Thin service page inventory and CTA text
+- **Status**: Completed (Inventory Generated & Awaiting Content Approval Gate)
+- **Files Created**:
+  - `seo/service-pages.csv`
+  - `seo/thin-pages.md`
+  - `scripts/audit-service-pages.js`
+- **Actions Taken**:
+  - Built and fetched all 55 service subroutes via `scripts/audit-service-pages.js`.
+  - Counted visible body words (excluding nav and footer), audited presence of FAQs and structured process steps.
+  - Verified that all template-generated "Remove My [Service]" CTA strings were previously replaced with tailored, grammatical CTAs across all 50 services.
+  - Compiled detailed report in `seo/thin-pages.md` highlighting that service pages currently average ~93 body words and require client-provided service facts (platform rules, timelines, documentation needs) before expanding copy.
+- **Verification Commands Run**:
+  - `Select-String -Pattern "Remove My " frontend/src` -> 0 occurrences.
+  - `seo/service-pages.csv` row count: 55 service routes.
+  - `seo/thin-pages.md` generated with full table breakdown.
+- **Open Questions / Approval Gate**:
+  - Awaiting human client-provided copy/facts for thin service pages before placing expanded text.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:
