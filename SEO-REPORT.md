@@ -41,3 +41,24 @@ Repository: `C:\Users\Ash\Repukeel`
   - `(Invoke-WebRequest -Uri "http://localhost:3000/" -UseBasicParsing).Content | Select-String -Pattern '<meta name="viewport"[^>]*>'`
     - **Result**: `<meta name="viewport" content="width=device-width, initial-scale=1"/>` (no `maximum-scale` or `user-scalable=no`).
 - **Open Questions**: None.
+
+---
+
+## Task SEO-07: Fix scanner page defects
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/scanner/page.tsx`
+  - `frontend/src/app/scanner/layout.tsx`
+- **Actions Taken**:
+  - Corrected Terms of Service link target from `/privacy-policy` to `/terms-conditions`.
+  - Created `frontend/src/app/scanner/layout.tsx` declaring canonical `/scanner` and dedicated metadata description matching tool behavior:
+    `"Build focused search queries to investigate potential brand, text, and image misuse online with the RepuKeel AI Scanner."`
+  - Harmonized brand naming from "AI Piracy Scanner" to "AI Scanner" to match H1.
+  - Added crawlable explanatory clarification under H1:
+    `"This tool builds targeted search queries to assist your online investigation. It does not automatically take down or remove content from external websites."`
+- **Verification Commands Run**:
+  - `$html = (Invoke-WebRequest -Uri "http://localhost:3000/scanner" -UseBasicParsing).Content`
+  - Verified Terms link: `href="/terms-conditions"`
+  - Verified Description: `<meta name="description" content="Build focused search queries to investigate potential brand, text, and image misuse online with the RepuKeel AI Scanner.">`
+  - Verified H1: `AI Scanner`
+- **Open Questions**: None.

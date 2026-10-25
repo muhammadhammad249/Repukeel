@@ -123,6 +123,9 @@ export default function ScannerPage() {
           <p className="text-[16px] max-w-2xl mx-auto" style={{ color: '#9aa4c0' }}>
             Build focused Google searches to investigate possible brand, content, marketplace, social-media, and image misuse.
           </p>
+          <p className="text-[14px] max-w-2xl mx-auto mt-3 leading-relaxed text-gray-400">
+            This tool builds targeted search queries to assist your online investigation. It does not automatically take down or remove content from external websites.
+          </p>
         </div>
       </section>
 
@@ -406,7 +409,7 @@ export default function ScannerPage() {
         
         {/* Info text */}
         <p className="text-center text-[13px] text-[var(--text-body)] mt-8 max-w-xl mx-auto">
-          By using our AI Piracy Scanner, you agree to our <Link href="/privacy-policy" className="text-[var(--gold)] hover:underline">Terms of Service</Link>. Scans typically complete within 1–2 minutes.
+          By using our AI Scanner, you agree to our <Link href="/terms-conditions" className="text-[var(--gold)] hover:underline">Terms of Service</Link>.
         </p>
       </section>
 
