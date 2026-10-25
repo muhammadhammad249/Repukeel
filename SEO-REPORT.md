@@ -335,13 +335,18 @@ Repository: `C:\Users\Ash\Repukeel`
 ---
 
 ## Task SEO-17: Free-analysis page index decision
-- **Status**: Pending Human Decision
-- **File Involved**: `frontend/src/app/request-free-analysis/layout.tsx`
-- **Context**:
-  - `/request-free-analysis` is a utility lead intake page with form dropdowns and little body prose.
-  - Choice A (Recommended): Set `robots: { index: false, follow: true }` to avoid potential "thin content" indexing penalties by Google, keeping the form fully accessible and operational for visitors.
-  - Choice B: Keep indexable with standard `robots: { index: true, follow: true }` and provide dedicated explanatory copy later.
-- **Action**: Decision modal submitted to user.
+- **Status**: Completed (PASS)
+- **File Changed**:
+  - `frontend/src/app/request-free-analysis/layout.tsx`
+- **Actions Taken**:
+  - User selected Option 1: Configured `robots: { index: false, follow: true }` in `request-free-analysis/layout.tsx`.
+  - Prevented search engine crawlers from indexing this form-only utility page as thin content, while allowing crawlers to follow links and keeping the form fully functional for direct user visits.
+- **Verification Commands Run**:
+  - `(Invoke-WebRequest -Uri "http://localhost:3000/request-free-analysis" -UseBasicParsing).Content | Select-String -Pattern '<meta name="robots"[^>]*>'`:
+    - Result: `<meta name="robots" content="noindex, follow"/>`.
+  - Confirmed `/request-free-analysis` is omitted from `sitemap.xml`.
+  - `npm run lint` & `npm run build` in `frontend` -> 0 errors, build passed.
+- **Open Questions**: None.
 
 ---
 
@@ -365,4 +370,4 @@ Repository: `C:\Users\Ash\Repukeel`
 | **SEO-14** | Performance baseline | Normal | **PASS** | `978a730` (Lighthouse SEO 100/100, Access 90+) |
 | **SEO-15** | Per-page meta tags | Low | **PASS** | `20c00c3` (No keywords, dynamic OG/Twitter) |
 | **SEO-16** | Emoji in link text | Low | **PASS** | `8d0d254` (`aria-hidden` wrappers) |
-| **SEO-17** | Free-analysis index decision | Low | **Decision Pending**| Choice presented to user |
+| **SEO-17** | Free-analysis index decision | Low | **PASS** | `robots: { index: false, follow: true }` |
