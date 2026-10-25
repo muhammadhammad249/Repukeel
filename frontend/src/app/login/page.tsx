@@ -87,7 +87,7 @@ function LoginContent() {
           <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
-              alt="Repukeel"
+              alt="RepuKeel"
               width={140}
               height={40}
               className="h-[40px] w-auto object-contain"
@@ -205,12 +205,12 @@ function LoginContent() {
           <div className="mb-12 relative flex items-center justify-center">
             <img
               src="/login-logo-outline.png"
-              alt="Repukeel Shield"
+              alt="RepuKeel Shield"
               className="w-[130px] h-auto object-contain"
               style={{ mixBlendMode: 'screen' }}
             />
           </div>
-          <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">Repukeel Portal</h2>
+          <h2 className="text-[36px] font-[900] mb-5 tracking-tight text-white">RepuKeel Portal</h2>
           <p className="text-[14px] text-blue-100/50 mt-6">
             Need help?{' '}
             <a href="mailto:Legal@Repukeel.com" className="text-[var(--gold)] font-[600] hover:underline">Legal@Repukeel.com</a>

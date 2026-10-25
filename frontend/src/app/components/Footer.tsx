@@ -17,7 +17,7 @@ export default function Footer() {
             <Link href="/" className="inline-flex items-center">
               <Image
                 src="/logo.png"
-                alt="Repukeel Logo"
+                alt="RepuKeel Logo"
                 width={180}
                 height={52}
                 className="h-[52px] w-auto object-contain"

@@ -310,7 +310,7 @@ export default function HomeClient() {
           <div className="flex flex-col">
             <h2 className="text-4xl md:text-[42px] font-[900] mb-6 leading-[1.1] text-[#0f172a] tracking-tight">
               Why Thousands Choose<br/>
-              <span className="text-[var(--gold)]">Repukeel</span>
+              <span className="text-[var(--gold)]">RepuKeel</span>
             </h2>
             <p className="text-[16px] text-gray-500 mb-10 max-w-[500px] leading-relaxed">
               We are not a generic legal service or a slow law firm. We are a specialized team that moves fast, knows every platform inside out, and does not stop until the problem is fully resolved.
@@ -364,8 +364,8 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { name: 'Sarah M.', role: 'Content Creator', text: 'Absolutely incredible service. They took down stolen copies of my course videos within 24 hours. Highly recommended!' },
-              { name: 'Ahmed K.', role: 'Business Owner', text: 'Repukeel saved our brand from a fake review attack. Their team acted immediately and restored our reputation.' },
-              { name: 'Jessica T.', role: 'Online Educator', text: 'I was overwhelmed by copied content across multiple platforms. Repukeel handled everything seamlessly.' },
+              { name: 'Ahmed K.', role: 'Business Owner', text: 'RepuKeel saved our brand from a fake review attack. Their team acted immediately and restored our reputation.' },
+              { name: 'Jessica T.', role: 'Online Educator', text: 'I was overwhelmed by copied content across multiple platforms. RepuKeel handled everything seamlessly.' },
               { name: 'Mark D.', role: 'Brand Manager', text: 'Professional, confidential, and incredibly effective. The best investment we made for our digital security.' }
             ].map((t, i) => (
               <div key={i} className="bg-[#111a36] border border-[var(--border-navy)] rounded-2xl p-8 flex flex-col">

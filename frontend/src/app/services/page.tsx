@@ -157,9 +157,9 @@ export default function ServicesPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "Sarah O'Connor", role: "Content Creator, Marketing Firm", text: "The Repukeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service." },
+              { name: "Sarah O'Connor", role: "Content Creator, Marketing Firm", text: "The RepuKeel team took down over 50 stolen images from various sites in just two days. Absolutely life-saving service." },
               { name: "John Doe", role: "Photography", text: "Their monitoring system caught unauthorized use of my portfolio before it could spread. Highly responsive team." },
-              { name: "Elena R.", role: "E-Commerce Director", text: "We struggled with fake reviews for months. Repukeel cleaned up our Trustpilot and Google profiles permanently." }
+              { name: "Elena R.", role: "E-Commerce Director", text: "We struggled with fake reviews for months. RepuKeel cleaned up our Trustpilot and Google profiles permanently." }
             ].map((t, i) => (
               <div key={i} className="bg-[var(--bg-soft)] border border-[var(--border-light)] rounded-2xl p-8 flex flex-col">
                 <div className="flex gap-1 text-[var(--gold)] mb-6 text-lg">★★★★★</div>
@@ -257,7 +257,7 @@ export default function ServicesPage() {
       <BlueCtaBand 
         headingWhite="Secure Your"
         headingGold="Digital Assets"
-        subtext="Join hundreds of creators and brands who trust Repukeel with their reputation."
+        subtext="Join hundreds of creators and brands who trust RepuKeel with their reputation."
         primaryBtnText="Contact Sales"
         primaryBtnLink="/contact"
         secondaryBtnText="Request a Demo"

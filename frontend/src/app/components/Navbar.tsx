@@ -83,7 +83,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center" onClick={(e) => handleNavClick(e, '/')}>
-            <Image src="/logo.png" alt="Repukeel Logo" width={180} height={52} className="object-contain w-auto h-[40px] md:h-[48px]" />
+            <Image src="/logo.png" alt="RepuKeel Logo" width={180} height={52} className="object-contain w-auto h-[40px] md:h-[48px]" />
           </Link>
 
           {/* Desktop Nav */}

@@ -84,7 +84,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "RepuKeel",
-              "alternateName": ["Repukeel", "Repukeel Reputation"],
+              "alternateName": ["RepuKeel", "RepuKeel Reputation"],
               "url": "https://repukeel.com",
               "logo": "https://repukeel.com/icon.jpg",
               "description": "RepuKeel specializes in online reputation management, DMCA takedowns, and global brand protection.",

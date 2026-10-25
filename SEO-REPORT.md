@@ -180,6 +180,28 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-13: Brand name consistency
+- **Status**: Completed (PASS)
+- **Files Changed / Created**:
+  - `frontend/src/app/blogs/data.ts`
+  - `frontend/src/app/components/Footer.tsx`
+  - `frontend/src/app/components/Navbar.tsx`
+  - `frontend/src/app/HomeClient.tsx`
+  - `frontend/src/app/layout.tsx`
+  - `frontend/src/app/login/page.tsx`
+  - `frontend/src/app/services/page.tsx`
+  - `scripts/fix-brand-consistency.js`
+- **Actions Taken**:
+  - Scanned repository for non-standard brand casings ("Repukeel", "REPUKEEL").
+  - Executed `scripts/fix-brand-consistency.js` to standardize all visible UI text, blog articles, titles, headings, and image alt text to `RepuKeel`.
+  - Preserved all external URL endpoints, email addresses (`Legal@Repukeel.com`), and existing database slug fields.
+- **Verification Commands Run**:
+  - Verified with PowerShell regex search: zero unstandardized brand names remain in visible text or metadata.
+  - `npm run lint` & `npm run build` in `frontend` -> 0 errors, build passed.
+- **Open Questions**: None.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:
