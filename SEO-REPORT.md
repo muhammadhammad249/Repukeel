@@ -97,6 +97,28 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-05: Inventory trust claims
+- **Status**: Completed Inventory (Approval Gate & Awaiting H-03 Human Answers)
+- **Files Created**:
+  - `seo/claims-inventory.csv`
+  - `scripts/inventory-claims.js`
+- **Actions Taken**:
+  - Scanned all page components, service datasets, and layouts for unverified trust metrics, review ratings, claims, and placeholder testimonials.
+  - Generated comprehensive inventory `seo/claims-inventory.csv` with columns: `File`, `Line`, `Exact Text`, `Page URL / Context`, `Issue / Conflict`, `Needs Human Answer`.
+  - Identified key conflicts:
+    1. Turnaround time: Homepage says "24hrs Avg Removal Time" vs FAQ stating 24–72 hours.
+    2. Client volume: Homepage and Services claim "2K+ Clients Protected" vs Services footer stating "hundreds of creators and brands".
+    3. Success metrics: Homepage and Services show "99% Success Rate", "99% Client Satisfaction", and "98% Success Rate" on Protection page with no verifiable audit source.
+    4. Review ratings: "4.9★" and "4.96 out of 5 / 25 Reviews" displayed without linking to verified Google/Trustpilot profile.
+    5. Placeholder testimonial: `frontend/src/app/services/page.tsx` line 161 attributes quote to `"John Doe, Photography"`.
+    6. Guarantee: Homepage badges claim "No Win, No Fee" while FAQ explains custom fee quote/results-driven billing.
+- **Verification Commands Run**:
+  - `node scripts/inventory-claims.js` -> extracted all 20 active marketing claims into `seo/claims-inventory.csv`.
+- **Approval Gate & Human Answers (H-03)**:
+  - We do not edit any business metrics or testimonials without explicit user input. Once you provide the answers or approved figures, we will harmonize all figures sitewide.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:
