@@ -164,6 +164,22 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-12: Structured data audit
+- **Status**: Completed Audit (Inventory Generated & Awaiting Approval Gate)
+- **Files Created**:
+  - `seo/schema-inventory.md`
+- **Actions Taken**:
+  - Searched codebase for existing structured data markup.
+  - Audited sitewide `Organization` schema in `frontend/src/app/layout.tsx`. Verified valid properties: `name`, `url`, `logo`, `contactPoint`, `sameAs`.
+  - Confirmed zero instances of unverified `AggregateRating` or `Review` markup.
+  - Formulated schema proposal in `seo/schema-inventory.md`: adding `WebSite` schema on homepage, `FAQPage` schema on `/services`, and `BlogPosting` schema on dynamic blog pages.
+- **Verification Commands Run**:
+  - Extracted JSON-LD from `http://localhost:3000/`: valid `Organization` schema confirmed.
+- **Approval Gate**:
+  - Awaiting human review of proposed schema additions before editing page code.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:
