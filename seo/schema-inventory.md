@@ -26,7 +26,7 @@ A global `@type: Organization` schema is rendered in `<head>` sitewide:
   "sameAs": [
     "https://www.facebook.com/RepuKeel/",
     "https://x.com/Repukeel",
-    "https://www.linkedin.com/in/repu-keel-118157438",
+    "https://www.linkedin.com/company/repukeel",
     "https://www.instagram.com/repukeel/"
   ]
 }

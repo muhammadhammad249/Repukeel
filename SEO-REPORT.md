@@ -165,16 +165,19 @@ Repository: `C:\Users\Ash\Repukeel`
 ---
 
 ## Task SEO-12: Structured data audit
-- **Status**: Completed Audit (Inventory Generated & Awaiting Approval Gate)
-- **Files Created**:
+- **Status**: Completed Audit & Updated Organization Schema (H-04 Linked)
+- **Files Created / Modified**:
   - `seo/schema-inventory.md`
+  - `frontend/src/app/layout.tsx`
+  - `frontend/src/app/components/Footer.tsx`
 - **Actions Taken**:
   - Searched codebase for existing structured data markup.
   - Audited sitewide `Organization` schema in `frontend/src/app/layout.tsx`. Verified valid properties: `name`, `url`, `logo`, `contactPoint`, `sameAs`.
+  - Updated LinkedIn profile link across footer and `Organization` schema `sameAs` array from personal profile to official company page: `https://www.linkedin.com/company/repukeel` (resolving H-04).
   - Confirmed zero instances of unverified `AggregateRating` or `Review` markup.
   - Formulated schema proposal in `seo/schema-inventory.md`: adding `WebSite` schema on homepage, `FAQPage` schema on `/services`, and `BlogPosting` schema on dynamic blog pages.
 - **Verification Commands Run**:
-  - Extracted JSON-LD from `http://localhost:3000/`: valid `Organization` schema confirmed.
+  - Extracted JSON-LD from `http://localhost:3000/`: valid `Organization` schema with company LinkedIn profile confirmed.
 - **Approval Gate**:
   - Awaiting human review of proposed schema additions before editing page code.
 
