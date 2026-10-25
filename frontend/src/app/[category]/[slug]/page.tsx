@@ -4,6 +4,7 @@ import RemoveRequestButton from "@/app/components/RemoveRequestButton";
 import ServiceIcon from "@/app/components/ServiceIcon";
 import { notFound } from "next/navigation";
 import { Metadata } from 'next';
+import { canonicalFor } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }): Promise<Metadata> {
   const { category: categorySlug, slug } = await params;
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title: `${service.name} | RepuKeel`,
     description: service.intro,
     alternates: {
-      canonical: `/${category.slug}/${service.slug}`,
+      canonical: canonicalFor(`/${category.slug}/${service.slug}`),
     },
   };
 }

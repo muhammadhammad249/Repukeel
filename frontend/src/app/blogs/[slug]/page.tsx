@@ -1,6 +1,23 @@
 /* eslint-disable */
 import { blogs } from "../data";
 import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSlug = decodeURIComponent(resolvedParams.slug);
+  const blog = blogs.find((b) => b.slug === decodedSlug);
+  if (!blog) return {};
+
+  return {
+    title: blog.title,
+    description: blog.meta || blog.title,
+    alternates: {
+      canonical: canonicalFor(`/blogs/${blog.slug}`),
+    },
+  };
+}
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;

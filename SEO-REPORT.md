@@ -51,6 +51,52 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-03: Resolve canonical conflicts and standardize canonical helper
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/lib/seo.ts`
+  - `frontend/src/app/layout.tsx`
+  - `frontend/src/app/about/page.tsx`
+  - `frontend/src/app/contact/layout.tsx`
+  - `frontend/src/app/pricing/layout.tsx`
+  - `frontend/src/app/privacy-policy/page.tsx`
+  - `frontend/src/app/terms-conditions/page.tsx`
+  - `frontend/src/app/clients/layout.tsx`
+  - `frontend/src/app/case-studies/layout.tsx`
+  - `frontend/src/app/faq/layout.tsx`
+  - `frontend/src/app/protection/layout.tsx`
+  - `frontend/src/app/request-free-analysis/layout.tsx`
+  - `frontend/src/app/blogs/layout.tsx`
+  - `frontend/src/app/blogs/[slug]/page.tsx`
+  - `frontend/src/app/[category]/page.tsx`
+  - `frontend/src/app/[category]/[slug]/page.tsx`
+  - `frontend/src/app/services/layout.tsx`
+  - `frontend/src/app/scanner/layout.tsx`
+  - `frontend/src/app/page.tsx`
+  - `scripts/check-canonicals.js`
+- **Actions Taken**:
+  - Created centralized SEO helper `frontend/src/lib/seo.ts` providing `SITE_URL` (`https://repukeel.com`) and `canonicalFor(path)` to guarantee normalized canonical URLs without trailing slashes.
+  - Removed broken alternate language declaration `alternates.languages: { 'en-US': 'https://repukeel.com/en-US' }` from `layout.tsx` that previously emitted a 404 `<link rel="alternate">` on every page across the website.
+  - Added self-referencing canonical declarations and dedicated metadata layouts to all public routes that were missing them (`/about`, `/contact`, `/pricing`, `/privacy-policy`, `/terms-conditions`, `/clients`, `/case-studies`, `/faq`, `/protection`, `/request-free-analysis`, `/blogs`, and all dynamic blog posts `/blogs/[slug]`).
+- **Verification Commands Run**:
+  - `node scripts/check-canonicals.js` -> verified canonical tags on all core routes.
+  - Verified no broken alternates exist in raw HTML output.
+  - `npm run lint` & `npm run build` in `frontend` -> 0 errors, build passed.
+- **Needs Human Input (H-01)**:
+  - If you have the exact 4 Search Console URLs from the "Duplicate, Google chose different canonical than user" report, save them to `seo/canonical-urls.txt`. Once provided, we will verify Google's chosen canonical vs declared canonical for those 4 specific historical URLs.
+
+---
+
+## Task SEO-04: Fix redirect errors
+- **Status**: Awaiting Human Input (H-01)
+- **Actions Taken**:
+  - Audited `next.config.mjs` and server routes for redirect loops. No circular or multi-hop redirect chains exist in codebase.
+  - Checked for `seo/redirect-urls.txt`.
+- **Needs Human Input (H-01)**:
+  - Please provide the 3 URLs reported with "Redirect error" in Google Search Console as `seo/redirect-urls.txt` so we can inspect and map their single 301 destinations.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:

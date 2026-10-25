@@ -2,10 +2,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'About Us | Reputation Experts',
   description: 'Learn about RepuKeel, the premier online reputation management and brand protection agency. Discover our values, philosophy, and process.',
+  alternates: {
+    canonical: canonicalFor('/about'),
+  },
 };
 
 export default function AboutPage() {

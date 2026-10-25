@@ -1,5 +1,15 @@
 /* eslint-disable */
 import Link from 'next/link';
+import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions | RepuKeel',
+  description: 'Terms and Conditions for RepuKeel reputation management and digital brand protection services.',
+  alternates: {
+    canonical: canonicalFor('/terms-conditions'),
+  },
+};
 
 const sections = [
   { id: 1, title: 'Acceptance and Scope' },

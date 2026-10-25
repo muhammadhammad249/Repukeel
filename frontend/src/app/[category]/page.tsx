@@ -3,6 +3,7 @@ import Link from "next/link";
 import { categories } from "@/data/services";
 import { notFound } from "next/navigation";
 import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category: categorySlug } = await params;
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title: `${category.name} | RepuKeel`,
     description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
     alternates: {
-      canonical: `/${category.slug}`,
+      canonical: canonicalFor(`/${category.slug}`),
     },
   };
 }

@@ -1,4 +1,15 @@
 /* eslint-disable */
+import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | RepuKeel',
+  description: 'RepuKeel Privacy Policy. Learn how we handle, protect, and process client information and case data.',
+  alternates: {
+    canonical: canonicalFor('/privacy-policy'),
+  },
+};
+
 export default function PrivacyPolicyPage() {
   const sections = ["Information We Collect","How We Use Your Information","Information Sharing & Disclosure","Data Security","Cookies & Tracking","Your Rights","Third-Party Links","Children's Privacy","Changes to This Policy","Contact"];
   return (
