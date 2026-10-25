@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!category || !service) return {};
 
   return {
-    title: `${service.name} | RepuKeel`,
+    title: service.name,
     description: service.intro,
     alternates: {
       canonical: canonicalFor(`/${category.slug}/${service.slug}`),

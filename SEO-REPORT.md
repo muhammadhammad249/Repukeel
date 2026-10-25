@@ -202,6 +202,27 @@ Repository: `C:\Users\Ash\Repukeel`
 
 ---
 
+## Task SEO-15: Per-page meta tags
+- **Status**: Completed (PASS)
+- **Files Changed**:
+  - `frontend/src/app/layout.tsx`
+  - `frontend/src/app/[category]/[slug]/page.tsx`
+  - `frontend/src/app/[category]/page.tsx`
+  - `frontend/src/app/services/layout.tsx`
+- **Actions Taken**:
+  - Removed obsolete global `keywords` array from `layout.tsx` (eliminating redundant sitewide meta keywords).
+  - Removed static hardcoded `title` and `description` from root `openGraph` and `twitter` objects in `layout.tsx`. Next.js App Router now automatically inherits each page's specific `<title>` and `<meta name="description">` for Open Graph and Twitter cards.
+  - Retained `https://repukeel.com/icon.jpg` as the universal fallback social preview image.
+  - Removed duplicated `| RepuKeel` suffixes from child route titles so that the root layout template `%s | RepuKeel` outputs clean, single-branded `<title>` tags across all services and categories.
+- **Verification Commands Run**:
+  - Verified on 5 sampled pages (`/`, `/services`, `/about`, `/search-result-cleanup/google-suppression-de-indexing`, `/blogs/online-reputation-management-...`):
+    - `Keywords present`: `False` (0 instances sitewide).
+    - `og:title` and `twitter:title` exactly match each page's own `<title>`.
+  - `npm run lint` & `npm run build` in `frontend` -> 0 errors, build passed.
+- **Open Questions**: None.
+
+---
+
 ## Task SEO-06: Allow pinch-zoom
 - **Status**: Completed (PASS)
 - **Files Changed**:

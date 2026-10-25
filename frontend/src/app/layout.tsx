@@ -13,7 +13,6 @@ export const metadata: Metadata = {
     template: "%s | RepuKeel"
   },
   description: "Fast, effective reputation and DMCA takedown service. Protecting your intellectual property from piracy and unauthorized use across all platforms globally.",
-  keywords: ["Reputation Management", "DMCA Takedown", "Brand Protection", "Online Privacy", "Remove Defamation", "Anti-Piracy", "RepuKeel", "Content Removal", "Online Reputation", "Crisis Management", "Google Search Removal"],
   authors: [{ name: "RepuKeel Team" }],
   creator: "RepuKeel",
   publisher: "RepuKeel",
@@ -37,10 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://repukeel.com",
     siteName: "RepuKeel",
-    title: "RepuKeel | Premium Reputation & Brand Protection",
-    description: "Defend your brand with RepuKeel. We remove harmful online content, repair search results, and protect your reputation globally.",
     images: [
       {
         url: "/icon.jpg",
@@ -52,8 +48,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RepuKeel | Premium Reputation & Brand Protection",
-    description: "Defend your brand with RepuKeel. We remove harmful online content and protect your reputation globally.",
     images: ["/icon.jpg"],
   },
 };

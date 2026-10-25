@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!category) return {};
 
   return {
-    title: `${category.name} | RepuKeel`,
+    title: category.name,
     description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
     alternates: {
       canonical: canonicalFor(`/${category.slug}`),
