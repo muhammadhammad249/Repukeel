@@ -1,7 +1,6 @@
 /* eslint-disable */
 'use client';
 import React, { useState } from 'react';
-import Link from 'next/link';
 import BlueCtaBand from '../components/BlueCtaBand';
 import ServicesMenuLayout from '../components/ServicesMenuLayout';
 import { categories } from '@/data/services';
@@ -18,35 +17,6 @@ export default function ServicesPage() {
   return (
     <div className="flex flex-col min-h-screen">
       
-      {/* ================= HERO ================= */}
-      <section className="relative w-full bg-gradient-to-br from-white to-[#f0f4f8] pt-12 pb-14 overflow-hidden">
-        <div className="container relative z-10 max-w-3xl">
-          <div className="pill-badge mb-6">
-            Online Reputation Management Services
-          </div>
-          <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-black">
-            Remove Harmful Content.<br/>
-            <span className="text-[var(--gold)]">Restore Your Reputation.</span>
-          </h1>
-          <p className="text-[17px] text-black mb-8 max-w-xl">
-            RepuKeel helps individuals, creators and businesses remove negative reviews, damaging articles and stolen content, and protect their brand online.
-          </p>
-          
-          <div className="flex flex-wrap gap-3 mb-8">
-            {['Free reputation audit', 'Confidential', 'Fast response'].map((pill, i) => (
-              <div key={i} className="pill-badge">
-                <span className="text-[var(--green)] font-[900]">✓</span> {pill}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a href="#all-services" className="btn btn-gold-solid">Explore Services &rarr;</a>
-            <Link href="/contact" className="btn btn-outline-gold">Contact Us</Link>
-          </div>
-        </div>
-      </section>
-
       {/* ================= INTERACTIVE SERVICES LAYOUT ================= */}
       <section className="w-full bg-[#f4f7fb] py-16" id="all-services">
         <div className="container max-w-[1400px]">
