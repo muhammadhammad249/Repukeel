@@ -82,17 +82,17 @@ export default function Navbar() {
     <>
       {isNavigating && <div className="nav-progress-bar"></div>}
       <header className="sticky top-0 z-[1000] bg-white border-b border-[#eee] shadow-[0_8px_30px_rgba(0,0,0,0.4)] h-[68px] flex items-center justify-center">
-        <div className="w-full max-w-[1280px] px-[28px] flex items-center justify-between">
+        <div className="w-full max-w-[1280px] px-[28px] flex items-center justify-between gap-6">
           
           {/* Logo */}
-          <Link href="/" className="flex items-center" onClick={(e) => handleNavClick(e, '/')}>
+          <Link href="/" className="flex items-center shrink-0" onClick={(e) => handleNavClick(e, '/')}>
             <Image src="/logo.png" alt="RepuKeel Logo" width={180} height={52} className="object-contain w-auto h-[40px] md:h-[48px]" />
           </Link>
 
           {/* Desktop Nav */}
           {!['/login', '/signup', '/forgot-password', '/reset-password'].includes(pathname) && (
             <>
-              <nav className="hidden lg:flex items-center gap-6">
+              <nav className="hidden lg:flex items-center gap-4 xl:gap-5">
             {navLinks.map((link) => {
               const isActive = pathname === link.path;
               if (link.isPill) {
@@ -101,7 +101,7 @@ export default function Navbar() {
                     key={link.name} 
                     href={link.path}
                     onClick={(e) => handleNavClick(e, link.path)}
-                    className="flex items-center gap-1.5 bg-[var(--gold)] text-[var(--bg-navy)] rounded-full px-4 py-1.5 font-[700] text-[14px] hover:shadow-lg transition-shadow"
+                    className="flex items-center gap-1.5 bg-[var(--gold)] text-[var(--bg-navy)] rounded-full px-4 py-1.5 font-[700] text-[14px] hover:shadow-lg transition-shadow whitespace-nowrap shrink-0 h-10"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
                       <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z"/>
@@ -132,7 +132,7 @@ export default function Navbar() {
                     }}
                   >
                     {/* Trigger row: real link + chevron toggle */}
-                    <span className={`flex items-center gap-0.5 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
+                    <span className={`flex items-center gap-0.5 text-[14px] font-[500] transition-colors pb-1 border-b-2 whitespace-nowrap shrink-0 ${
                       isActive || isOpen
                         ? 'text-[var(--gold)] border-[var(--gold)]'
                         : 'text-black border-transparent hover:text-[var(--gold)]'
@@ -189,7 +189,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.path}
                   onClick={(e) => handleNavClick(e, link.path)}
-                  className={`text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
+                  className={`text-[14px] font-[500] transition-colors pb-1 border-b-2 whitespace-nowrap shrink-0 ${
                     isActive 
                       ? 'text-[var(--gold)] border-[var(--gold)]' 
                       : 'text-black border-transparent hover:text-[var(--gold)]'
@@ -202,10 +202,10 @@ export default function Navbar() {
           </nav>
 
           {/* Right Side Tools */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             <ThemeToggle />
             <AccountMenu 
-              loginClassName="text-[14px] font-[600] text-black hover:text-[var(--gold)] transition-colors cursor-pointer" 
+              loginClassName="text-[14px] font-[600] text-black hover:text-[var(--gold)] transition-colors cursor-pointer whitespace-nowrap" 
               menuClassName="" 
             />
           </div>
