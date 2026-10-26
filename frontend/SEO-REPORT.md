@@ -109,6 +109,19 @@ PASS
 - `npx tsc --noEmit`: 0 errors
 - `npm run build`: Exit 0, all static and dynamic pages generated
 
+## PART 2: Tools Registry and Hub (/tools)
+
+### 1. Implementation
+- Created `src/data/tools.ts` with `ToolItem` interface and registered `Search Query Builder` (`/tools/search-query-builder`, `enabled: true`).
+- Created `/tools` server component in `src/app/tools/page.tsx` with single H1 "Free Brand Protection Tools", intro sentence, canonical `https://repukeel.com/tools`, and responsive card grid for enabled tools matching RepuKeel theme.
+- Updated `src/app/sitemap.ts` to include `/tools` and all enabled tools dynamically from registry.
+- Confirmed single brand suffix: Root layout defines `template: "%s | RepuKeel"`; child metadata specifies `title: 'Free Brand Protection Tools'` without duplicating `| RepuKeel`.
+
+### 2. Verification Results
+- `npm run lint`: 0 errors, 0 warnings
+- `npx tsc --noEmit`: 0 errors
+- `npm run build`: Exit 0 (`○ /tools` static route built successfully)
+
 
 
 ---

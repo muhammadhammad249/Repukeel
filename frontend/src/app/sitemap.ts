@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { categories } from '@/data/services';
 import { blogs } from '@/app/blogs/data';
+import { tools } from '@/data/tools';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://repukeel.com';
@@ -17,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/clients',
     '/blogs',
     '/case-studies',
+    '/tools',
     '/privacy-policy',
     '/terms-conditions',
   ].map((route) => ({
@@ -51,5 +53,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...routes, ...dynamicRoutes, ...blogRoutes];
+  // Dynamic tool pages from registry
+  const toolRoutes = tools
+    .filter((tool) => tool.enabled)
+    .map((tool) => ({
+      url: `${baseUrl}${tool.href}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+  return [...routes, ...dynamicRoutes, ...blogRoutes, ...toolRoutes];
 }
