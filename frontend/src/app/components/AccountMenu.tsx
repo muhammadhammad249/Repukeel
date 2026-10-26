@@ -121,18 +121,41 @@ export default function AccountMenu({
       : authState.name.slice(0, 2)
   ).toUpperCase();
 
-  const isAdmin = (authState.role === 'admin' || authState.role === 'super_admin') && authState.role !== undefined;
+  const adminEmails = [
+    'repukeel@gmail.com',
+    'admin@repukeel.com',
+    (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '').toLowerCase().trim(),
+  ].filter(Boolean);
+
+  const isRoleAdmin = authState.role === 'admin' || authState.role === 'super_admin';
+  const isEmailAdmin = authState.email ? adminEmails.includes(authState.email.toLowerCase().trim()) : false;
+  const isAdmin = isRoleAdmin || isEmailAdmin;
 
   return (
-    <div className={`flex items-center gap-3 ${menuClassName}`}>
+    <div className={`flex items-center gap-2.5 ${menuClassName}`}>
       {/* Standalone Dashboard Button */}
       <button
         type="button"
-        className="hidden sm:flex items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm"
+        className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm`}
         onClick={() => navigateTo('/dashboard')}
       >
         Dashboard
       </button>
+
+      {/* Admin Portal Button — Shifted next behind the Dashboard button, strictly for admin */}
+      {isAdmin && (
+        <button
+          type="button"
+          className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center gap-1.5 justify-center px-3 py-2 bg-[#0c1940] text-white border border-white/20 hover:border-white/50 hover:bg-[#122353] text-[14px] font-[700] rounded-xl transition-all whitespace-nowrap shadow-sm`}
+          onClick={() => navigateTo('/dashboard/admin')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-4 h-4 shrink-0">
+            <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" />
+          </svg>
+          <span className="hidden xl:inline">Admin Portal</span>
+          <span className="xl:hidden">Admin</span>
+        </button>
+      )}
 
       {/* Avatar & Dropdown */}
       <div className="relative">
@@ -173,9 +196,9 @@ export default function AccountMenu({
                     type="button"
                     role="menuitem"
                     onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
-                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors sm:hidden"
                   >
-                    🛡️ Admin Panel
+                    🛡️ Admin Portal
                   </button>
                 )}
                 <button
