@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
@@ -10,14 +9,6 @@ function makeTransport() {
   const smtpPass = (process.env.SMTP_PASS || process.env.SMTP_APP_PASSWORD || "").replace(/\s+/g, "");
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT || 465);
-
-  // Diagnostic log — visible in Vercel Function Logs
-  console.log('[notify] SMTP config:', {
-    host: smtpHost,
-    port: smtpPort,
-    user: smtpUser ? smtpUser : 'MISSING',
-    pass: smtpPass ? '***SET***' : 'MISSING',
-  });
 
   if (!smtpPass) {
     throw new Error('SMTP_PASS or SMTP_APP_PASSWORD environment variable is not set. Please configure it in Vercel Environment Variables.');
@@ -168,10 +159,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ error: 'Unknown notification type' }, { status: 400 });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
     console.error('[notify API error]', err);
     // Don't block the user — return success even if email fails
     // so the main action (signup/case create) still proceeds
-    return NextResponse.json({ success: true, warning: 'Email delivery failed', detail: err?.message });
+    return NextResponse.json({ success: true, warning: 'Email delivery failed', detail: message });
   }
 }
