@@ -33,7 +33,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-bold mb-4">{i+1}. {s}</h2>
               <div className="text-slate-600 leading-relaxed space-y-3">
                 <p>This section covers our policy regarding {s.toLowerCase()}. We are committed to protecting your privacy and handling your data in an open and transparent manner.</p>
-                <p>If you have any questions about how we handle this aspect of your privacy, please contact our Data Protection Officer at privacy@protectip-master.com.</p>
+                <p>If you have any questions about how we handle this aspect of your privacy, please contact our Data Protection Officer at privacy@repukeel.com.</p>
               </div>
             </section>
           ))}

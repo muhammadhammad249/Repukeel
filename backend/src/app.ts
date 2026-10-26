@@ -8,6 +8,10 @@ import authRouter from "./routes/auth";
 const app = express();
 
 app.use(helmet());
+app.use((_req, res, next) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  next();
+});
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -32,6 +36,11 @@ app.use(express.urlencoded({ extended: true }));
 // Root health check
 app.get("/", (req, res) => {
   res.status(200).json({ status: "OK", message: "RepuKeel API is running 🚀" });
+});
+
+// Google Search Console verification
+app.get("/googlec3bb70e782680902.html", (req, res) => {
+  res.type("text/html").send("google-site-verification: googlec3bb70e782680902.html");
 });
 
 // API health check

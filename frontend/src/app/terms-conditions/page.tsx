@@ -1,13 +1,18 @@
 /* eslint-disable */
-import Link from 'next/link';
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions | RepuKeel',
-  description: 'Terms and Conditions for RepuKeel reputation management and digital brand protection services.',
+  title: 'Terms and Conditions',
+  description: 'Terms and conditions governing the use of RepuKeel reputation management, DMCA takedowns, and brand protection services.',
   alternates: {
     canonical: canonicalFor('/terms-conditions'),
+  },
+  openGraph: {
+    title: 'Terms and Conditions | RepuKeel',
+    description: 'Terms and conditions governing the use of RepuKeel reputation management, DMCA takedowns, and brand protection services.',
+    url: 'https://repukeel.com/terms-conditions',
   },
 };
 

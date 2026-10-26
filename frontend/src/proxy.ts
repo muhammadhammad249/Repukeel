@@ -2,6 +2,14 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
+  // Canonical host redirect: safely redirect repukeel.vercel.app and www.repukeel.com to https://repukeel.com
+  // Preserves query strings, avoids redirect loops, and does not affect preview deployments.
+  const host = request.headers.get('host')?.toLowerCase() || '';
+  if (host === 'repukeel.vercel.app' || host === 'www.repukeel.com') {
+    const destination = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://repukeel.com');
+    return NextResponse.redirect(destination, 308);
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });

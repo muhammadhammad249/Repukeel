@@ -6,6 +6,8 @@ import { connectDB } from "../src/config/db";
 let isConnected = false;
 
 const handler = async (req: IncomingMessage, res: ServerResponse) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+
   if (!isConnected) {
     try {
       await connectDB();
