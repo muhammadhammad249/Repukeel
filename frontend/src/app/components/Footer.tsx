@@ -41,6 +41,13 @@ export default function Footer() {
                     ),
                   },
                   {
+                    name: 'instagram',
+                    url: 'https://www.instagram.com/repukeel/',
+                    icon: (
+                      <path d="M17 2H7A5 5 0 0 0 2 7v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5z M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01" />
+                    ),
+                  },
+                  {
                     name: 'twitter',
                     url: 'https://x.com/Repukeel',
                     icon: (
@@ -52,13 +59,6 @@ export default function Footer() {
                     url: 'https://www.linkedin.com/company/repukeel',
                     icon: (
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" />
-                    ),
-                  },
-                  {
-                    name: 'instagram',
-                    url: 'https://www.instagram.com/repukeel/',
-                    icon: (
-                      <path d="M17 2H7A5 5 0 0 0 2 7v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5z M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01" />
                     ),
                   },
                 ].map((social) => (
