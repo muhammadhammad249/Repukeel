@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MetadataRoute } from 'next';
 import { categories } from '@/data/services';
 import { blogs } from '@/app/blogs/data';
@@ -19,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/clients',
     '/blogs',
     '/case-studies',
+    '/request-free-analysis',
     '/privacy-policy',
     '/terms-conditions',
   ].map((route) => ({

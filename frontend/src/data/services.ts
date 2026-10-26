@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { getServiceCta } from './serviceCtaConfig';
 
 export type SubService = {

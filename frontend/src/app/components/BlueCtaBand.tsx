@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Link from 'next/link';
 
 interface BlueCtaBandProps {

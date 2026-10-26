@@ -230,7 +230,7 @@ export default function HomeClient() {
                   4.96 <span className="text-[20px]">out 5</span>
                 </div>
                 <div className="text-[14px] text-gray-500 mb-4">25 Reviews</div>
-                <a href="#" className="bg-[#0f172a] text-white text-[12px] font-[700] px-4 py-1.5 rounded-md uppercase tracking-wide">REVIEWS</a>
+                <a href="https://www.google.com/search?q=RepuKeel+reviews" target="_blank" rel="noopener noreferrer" className="bg-[#0f172a] text-white text-[12px] font-[700] px-4 py-1.5 rounded-md uppercase tracking-wide">REVIEWS</a>
               </div>
 
               {/* Divider */}

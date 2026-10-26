@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Metadata } from 'next';
 import HomeClient from './HomeClient';
 import { canonicalFor } from '@/lib/seo';

@@ -11,16 +11,12 @@
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
-    "clsx": "^2.1.1",
-    "dotenv": "^18.0.4",
     "framer-motion": "^13.2.0",
-    "lucide-react": "^1.41.0",
     "next": "16.3.4",
     "nodemailer": "^10.0.10",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-hook-form": "^7.88.0",
-    "tailwind-merge": "^3.6.0"
+    "react-hook-form": "^7.88.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.20",

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import Link from 'next/link';
 import { categories } from '@/data/services';
