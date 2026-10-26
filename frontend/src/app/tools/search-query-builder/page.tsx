@@ -163,6 +163,23 @@ export default function SearchQueryBuilderPage() {
             </div>
           </div>
 
+          {/* Related Tool */}
+          <div className="pt-4 border-t border-gray-100">
+            <h2 className="text-base font-bold text-[#0a192f] mb-3">
+              Related Tool
+            </h2>
+            <p className="text-sm text-gray-600">
+              Looking to search by image instead? Use the{' '}
+              <Link
+                href="/tools/reverse-image-search"
+                className="font-semibold text-[#0c1940] hover:text-[#d4af37] underline underline-offset-2"
+              >
+                Reverse Image Launcher
+              </Link>
+              .
+            </p>
+          </div>
+
           {/* Related Services Links */}
           <div className="pt-4 border-t border-gray-100">
             <h2 className="text-base font-bold text-[#0a192f] mb-3">

@@ -14,4 +14,11 @@ export const tools: ToolItem[] = [
     href: '/tools/search-query-builder',
     enabled: true,
   },
+  {
+    slug: 'reverse-image-search',
+    title: 'Reverse Image Launcher',
+    description: 'Paste an image link and open it in Google Lens, TinEye, Bing Visual Search and Yandex Images.',
+    href: '/tools/reverse-image-search',
+    enabled: true,
+  },
 ];
