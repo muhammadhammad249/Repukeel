@@ -6,7 +6,7 @@ import ImageLauncher from './ImageLauncher';
 
 export const metadata: Metadata = {
   title: 'Reverse Image Search Launcher',
-  description: 'Paste an image link to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser.',
+  description: 'Paste an image link or upload a file from your device to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser.',
   alternates: {
     canonical: canonicalFor('/tools/reverse-image-search'),
   },
@@ -18,7 +18,7 @@ export default function ReverseImageSearchPage() {
     '@type': 'WebApplication',
     name: 'Reverse Image Search Launcher',
     url: 'https://repukeel.com/tools/reverse-image-search',
-    description: 'Paste an image link to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser.',
+    description: 'Paste an image link or upload a file from your device to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser.',
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any',
     offers: {
@@ -34,12 +34,16 @@ export default function ReverseImageSearchPage() {
       a: 'It may not be indexed yet, the host might block search engine crawlers via robots.txt, or the image was posted inside a private group/account.',
     },
     {
-      q: 'Are the images I search stored or shared by RepuKeel?',
-      a: 'No. All links are opened directly in your browser. RepuKeel’s servers never see, receive or store your image URLs.',
+      q: 'Are the images I search or upload stored or shared by RepuKeel?',
+      a: 'No. All links and file uploads are processed directly in your browser. When submitting an image file, the browser sends it straight to the search engine you selected. RepuKeel’s servers never see, receive, or store your image URLs or uploaded files.',
     },
     {
       q: 'Which search engine is best for reverse image search?',
       a: 'Google Lens is strong on products and landmarks; Yandex often finds exact duplicates and face matches; TinEye tracks where an image first appeared; Bing Visual Search is strong on merchandise. Using more than one engine gives the most complete picture.',
+    },
+    {
+      q: 'Can I use this tool to look up or identify people?',
+      a: 'No. This tool is designed for brand protection, verifying unauthorized use of your own creative assets, and copyright monitoring. It must not be used to identify, monitor, or track individuals.',
     },
   ];
 
@@ -67,7 +71,7 @@ export default function ReverseImageSearchPage() {
           </h1>
 
           <p className="text-[16px] sm:text-[17px] text-gray-600 leading-relaxed font-normal">
-            Reverse image search finds other places where an image, or a similar image, appears on the public web. It allows you to check whether photos, logos, graphics, or product visuals are being used elsewhere online.
+            Reverse image search finds other places where an image, or a similar image, appears on the public web. Paste a public image link or select a file directly from your device to check whether your photos, logos, graphics, or product visuals are appearing elsewhere online.
           </p>
         </div>
       </section>
@@ -93,9 +97,9 @@ export default function ReverseImageSearchPage() {
                   1
                 </span>
                 <div>
-                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Copy Image Address</h3>
+                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Choose Search Method</h3>
                   <p className="text-xs text-gray-600 leading-relaxed">
-                    Right-click on the image on its source page and choose &quot;Copy image address&quot;.
+                    Select &quot;Image link&quot; to paste an image URL, or &quot;Upload from device&quot; to choose a JPG, PNG, WebP, or GIF file.
                   </p>
                 </div>
               </li>
@@ -105,9 +109,9 @@ export default function ReverseImageSearchPage() {
                   2
                 </span>
                 <div>
-                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Paste the Link Above</h3>
+                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Review &amp; Preview</h3>
                   <p className="text-xs text-gray-600 leading-relaxed">
-                    Enter the full URL starting with http:// or https:// into the input box above.
+                    Confirm your URL is valid or review the local thumbnail preview before submitting.
                   </p>
                 </div>
               </li>
@@ -117,9 +121,9 @@ export default function ReverseImageSearchPage() {
                   3
                 </span>
                 <div>
-                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Open Search Engines</h3>
+                  <h3 className="font-bold text-sm text-[#0a192f] mb-1">Launch Search Engines</h3>
                   <p className="text-xs text-gray-600 leading-relaxed">
-                    Click an individual engine button or open all search engines in new tabs.
+                    Click an engine button to open search results directly in Google Lens, Yandex, Bing, or TinEye.
                   </p>
                 </div>
               </li>
@@ -144,10 +148,10 @@ export default function ReverseImageSearchPage() {
               Search Tips
             </h2>
             <ul className="space-y-2 text-xs text-gray-700 list-disc list-inside">
-              <li>Use direct image URLs (they usually end in .jpg, .jpeg, .png, .webp).</li>
+              <li>Use direct image URLs (ending in .jpg, .jpeg, .png, .webp) or upload image files up to 10 MB.</li>
               <li>Search engines may take days or weeks to index new images.</li>
               <li>Crop or watermarked variations might need a manual search on each engine.</li>
-              <li>To search an image saved on your computer or phone, use each engine’s upload option (links provided above).</li>
+              <li>For engines requiring interactive upload, use the direct upload page links provided.</li>
             </ul>
           </div>
 
@@ -157,7 +161,7 @@ export default function ReverseImageSearchPage() {
               Limits &amp; Scope
             </h2>
             <p className="text-xs text-gray-700 leading-relaxed">
-              Search engines index publicly reachable web pages only. Private accounts, direct messages, behind-login content and intra-app content (Telegram, WhatsApp, Discord) will NOT show up. This tool does not scan the web, does not detect stolen images, and does not store or process your images.
+              Search engines index publicly reachable web pages only. Private accounts, direct messages, behind-login content and intra-app content (Telegram, WhatsApp, Discord) will NOT show up. This tool does not scan the web, does not detect stolen images, and does not store or process your images. When using device upload, your file is sent from your browser directly to the search engine you choose; RepuKeel never receives, inspects, or stores your file.
             </p>
           </div>
 
