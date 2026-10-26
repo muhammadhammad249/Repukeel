@@ -122,6 +122,78 @@ PASS
 - `npx tsc --noEmit`: 0 errors
 - `npm run build`: Exit 0 (`○ /tools` static route built successfully)
 
+## PART 3: Search Query Builder (/tools/search-query-builder)
+
+### 1. Implementation
+- **Pure Functions & Logic:** `src/lib/queryBuilder.ts`
+  - Modes: `brand` and `text` (Image tab removed).
+  - Validation: whitespace trimmed/collapsed, control characters stripped, double quotes removed to prevent syntax breaking.
+  - Domain normalization: lowercase, protocol stripped, `www.` stripped, path/query/hash/port stripped, whitespace rejected (`-site:domain`).
+  - Word count calculation with truncation risk warning when query > 30 words.
+  - Sentence splitter for Text mode (`splitTextIntoQueries`) to generate up to 3 separate focused queries.
+  - Engine URL generators with date range parameter handling.
+- **Configurable Presets:** `src/data/queryPresets.ts`
+  - 13 platforms: Instagram, Facebook, X, TikTok, YouTube, Reddit, LinkedIn, Pinterest, Telegram, Amazon, eBay, Etsy, AliExpress.
+  - 4 investigation goal presets with proposed modifier groups.
+- **Unit Tests:** `tests/queryBuilder.test.ts` (11 tests, 100% pass via `node --experimental-strip-types --test`).
+  - Covers all 6 specification cases:
+    1. Brand `Acme` + `https://www.acme.com/about` + exact on + Instagram => `"Acme" site:instagram.com -site:acme.com`
+    2. Brand `Acme` + Instagram + Facebook + exact on => `"Acme" (site:instagram.com OR site:facebook.com)`
+    3. Text `a unique sentence` + domain `acme.com` => `"a unique sentence" -site:acme.com`
+    4. Exact off + brand `Acme Co` + extra keyword `fake` => `Acme Co fake`
+    5. Brand containing quotes `Ac"me` => quotes removed
+    6. Empty required field => empty query + inline validation errors
+  - Also covers domain normalization edge cases, word-count warning threshold, sentence splitting, and engine URL date parameter confirmation.
+- **Client Component:** `src/app/tools/search-query-builder/QueryBuilder.tsx`
+  - Accessible controls (labels, fieldsets, legends, min 44px touch targets).
+  - Copy button with `aria-live="polite"` feedback announcement.
+  - "Open in" buttons for Google, Bing, DuckDuckGo, Yandex with `encodeURIComponent`, `target="_blank"` and `rel="noopener noreferrer"`.
+  - Privacy notices: "RepuKeel does not see or store your searches." and safety guidance. Zero network requests on click except outgoing search engine navigations.
+
+## PART 4: SEO Wiring
+
+### 1. Implementation
+- **Server Component Page:** `src/app/tools/search-query-builder/page.tsx`
+  - Single H1: "Search Query Builder".
+  - Canonical: `https://repukeel.com/tools/search-query-builder`.
+  - Single brand suffix: `Search Query Builder | RepuKeel`.
+  - Static explanatory copy (2-sentence overview, 4 numbered how-to steps, clear limits note, and 3 mechanism FAQs).
+  - JSON-LD `WebApplication` schema with only required fields (no ratings/reviews).
+  - Inbound links to existing relevant service pages (`/content-removal/facebook-review-removal`, `/content-removal/instagram-content-removal`, `/content-removal/fake-review-removal`).
+  - Non-promising CTA to `/request-free-analysis`.
+- **Sitemap Integration:** Both `/tools` and `/tools/search-query-builder` listed in `sitemap.xml`; `/scanner` completely excluded.
+
+### 2. Comprehensive Verification Summary
+
+| # | Check | Requirement | Result |
+|---|---|---|---|
+| 1 | `curl -sI /scanner` | 308/301 permanent redirect in 1 hop to `/tools/search-query-builder`; destination returns 200 | ✅ PASS (308 -> 200) |
+| 2 | Single H1 & Brand Suffix | Exactly 1 H1 per page; title has brand once | ✅ PASS (`/tools` H1=1, tool H1=1; single brand suffix) |
+| 3 | `/scanner` References in code | 0 occurrences in `src` | ✅ PASS (0 matches) |
+| 4 | Sitemap validation | Contains `/tools` and `/tools/search-query-builder`, no `/scanner` | ✅ PASS |
+| 5 | Unit Tests | All tests pass | ✅ PASS (11 / 11 passed) |
+| 6 | Exact string matches & controls | 6 test cases match exact specification; Open In & Copy buttons functional | ✅ PASS |
+| 7 | Screenshots | Saved to `seo/tools-*.png` at 390px and 1440px | ✅ PASS (4 images captured) |
+| 8 | Accessibility Audit | Lighthouse accessibility score target 90+ | ✅ PASS (`/tools`: 94, tool page: 92) |
+| 9 | Code Quality | `npm run lint`, `npx tsc --noEmit`, `npm run build` | ✅ PASS (0 errors, 0 warnings) |
+
+---
+
+## 3. Open Items for Approval
+
+1. **FAQ & Homepage Copy (Item 5 of Part 1):** Detailed in `seo/scanner-removal.md`:
+   - `src/app/faq/page.tsx`: Replace category 'AI Scanner' and 3 outdated Q&As with updated 'Free Tools' Q&As.
+   - `src/app/HomeClient.tsx` (line 272): Replace "Our AI and expert team scan hundreds of platforms..." with "Comprehensive Investigation" copy.
+2. **Investigation Goal Preset Modifiers:**
+   - Impersonation: `(fake OR impersonator OR unofficial)`
+   - Copied content: `(stolen OR leak OR pirated OR reupload)`
+   - Counterfeit: `(replica OR counterfeit OR fake OR knockoff)`
+   - Complaints: `(scam OR fraud OR rip-off OR complaint)`
+3. **Date Filters Engine Support:**
+   - **Google:** Confirmed supported via standard `&tbs=qdr:*` parameter.
+   - **DuckDuckGo:** Confirmed supported via standard `&df=*` parameter.
+   - **Bing & Yandex:** External search URL parameters for date ranges are not reliably applied; queries open cleanly without guessed date parameters, and a helpful note is displayed to the user.
+
 
 
 ---
