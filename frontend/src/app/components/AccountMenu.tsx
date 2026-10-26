@@ -121,26 +121,52 @@ export default function AccountMenu({
       : authState.name.slice(0, 2)
   ).toUpperCase();
 
-  const isAdmin = (authState.role === 'admin' || authState.role === 'super_admin') && authState.role !== undefined;
+  const adminEmails = [
+    'repukeel@gmail.com',
+    'admin@repukeel.com',
+    (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '').toLowerCase().trim(),
+  ].filter(Boolean);
+
+  const isRoleAdmin = authState.role === 'admin' || authState.role === 'super_admin';
+  const isEmailAdmin = authState.email ? adminEmails.includes(authState.email.toLowerCase().trim()) : false;
+  const isAdmin = isRoleAdmin || isEmailAdmin;
 
   return (
-    <div className={`flex items-center gap-3 ${menuClassName}`}>
+    <div className={`flex items-center gap-2.5 ${menuClassName}`}>
+
       {/* Standalone Dashboard Button */}
       <button
         type="button"
-        className="hidden sm:flex items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm"
+        className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm`}
         onClick={() => navigateTo('/dashboard')}
       >
         Dashboard
       </button>
 
+      {/* Admin Portal Button — strictly for admin, uses existing role/email check */}
+      {isAdmin && (
+        <button
+          type="button"
+          className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center gap-1.5 justify-center px-3 py-2 bg-[#0c1940] text-white border border-white/20 hover:border-white/50 hover:bg-[#122353] text-[14px] font-[700] rounded-xl transition-all whitespace-nowrap shadow-sm`}
+          onClick={() => navigateTo('/dashboard/admin')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-4 h-4 shrink-0">
+            <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" />
+          </svg>
+          <span className="hidden xl:inline">Admin Portal</span>
+          <span className="xl:hidden">Admin</span>
+        </button>
+      )}
+
       {/* Avatar & Dropdown */}
       <div className="relative">
         <button
           type="button"
-          className="w-[40px] h-[40px] rounded-full bg-[#d4af37] text-[#0a192f] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
+          className="w-10 h-10 rounded-full bg-[#d4af37] text-[#0a192f] font-[800] text-[16px] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer shrink-0"
           aria-label="Open account menu"
+          aria-haspopup="true"
           aria-expanded={isOpen}
+          aria-controls="account-dropdown"
           onClick={() => setIsOpen((v) => !v)}
         >
           {initials}
@@ -154,12 +180,17 @@ export default function AccountMenu({
               aria-label="Close menu"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]">
+            <div
+              id="account-dropdown"
+              role="menu"
+              className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-[100]"
+            >
               <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
                 <p className="text-[14px] font-[700] text-[#0a192f] truncate">{authState.name}</p>
                 <p className="text-[12px] text-gray-500 truncate">{authState.email}</p>
               </div>
-              <div className="p-2" role="menu">
+              <div className="p-2">
+                {/* Dashboard — in dropdown for mobile (sm:hidden hides the button above on small screens) */}
                 <button
                   type="button"
                   role="menuitem"
@@ -173,9 +204,9 @@ export default function AccountMenu({
                     type="button"
                     role="menuitem"
                     onClick={() => { setIsOpen(false); navigateTo('/dashboard/admin'); }}
-                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0c1940] rounded-lg hover:bg-gray-100 transition-colors sm:hidden"
                   >
-                    🛡️ Admin Panel
+                    🛡️ Admin Portal
                   </button>
                 )}
                 <button
