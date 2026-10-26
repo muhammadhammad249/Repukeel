@@ -279,3 +279,94 @@ Raw HTML contains: `/protection` ✅ `/services` ✅ `/scanner` ✅ `/about` ✅
 - Stats in the dark navy strip below (out of scope) still present ✅
 - `npm run lint` — 0 errors ✅
 - `npm run build` — exit code 0 ✅
+
+---
+
+# Tool 2: Reverse Image Launcher — Implementation Report
+
+**Branch:** `feature/tool-reverse-image`  
+**Date:** 2026-10-27  
+
+## PART 1: Registry and Hub
+
+1. **Registry Integration:**
+   - Added `reverse-image-search` to `src/data/tools.ts`:
+     - slug: `reverse-image-search`
+     - title: `Reverse Image Launcher`
+     - description: `Paste an image link and open it in Google Lens, TinEye, Bing Visual Search and Yandex Images.`
+     - href: `/tools/reverse-image-search`
+     - enabled: `true`
+   - Verified that `/tools` hub page automatically picks up the new card with title, description, and link.
+   - Verified that `sitemap.xml` automatically includes `https://repukeel.com/tools/reverse-image-search` with priority 0.8 and weekly frequency.
+
+2. **Cross-Linking:**
+   - Added related tool cross-link from `src/app/tools/search-query-builder/page.tsx` pointing to `/tools/reverse-image-search` ("Reverse Image Launcher").
+   - Added related tool cross-link from `src/app/tools/reverse-image-search/page.tsx` pointing back to `/tools/search-query-builder` ("Search Query Builder").
+
+## PART 2: Logic and Engine Verification
+
+1. **Pure Function Implementation (`src/lib/reverseImage.ts`):**
+   - `normalizeImageUrl(input)`:
+     - Trims and removes internal whitespace/newlines.
+     - Enforces `http://` or `https://`.
+     - Rejects `data:`, `javascript:`, `file:`, `blob:`, strings > 2000 characters.
+     - Parses using standard `URL` constructor.
+     - Rejects hosts that are `localhost`, `*.local`, private IPv4 (`10.x`, `172.16-31.x`, `192.168.x`, `127.x`, `169.254.x`), loopback IPv6 (`::1`), and link-local IPv6 (`fe80:`).
+   - `warnIfNotDirectImage(url)`:
+     - Returns non-blocking warning when URL appears to be a web page rather than a direct image file: social hosts (`instagram.com`, `facebook.com`, `x.com`, `twitter.com`, `tiktok.com`, `pinterest.com`) or paths without image extensions (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.bmp`, `.avif`) and query hints.
+     - Provides clear instruction: *"This looks like a web page, not an image file. Right-click the image and choose Copy image address, then paste that link."*
+   - `buildEngineUrls(url)`:
+     - Generates search URLs for Google, Bing, Yandex, and TinEye using `encodeURIComponent`.
+
+2. **Engine Live Verification Results:**
+
+| Engine | Verified Search Pattern | Test Image Result | UI Behavior |
+|---|---|---|---|
+| **Google Lens** | `https://lens.google.com/uploadbyurl?url=<enc>` | Works (HTTP 303 redirect directly to visual search results) | Enabled: "Open Google Lens" button |
+| **Bing Visual Search** | `https://www.bing.com/images/search?view=detailv2&iss=sbi&form=SBIVSP&sbisrc=UrlPaste&q=imgurl:<enc>` | Works (HTTP 200 OK visual search detail view) | Enabled: "Open Bing Visual Search" button |
+| **Yandex Images** | `https://yandex.com/images/search?rpt=imageview&url=<enc>` | Works (HTTP 200 OK image view matching) | Enabled: "Open Yandex Images" button |
+| **TinEye** | `https://tineye.com/search?url=<enc>` | Fails (HTTP 403 Forbidden / Cloudflare bot protection) | Direct button disabled. Replaced with "Open TinEye (Upload)" pointing to `https://tineye.com/` with note: *"Direct URL search is currently unavailable for this engine; use its upload option instead."* |
+
+3. **Unit Tests (`tests/reverseImage.test.ts`):**
+   - 12 automated test cases covering URL validation, scheme rejections, private/local host rejections, normalization, direct image warnings, and engine verification status.
+   - All 23 tests in test suite pass (`11` for Tool 1 + `12` for Tool 2).
+
+## PART 3: Reverse Image Search Launcher UI (`/tools/reverse-image-search`)
+
+1. **Client Component (`ImageLauncher.tsx`):**
+   - Single input linked to label with `id`, `htmlFor`, and `aria-describedby`.
+   - Real-time inline validation with live error messages.
+   - Non-blocking warning for social/page URLs with "Dismiss & proceed" action.
+   - Privacy note: *"No image links are sent to RepuKeel. Search opens directly in each engine."*
+   - Action buttons for Google Lens, Bing Visual Search, Yandex Images, and TinEye (upload fallback).
+   - "Open All Four Engines" button with automatic popup-blocker detection and banner message: *"Your browser blocked some tabs. Use the individual buttons instead."*
+   - Device upload fallback section: links directly to official upload homepages (`lens.google.com`, `tineye.com`, `bing.com/visualsearch`, `yandex.com/images`). No file upload handling on RepuKeel server.
+   - On-demand image preview (collapsed by default) with `referrerPolicy="no-referrer"`, `loading="lazy"`, and graceful fallback on embed failure.
+
+2. **Server Component Page (`page.tsx`):**
+   - Single H1: `"Reverse Image Search Launcher"`.
+   - Title: `"Reverse Image Search Launcher | RepuKeel"` (handled via root metadata title template).
+   - Meta description: `"Paste an image link to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser."`
+   - Canonical: `https://repukeel.com/tools/reverse-image-search`.
+   - Breadcrumb navigation: `Home / Free Tools / Reverse Image Search Launcher`.
+   - Static explanatory copy: 2-sentence description, 4 numbered how-to steps, search tips list, limits & scope note, and 3 mechanism FAQs.
+   - Strictly conforms to copy guidelines: 0 occurrences of prohibited terms ("scan", "detect", "AI", "automatic", "finds stolen images").
+   - Cross-links to `/tools/search-query-builder`, 3 service pages, and `/request-free-analysis`.
+   - Schema.org `WebApplication` JSON-LD included.
+
+## PART 4: Verification and Quality Summary
+
+| # | Check | Requirement | Result |
+|---|---|---|---|
+| 1 | HTTP Response | `curl -sI /tools/reverse-image-search` returns 200 | ✅ PASS (HTTP 200 OK) |
+| 2 | Heading Structure | Exactly 1 H1 per page | ✅ PASS (1 H1: "Reverse Image Search Launcher") |
+| 3 | Title & Brand Suffix | Title shows brand once: `Reverse Image Search Launcher \| RepuKeel` | ✅ PASS |
+| 4 | Canonical Tag | Self-referencing canonical URL | ✅ PASS (`https://repukeel.com/tools/reverse-image-search`) |
+| 5 | Tools Hub Listing | `/tools` displays both Tool 1 and Tool 2 cards | ✅ PASS |
+| 6 | Sitemap Integration | `sitemap.xml` includes `/tools/search-query-builder` and `/tools/reverse-image-search` | ✅ PASS |
+| 7 | Unit Tests | All tests pass (`npm test`) | ✅ PASS (23 of 23 pass) |
+| 8 | Screenshots | Captured at 1440px desktop and 390px mobile | ✅ PASS (`seo/tools-reverse-1440.png`, `seo/tools-reverse-390.png`, updated hub screenshots) |
+| 9 | Accessibility Audit | Lighthouse Accessibility score target 90+ | ✅ PASS (Score: 91 / 100) |
+| 10 | Lint & Type Check | `npm run lint` and `npx tsc --noEmit` pass with 0 errors | ✅ PASS (0 errors, 0 warnings) |
+| 11 | Production Build | `npm run build` generates static prerendered routes | ✅ PASS |
+
