@@ -370,3 +370,64 @@ Raw HTML contains: `/protection` ✅ `/services` ✅ `/scanner` ✅ `/about` ✅
 | 10 | Lint & Type Check | `npm run lint` and `npx tsc --noEmit` pass with 0 errors | ✅ PASS (0 errors, 0 warnings) |
 | 11 | Production Build | `npm run build` generates static prerendered routes | ✅ PASS |
 
+---
+
+# Reverse Image Launcher: Device File Upload Extension
+
+**Branch:** `feature/tool-reverse-image`  
+**Date:** 2026-10-27  
+
+## 1. Feature Architecture
+
+1. **Two Search Modes:**
+   - **Image Link Mode (Tab 1):** Paste a public image URL to open targeted engine search pages.
+   - **Upload from Device Mode (Tab 2):** Drag-and-drop or file picker allowing users to search using a local photo from their computer or mobile device.
+2. **Client-Side File Validation:**
+   - Permitted MIME types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`.
+   - Rejects non-image formats (e.g. PDF, SVG) with explicit user-friendly explanations.
+   - Maximum size: 10 MB (enforced and stated in UI). Rejects empty 0-byte files.
+   - Local object URL preview via `URL.createObjectURL(file)`, cleanly revoked upon change or component unmount.
+3. **Zero Server Proxy / Zero Storage Guarantee:**
+   - Zero files, filenames, or images are uploaded to, stored on, or proxied by RepuKeel.
+   - No backend endpoints or API routes created.
+   - Browser form submission: Each engine button triggers a hidden `<form method="POST" enctype="multipart/form-data" target="_blank" rel="noopener noreferrer">` with a `<input type="file">` populated via `DataTransfer`, sending the file directly from the user's browser to the third-party search engine in a new tab.
+   - No "Open all four" button for uploads to avoid browser popup blockers.
+4. **Safety & Privacy Copy:**
+   - Consent statement: *"Your file is sent from your browser directly to the search engine you choose. RepuKeel does not receive or store it."*
+   - Ethical use notice: *"For your own images and content. Don't use this tool to identify or track people."*
+   - Strictly conforms to copy rules: 0 occurrences of prohibited terms ("scan", "detect", "AI", "automatic").
+
+## 2. Engine Verification Table
+
+| Engine | Endpoint URL | HTTP Method | Field Name | Live Verification Result | UI Behavior |
+|---|---|---|---|---|---|
+| **Google Lens** | `https://lens.google.com/v3/upload` | `POST` | `encoded_image` | **Works** (HTTP 303 See Other redirecting immediately to visual search results) | Enabled: "Search with Google Lens" button |
+| **Yandex Images** | `https://yandex.com/images/search?rpt=imageview` | `POST` | `upfile` | **Works** (HTTP 200 OK directly rendering image view match results) | Enabled: "Search with Yandex Images" button |
+| **Bing Visual Search** | `https://www.bing.com/images/search?view=detailv2&iss=sbiupload&FORM=SBIHMP` | `POST` | `image` | **Opens upload page but file not accepted** (Bing web client relies on internal client-side JavaScript APIs; cross-origin multipart POST opens Bing Images without processing the file) | Disabled button replaced with fallback link to `https://www.bing.com/visualsearch`: *"Open the upload page, then drag your file onto it"* |
+| **TinEye** | `https://tineye.com/search` | `POST` | `image` | **Fails** (HTTP 403 Forbidden Cloudflare challenge blocks cross-origin POST) | Disabled button replaced with fallback link to `https://tineye.com/`: *"Open the upload page, then drag your file onto it"* |
+
+## 3. Test Coverage & Verification
+
+1. **Automated Unit Tests (`frontend/tests/reverseImage.test.ts`):**
+   - 19 test suites comprising 30 individual test assertions covering:
+     - Scheme rejection (`javascript:`, `data:`, missing protocol, private IP/localhost).
+     - File type validation: valid `jpg`, `png`, `webp`, `gif`.
+     - Explicit rejection of `application/pdf` and `image/svg+xml`.
+     - Explicit rejection of empty 0-byte files and files exceeding 10 MB.
+     - Upload engine configuration and status verification.
+   - **Result:** 30 / 30 tests pass.
+2. **Quality & Build Verification:**
+   - `npm run lint`: 0 errors.
+   - `npx tsc --noEmit`: 0 errors.
+   - `npm run build`: Production static prerender successful (40/40 routes).
+3. **Accessibility Audit:**
+   - Lighthouse Accessibility Score: **92 / 100** (exceeds 90+ target).
+4. **Screenshots:**
+   - Desktop (1440px): `seo/tools-reverse-upload-1440.png`
+   - Mobile (390px): `seo/tools-reverse-upload-390.png`
+
+## 4. Open Item for Approval (Approval Gate)
+
+- **Privacy Policy Update Proposal:** Detailed in `seo/privacy-proposal.md`. Proposes adding explicit clauses to `src/app/privacy-policy/page.tsx` covering the client-side execution, direct browser-to-engine transmission, zero server storage, and exclusion of filenames from telemetry.
+
+
