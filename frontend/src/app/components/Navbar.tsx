@@ -17,11 +17,14 @@ export default function Navbar() {
   const [servicesMenuTab, setServicesMenuTab] = useState<string | null>(categories[0]?.slug ?? null);
   const pathname = usePathname();
   const router = useRouter();
+  // Ref for the 150ms hover-close delay timer on Services dropdown
+  const servicesCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Stop navigation progress bar when pathname changes
     setIsNavigating(false);
-    // Also close dropdown on navigation
+    // Also close dropdown on navigation and cancel any pending close timer
+    if (servicesCloseTimer.current) clearTimeout(servicesCloseTimer.current);
     setOpenDropdown(null);
   }, [pathname]);
 
@@ -111,33 +114,72 @@ export default function Navbar() {
               if (link.name === 'Services') {
                 const isOpen = openDropdown === link.name;
                 return (
-                  <div key={link.name} className="relative has-dropdown" onMouseEnter={() => setOpenDropdown(link.name)}>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setOpenDropdown(isOpen ? null : link.name);
-                      }}
-                      className={`flex items-center gap-1 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
-                        isActive || isOpen
-                          ? 'text-[var(--gold)] border-[var(--gold)]' 
-                          : 'text-black border-transparent hover:text-[var(--gold)]'
+                  <div
+                    key={link.name}
+                    className="relative has-dropdown"
+                    onMouseEnter={() => {
+                      if (servicesCloseTimer.current) clearTimeout(servicesCloseTimer.current);
+                      setOpenDropdown('Services');
+                    }}
+                    onMouseLeave={() => {
+                      servicesCloseTimer.current = setTimeout(() => setOpenDropdown(null), 150);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        setOpenDropdown(null);
+                        (e.currentTarget.querySelector('a') as HTMLElement | null)?.focus();
+                      }
+                    }}
+                  >
+                    {/* Trigger row: real link + chevron toggle */}
+                    <span className={`flex items-center gap-0.5 text-[14px] font-[500] transition-colors pb-1 border-b-2 ${
+                      isActive || isOpen
+                        ? 'text-[var(--gold)] border-[var(--gold)]'
+                        : 'text-black border-transparent hover:text-[var(--gold)]'
+                    }`}>
+                      <Link
+                        href="/services"
+                        onClick={(e) => {
+                          handleNavClick(e, '/services');
+                          setOpenDropdown(null);
+                        }}
+                      >
+                        Services
+                      </Link>
+                      {/* Chevron toggle button — for keyboard and touch */}
+                      <button
+                        type="button"
+                        aria-label="Toggle services menu"
+                        aria-expanded={isOpen}
+                        aria-haspopup="true"
+                        aria-controls="services-panel"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDropdown(isOpen ? null : 'Services');
+                        }}
+                        className="flex items-center justify-center p-0.5 focus:outline-none"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                      </button>
+                    </span>
+
+                    {/* The Mega Menu Dropdown — always in DOM for SEO, hidden with CSS when closed */}
+                    <div
+                      id="services-panel"
+                      role="region"
+                      aria-label="Services menu"
+                      className={`fixed top-[84px] left-[28px] xl:left-[calc(50vw-640px+28px)] mt-0 w-[95vw] max-w-[950px] bg-[#f4f7fb] rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.2)] border border-[var(--border-light)] p-4 lg:p-6 z-[1000] overflow-y-auto max-h-[calc(100vh-120px)] transition-all duration-150 ${
+                        isOpen
+                          ? 'opacity-100 visible pointer-events-auto'
+                          : 'opacity-0 invisible pointer-events-none'
                       }`}
                     >
-                      {link.name}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-
-                    {/* The Mega Menu Dropdown */}
-                    {isOpen && (
-                      <div className="fixed top-[84px] left-[28px] xl:left-[calc(50vw-640px+28px)] mt-0 w-[95vw] max-w-[950px] bg-[#f4f7fb] rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.2)] border border-[var(--border-light)] p-4 lg:p-6 z-[1000] anim-fade-in overflow-y-auto max-h-[calc(100vh-120px)]">
-                        <ServicesMenuLayout 
-                          activeCatId={servicesMenuTab} 
-                          setActiveCatId={setServicesMenuTab} 
-                          onLinkClick={() => setOpenDropdown(null)}
-                        />
-                      </div>
-                    )}
+                      <ServicesMenuLayout
+                        activeCatId={servicesMenuTab}
+                        setActiveCatId={setServicesMenuTab}
+                        onLinkClick={() => setOpenDropdown(null)}
+                      />
+                    </div>
                   </div>
                 );
               }
