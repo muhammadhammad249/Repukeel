@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { canonicalFor } from '@/lib/seo';

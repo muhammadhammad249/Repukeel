@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use client";
 
 export default function Error({

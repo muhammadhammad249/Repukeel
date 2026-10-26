@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { categories } from "@/data/services";
 import RemoveRequestButton from "@/app/components/RemoveRequestButton";
 import ServiceIcon from "@/app/components/ServiceIcon";

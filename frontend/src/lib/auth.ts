@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { supabase } from './supabase';
 
 export type UserRole = 'client' | 'admin' | 'super_admin';

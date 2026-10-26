@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MetadataRoute } from 'next';
 import { categories } from '@/data/services';
 import { blogs } from '@/app/blogs/data';

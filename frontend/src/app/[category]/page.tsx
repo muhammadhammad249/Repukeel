@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Link from "next/link";
 import { categories } from "@/data/services";
 import { notFound } from "next/navigation";

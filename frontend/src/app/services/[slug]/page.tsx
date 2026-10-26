@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { redirect, notFound } from 'next/navigation';
 import { categories } from '@/data/services';
 import { Metadata } from 'next';
