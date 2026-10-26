@@ -20,6 +20,108 @@ export interface EngineVerification {
   note?: string;
 }
 
+export interface FileValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+export interface UploadEngineConfig {
+  name: string;
+  actionUrl: string;
+  method: 'POST';
+  fieldName: string;
+  status: 'works' | 'opens upload page but file not accepted' | 'fails';
+  uploadPageUrl: string;
+  fallbackText: string;
+  note?: string;
+}
+
+export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+export const ALLOWED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+];
+
+/**
+ * Validates an image file for browser-based upload:
+ * - Allowed types: image/jpeg, image/png, image/webp, image/gif.
+ * - Max size: 10 MB.
+ * - Rejects empty files (0 bytes).
+ * - Rejects PDF, SVG, and other unsupported file types with descriptive errors.
+ */
+export function validateImageFile(file: { name?: string; size: number; type: string } | null | undefined): FileValidationResult {
+  if (!file) {
+    return { valid: false, error: 'Please choose or drop an image file.' };
+  }
+
+  if (file.size === 0) {
+    return { valid: false, error: 'The selected file is empty (0 bytes). Please choose a valid image.' };
+  }
+
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return { valid: false, error: 'File exceeds 10 MB limit. Please select an image under 10 MB.' };
+  }
+
+  const type = file.type?.toLowerCase() || '';
+  if (!ALLOWED_IMAGE_TYPES.includes(type)) {
+    if (type === 'application/pdf') {
+      return { valid: false, error: 'PDF files are not supported. Please select a JPG, PNG, WebP, or GIF image.' };
+    }
+    if (type === 'image/svg+xml') {
+      return { valid: false, error: 'SVG vector files are not supported. Please select a JPG, PNG, WebP, or GIF image.' };
+    }
+    return { valid: false, error: 'Unsupported file type. Please select a JPG, PNG, WebP, or GIF image.' };
+  }
+
+  return { valid: true };
+}
+
+export const UPLOAD_ENGINES: Record<'google' | 'bing' | 'yandex' | 'tineye', UploadEngineConfig> = {
+  google: {
+    name: 'Google Lens',
+    actionUrl: 'https://lens.google.com/v3/upload',
+    method: 'POST',
+    fieldName: 'encoded_image',
+    status: 'works',
+    uploadPageUrl: 'https://lens.google.com/',
+    fallbackText: 'Open the upload page, then drag your file onto it',
+    note: 'Accepts multipart/form-data encoded_image and redirects to visual search results.',
+  },
+  yandex: {
+    name: 'Yandex Images',
+    actionUrl: 'https://yandex.com/images/search?rpt=imageview',
+    method: 'POST',
+    fieldName: 'upfile',
+    status: 'works',
+    uploadPageUrl: 'https://yandex.com/images/',
+    fallbackText: 'Open the upload page, then drag your file onto it',
+    note: 'Accepts multipart/form-data upfile and returns visual match results.',
+  },
+  bing: {
+    name: 'Bing Visual Search',
+    actionUrl: 'https://www.bing.com/images/search?view=detailv2&iss=sbiupload&FORM=SBIHMP',
+    method: 'POST',
+    fieldName: 'image',
+    status: 'opens upload page but file not accepted',
+    uploadPageUrl: 'https://www.bing.com/visualsearch',
+    fallbackText: 'Open the upload page, then drag your file onto it',
+    note: 'Bing interactive uploads rely on internal client-side JavaScript APIs; cross-origin form post lands on Bing without processing file.',
+  },
+  tineye: {
+    name: 'TinEye',
+    actionUrl: 'https://tineye.com/search',
+    method: 'POST',
+    fieldName: 'image',
+    status: 'fails',
+    uploadPageUrl: 'https://tineye.com/',
+    fallbackText: 'Open the upload page, then drag your file onto it',
+    note: 'TinEye blocks cross-origin form submissions with Cloudflare 403 Forbidden challenge.',
+  },
+};
+
 /**
  * Checks if a hostname belongs to a private, loopback, or local network.
  */
