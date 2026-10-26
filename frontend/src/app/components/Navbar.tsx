@@ -70,7 +70,7 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'Protection', path: '/protection', isPill: true },
     { name: 'Services', path: '/services' },
-    { name: 'AI Scanner', path: '/scanner' },
+    { name: 'Free Tools', path: '/tools' },
     { name: 'About Us', path: '/about' },
     { name: 'Pricing', path: '/pricing' },
     { name: 'FAQs', path: '/faq' },

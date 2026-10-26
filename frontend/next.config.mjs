@@ -3,6 +3,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/scanner',
+        destination: '/tools/search-query-builder',
+        permanent: true,
+      },
+      {
         source: '/:path*',
         has: [
           {

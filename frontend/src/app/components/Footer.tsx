@@ -376,6 +376,10 @@ export default function Footer() {
                 Contact Us
               </Link>
 
+              <Link href="/tools" className="hover:text-white transition-colors">
+                Free Tools
+              </Link>
+
               <Link href="/clients" className="hover:text-white transition-colors">
                 Our Clients
               </Link>

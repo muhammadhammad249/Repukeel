@@ -86,6 +86,30 @@ PASS
 - Mobile drawer Services behavior unchanged (toggle-only, no hover needed)
 - No third-party nav components involved
 
+---
+
+# Feature: Tools Hub & Search Query Builder
+
+**Branch:** `feature/tools-hub`  
+**Date:** 2026-10-27  
+
+## PART 1: Remove the Fake Scanner
+
+### 1. Root Cause & Actions Taken
+- **Fake Scanner Removed:** Deleted `src/app/scanner/page.tsx` and `src/app/scanner/layout.tsx`.
+- **Permanent 301 Redirect:** Configured in `next.config.mjs` from `/scanner` to `/tools/search-query-builder` (1 hop) to retain index history and backlinks.
+- **Sitemap Updated:** Removed `/scanner` from `src/app/sitemap.ts`.
+- **Navigation Updated:** In `src/app/components/Navbar.tsx`, replaced "AI Scanner" (`/scanner`) with "Free Tools" (`/tools`) across desktop and mobile menus without altering spacing.
+- **Footer Updated:** Added "Free Tools" (`/tools`) to Quick Links in `src/app/components/Footer.tsx`.
+- **Scanner Removal Audit:** Documented in `seo/scanner-removal.md`.
+- **Approval Gate Copy:** Logged copy in `faq/page.tsx` (Q24-Q26) and `HomeClient.tsx` (line 272) in `seo/scanner-removal.md` with proposed replacements awaiting user sign-off (left untouched in source).
+
+### 2. Verification Results
+- `npm run lint`: 0 errors, 0 warnings
+- `npx tsc --noEmit`: 0 errors
+- `npm run build`: Exit 0, all static and dynamic pages generated
+
+
 
 ---
 
