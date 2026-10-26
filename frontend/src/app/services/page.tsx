@@ -19,63 +19,30 @@ export default function ServicesPage() {
     <div className="flex flex-col min-h-screen">
       
       {/* ================= HERO ================= */}
-      <section className="relative w-full bg-gradient-to-br from-white to-[#f0f4f8] pt-16 pb-24 overflow-hidden">
-        <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="pill-badge mb-6">
-              Online Reputation Management Services
-            </div>
-            <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-black">
-              Remove Harmful Content.<br/>
-              <span className="text-[var(--gold)]">Restore Your Reputation.</span>
-            </h1>
-            <p className="text-[17px] text-black mb-8 max-w-xl">
-              RepuKeel helps individuals, creators and businesses remove negative reviews, damaging articles and stolen content, and protect their brand online.
-            </p>
-            
-            <div className="flex flex-wrap gap-3 mb-8">
-              {['Free reputation audit', 'Confidential', 'Fast response'].map((pill, i) => (
-                <div key={i} className="pill-badge">
-                  <span className="text-[var(--green)] font-[900]">✓</span> {pill}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#all-services" className="btn btn-gold-solid">Explore Services &rarr;</a>
-              <Link href="/contact" className="btn btn-outline-gold">Contact Us</Link>
-            </div>
+      <section className="relative w-full bg-gradient-to-br from-white to-[#f0f4f8] pt-12 pb-14 overflow-hidden">
+        <div className="container relative z-10 max-w-3xl">
+          <div className="pill-badge mb-6">
+            Online Reputation Management Services
+          </div>
+          <h1 className="text-5xl md:text-6xl font-[800] leading-[1.1] tracking-tight mb-6 text-black">
+            Remove Harmful Content.<br/>
+            <span className="text-[var(--gold)]">Restore Your Reputation.</span>
+          </h1>
+          <p className="text-[17px] text-black mb-8 max-w-xl">
+            RepuKeel helps individuals, creators and businesses remove negative reviews, damaging articles and stolen content, and protect their brand online.
+          </p>
+          
+          <div className="flex flex-wrap gap-3 mb-8">
+            {['Free reputation audit', 'Confidential', 'Fast response'].map((pill, i) => (
+              <div key={i} className="pill-badge">
+                <span className="text-[var(--green)] font-[900]">✓</span> {pill}
+              </div>
+            ))}
           </div>
 
-          <div className="relative flex justify-center items-center h-full min-h-[400px]">
-            {/* Concentric dashed circles */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full border border-dashed border-[var(--gold)] opacity-30 anim-spin-slow"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-dashed border-[var(--text-heading)] opacity-10 anim-spin-slow" style={{ animationDirection: 'reverse' }}></div>
-            
-            {/* Main Rotated Diamond */}
-            <div className="relative z-10 w-48 h-48 bg-gradient-to-br from-[var(--gold-lt)] to-[var(--gold-dk)] rounded-3xl shadow-2xl flex items-center justify-center transform rotate-45 transition-transform hover:scale-105">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-20 h-20 -rotate-45">
-                <path d="M12 2l8 4v6c0 5.25-3.6 9-8 10.3C7.6 21 4 17.25 4 12V6l8-4z" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-
-            {/* Floating icon badges */}
-            <div className="absolute top-10 left-[15%] w-12 h-12 bg-white rounded-xl shadow-xl flex items-center justify-center text-purple-600 z-20 anim-float">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            </div>
-            <div className="absolute bottom-20 right-[15%] w-12 h-12 bg-white rounded-xl shadow-xl flex items-center justify-center text-blue-600 z-20 anim-float" style={{ animationDelay: '1s' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-            
-            {/* Stat badges */}
-            <div className="absolute top-16 right-[10%] bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '0.5s' }}>
-              <span className="text-[16px] font-[800] text-blue-600 leading-none">24h</span>
-              <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Response</span>
-            </div>
-            <div className="absolute bottom-10 left-[10%] bg-white border border-[var(--border-light)] rounded-xl p-3 shadow-xl z-20 flex flex-col items-center gap-1 anim-float" style={{ animationDelay: '1.5s' }}>
-              <span className="text-[16px] font-[800] text-[var(--green)] leading-none">99%</span>
-              <span className="text-[10px] font-[600] text-black uppercase tracking-wide">Success</span>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <a href="#all-services" className="btn btn-gold-solid">Explore Services &rarr;</a>
+            <Link href="/contact" className="btn btn-outline-gold">Contact Us</Link>
           </div>
         </div>
       </section>
