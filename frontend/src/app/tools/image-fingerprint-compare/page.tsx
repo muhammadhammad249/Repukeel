@@ -224,7 +224,7 @@ export default function ImageFingerprintComparePage() {
             </h2>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/content-removal/image-protection"
+                href="/dating-reputation/image-protection"
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 text-[#0c1940] hover:bg-[#0c1940] hover:text-white transition-colors"
               >
                 Image Protection
