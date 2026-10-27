@@ -21,4 +21,11 @@ export const tools: ToolItem[] = [
     href: '/tools/reverse-image-search',
     enabled: true,
   },
+  {
+    slug: 'image-fingerprint-compare',
+    title: 'Image Fingerprint Compare',
+    description: 'Compare two images in your browser and see how similar they are. Nothing is uploaded.',
+    href: '/tools/image-fingerprint-compare',
+    enabled: true,
+  },
 ];

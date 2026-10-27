@@ -180,21 +180,33 @@ export default function ReverseImageSearchPage() {
             </div>
           </div>
 
-          {/* Related Tool */}
+          {/* Related Tools */}
           <div className="pt-4 border-t border-gray-100">
             <h2 className="text-base font-bold text-[#0a192f] mb-3">
-              Related Tool
+              Related Tools
             </h2>
-            <p className="text-sm text-gray-600">
-              Looking to search by brand name, keywords, or text? Use the{' '}
-              <Link
-                href="/tools/search-query-builder"
-                className="font-semibold text-[#0c1940] hover:text-[#d4af37] underline underline-offset-2"
-              >
-                Search Query Builder
-              </Link>
-              .
-            </p>
+            <div className="space-y-2 text-sm text-gray-600">
+              <p>
+                Want to compare two images side-by-side to check similarity? Use the{' '}
+                <Link
+                  href="/tools/image-fingerprint-compare"
+                  className="font-semibold text-[#0c1940] hover:text-[#d4af37] underline underline-offset-2"
+                >
+                  Image Fingerprint Compare
+                </Link>
+                .
+              </p>
+              <p>
+                Looking to search by brand name, keywords, or text? Use the{' '}
+                <Link
+                  href="/tools/search-query-builder"
+                  className="font-semibold text-[#0c1940] hover:text-[#d4af37] underline underline-offset-2"
+                >
+                  Search Query Builder
+                </Link>
+                .
+              </p>
+            </div>
           </div>
 
           {/* Related Services Links */}
