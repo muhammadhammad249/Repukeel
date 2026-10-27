@@ -2,6 +2,8 @@
 const nextConfig = {
   async redirects() {
     return [
+      // Redirect ALL *.vercel.app deployment URLs → canonical domain
+      // Covers production alias (repukeel.vercel.app) and all preview deploys
       {
         source: '/scanner',
         destination: '/tools/search-query-builder',
@@ -12,12 +14,13 @@ const nextConfig = {
         has: [
           {
             type: 'host',
-            value: 'repukeel.vercel.app',
+            value: '(?<host>.+\\.vercel\\.app)',
           },
         ],
         destination: 'https://repukeel.com/:path*',
         permanent: true,
       },
+      // Redirect www → non-www
       {
         source: '/:path*',
         has: [
