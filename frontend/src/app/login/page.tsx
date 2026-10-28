@@ -225,7 +225,7 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
-      <Suspense fallback={<div className="w-full min-h-screen flex items-center justify-center">Loading...</div>}>
+      <Suspense fallback={<div className="w-full min-h-screen flex items-center justify-center"><h1 className="text-xl font-bold text-[#0a192f]">Loading RepuKeel Portal...</h1></div>}>
         <LoginContent />
       </Suspense>
     </div>
