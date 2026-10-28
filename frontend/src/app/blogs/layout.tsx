@@ -2,13 +2,18 @@ import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Online Reputation Management Blog — Guides & Expert Advice',
-  description: 'Expert guides on online reputation management, review removal, DMCA takedowns, and brand protection. Actionable advice from the RepuKeel team.',
+  title: {
+    absolute: 'Online Reputation Management Blog | RepuKeel',
+  },
+  description: 'Expert guides, actionable strategies, and proven solutions for online reputation management, review removal, search result suppression, and digital brand protection.',
   alternates: {
     canonical: canonicalFor('/blogs'),
   },
   openGraph: {
+    title: 'Online Reputation Management Blog | RepuKeel',
+    description: 'Expert guides, actionable strategies, and proven solutions for online reputation management, review removal, search result suppression, and digital brand protection.',
     url: canonicalFor('/blogs'),
+    type: 'website',
   },
 };
 

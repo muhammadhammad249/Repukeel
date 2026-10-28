@@ -116,11 +116,21 @@ export default function BlogsPage() {
               {blogs.map(blog => (
                 <div key={blog.id} className="bg-white border border-[var(--border-light)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="text-[12px] font-[700] text-[var(--gold)] uppercase tracking-wider mb-2">{blog.category}</div>
-                  <h3 className="text-[18px] font-[800] text-[var(--text-heading)] mb-3">{blog.title}</h3>
+                  <h3 className="text-[18px] font-[800] text-[var(--text-heading)] mb-3">
+                    <Link href={`/blogs/${blog.slug}`} className="hover:text-[var(--gold)] transition-colors">
+                      {blog.title}
+                    </Link>
+                  </h3>
                   <p className="text-[14px] text-[var(--text-body)] mb-4">{blog.excerpt}</p>
                   <div className="flex items-center justify-between mt-auto">
                     <span className="text-[12px] text-[var(--text-muted-navy)] font-[600]">{blog.date}</span>
-                    <Link href={`/blogs/${blog.slug}`} className="text-[13px] font-[700] text-[var(--bg-navy)] hover:text-[var(--gold)] transition-colors" aria-label={`Read: ${blog.title}`}>Read more &rarr;</Link>
+                    <Link
+                      href={`/blogs/${blog.slug}`}
+                      className="text-[13px] font-[700] text-[var(--bg-navy)] hover:text-[var(--gold)] transition-colors"
+                      aria-label={`Read guide: ${blog.title}`}
+                    >
+                      Read Guide &rarr;
+                    </Link>
                   </div>
                 </div>
               ))}
