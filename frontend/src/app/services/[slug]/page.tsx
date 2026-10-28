@@ -1,4 +1,4 @@
-import { redirect, notFound } from 'next/navigation';
+import { permanentRedirect, notFound } from 'next/navigation';
 import { categories } from '@/data/services';
 import { Metadata } from 'next';
 
@@ -23,7 +23,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const service = allSubServices.find(s => s.slug === slug);
 
   if (service) {
-    redirect(`/${service.categorySlug}/${service.slug}`);
+    permanentRedirect(`/${service.categorySlug}/${service.slug}`);
   }
 
   return notFound();
