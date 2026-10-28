@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | RepuKeel',
+  title: 'Privacy Policy',
   description: 'RepuKeel Privacy Policy. Learn how we handle, protect, and process client information and case data.',
   alternates: {
     canonical: canonicalFor('/privacy-policy'),

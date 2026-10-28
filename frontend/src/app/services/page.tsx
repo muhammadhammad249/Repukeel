@@ -20,6 +20,14 @@ export default function ServicesPage() {
       {/* ================= INTERACTIVE SERVICES LAYOUT ================= */}
       <section className="w-full bg-[#f4f7fb] py-16" id="all-services">
         <div className="container max-w-[1400px]">
+          <div className="mb-10 text-center max-w-3xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-[900] text-[#0a192f] tracking-tight mb-4">
+              Comprehensive Reputation &amp; Removal Services
+            </h1>
+            <p className="text-[16px] text-gray-600 leading-relaxed font-normal">
+              Select a category below to explore targeted solutions for content removal, search cleanup, review disputes, and brand protection.
+            </p>
+          </div>
           <ServicesMenuLayout activeCatId={activeCatId} setActiveCatId={setActiveCatId} />
         </div>
       </section>
