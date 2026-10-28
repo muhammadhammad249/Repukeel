@@ -1,9 +1,11 @@
 import { categories } from "@/data/services";
+import { blogs } from "@/app/blogs/data";
 import RemoveRequestButton from "@/app/components/RemoveRequestButton";
 import ServiceIcon from "@/app/components/ServiceIcon";
 import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import { canonicalFor } from "@/lib/seo";
+import Link from "next/link";
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }): Promise<Metadata> {
   const { category: categorySlug, slug } = await params;
@@ -31,6 +33,19 @@ export default async function SubServicePage({
   const service = category?.subServices.find((s) => s.slug === slug);
 
   if (!category || !service) return notFound();
+
+  // Find related blog posts that match this service or category
+  const relatedBlogs = blogs.filter((b) => {
+    return (
+      b.content.includes(`/${category.slug}/${service.slug}`) ||
+      b.content.toLowerCase().includes(service.name.toLowerCase()) ||
+      (category.slug === 'content-removal' && (b.category === 'Reviews' || b.category === 'Reputation Management')) ||
+      (category.slug === 'dating-reputation' && b.category === 'Social Media') ||
+      (category.slug === 'monitoring-alerts' && b.category === 'Brand Protection') ||
+      (category.slug === 'reputation-management' && b.category === 'Reputation Management')
+    );
+  }).slice(0, 3);
+  const finalRelatedBlogs = relatedBlogs.length > 0 ? relatedBlogs : blogs.slice(0, 3);
 
   return (
     <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
@@ -105,6 +120,40 @@ export default async function SubServicePage({
           </div>
 
         </div>
+
+        {/* Related Guides & Insights */}
+        {finalRelatedBlogs.length > 0 && (
+          <section className="mt-16 pt-12 border-t border-gray-200">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <span className="text-xs font-bold text-[#e0ac2f] uppercase tracking-[2px] block mb-1">Expert Advice</span>
+                <h2 className="text-2xl font-extrabold text-[#0a192f]">Related Guides &amp; Insights</h2>
+              </div>
+              <Link href="/blogs" className="text-sm font-bold text-[#20409a] hover:text-[#d4af37] transition-colors hidden sm:block">
+                View all articles &rarr;
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {finalRelatedBlogs.map((b) => (
+                <Link
+                  key={b.slug}
+                  href={`/blogs/${b.slug}`}
+                  className="bg-[#f8fafc] border border-gray-200 rounded-2xl p-6 hover:border-[#e0ac2f] hover:shadow-md transition-all group block no-underline"
+                >
+                  <span className="text-xs font-bold text-[#e0ac2f] uppercase tracking-wider block mb-2">{b.category}</span>
+                  <h3 className="text-[15px] font-bold text-[#0a192f] mb-2 group-hover:text-[#20409a] transition-colors line-clamp-2">
+                    {b.title}
+                  </h3>
+                  <p className="text-[13px] text-gray-500 line-clamp-2">{b.meta}</p>
+                  <span className="text-[12px] font-bold text-[#20409a] group-hover:text-[#d4af37] transition-colors mt-4 inline-block">
+                    Read guide &rarr;
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

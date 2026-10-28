@@ -9,8 +9,6 @@ interface Props {
 }
 
 export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLinkClick }: Props) {
-  const activeCategory = activeCatId ? categories.find(c => c.slug === activeCatId) : null;
-
   const handleLinkClick = () => {
     if (onLinkClick) onLinkClick();
   };
@@ -56,65 +54,63 @@ export default function ServicesMenuLayout({ activeCatId, setActiveCatId, onLink
                   )}
                 </button>
 
-                {/* Mobile Sub-services (Accordion) */}
-                {isActive && (
-                  <div className="lg:hidden mt-2 mb-4 px-2 flex flex-col gap-2 anim-fade-in">
-                    {cat.subServices.map((sol, i) => (
-                      <Link
-                        key={i}
-                        href={`/${cat.slug}/${sol.slug}`}
-                        onClick={handleLinkClick}
-                        className="bg-[#f8f9fc] hover:bg-gray-200 rounded-xl p-3 font-[800] text-[13px] text-black flex items-center justify-between border border-gray-200 shadow-sm"
-                      >
-                        <span>{sol.name}</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-black"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                {/* Mobile Sub-services (Accordion) — always in DOM for crawlability */}
+                <div className={`lg:hidden mt-2 mb-4 px-2 flex flex-col gap-2 anim-fade-in ${isActive ? 'block' : 'hidden'}`}>
+                  {cat.subServices.map((sol) => (
+                    <Link
+                      key={sol.slug}
+                      href={`/${cat.slug}/${sol.slug}`}
+                      onClick={handleLinkClick}
+                      className="bg-[#f8f9fc] hover:bg-gray-200 rounded-xl p-3 font-[800] text-[13px] text-black flex items-center justify-between border border-gray-200 shadow-sm"
+                    >
+                      <span>{sol.name}</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-black"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </Link>
+                  ))}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Right Main Content (Desktop Only) */}
+        {/* Right Main Content (Desktop Only) — all categories rendered in DOM for server crawlability */}
         <div className="hidden lg:block flex-1 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative z-0">
-          {activeCategory ? (
-            <>
-              <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
-                Solutions for {activeCategory.name}
-              </h3>
+          {categories.map((cat) => {
+            const isSelected = activeCatId === cat.slug;
+            return (
+              <div
+                key={cat.slug}
+                className={isSelected ? 'block' : 'hidden'}
+                aria-hidden={!isSelected}
+              >
+                <h3 className="text-[13px] font-[900] text-black uppercase tracking-widest mb-4">
+                  Solutions for {cat.name}
+                </h3>
 
-              <div className="w-full bg-[#20409a] rounded-xl p-4 mb-6 flex items-center gap-3 text-white shadow-lg">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg text-white">
-                  {activeCategory.icon}
-                </div>
-                <h2 className="text-[18px] font-[900] text-white">{activeCategory.name}</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {activeCategory.subServices.map((sol, i) => (
-                  <div key={i} className="flex flex-col gap-3">
-                    <Link
-                      href={`/${activeCategory.slug}/${sol.slug}`}
-                      onClick={handleLinkClick}
-                      className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-4 font-[800] text-[14px] text-black flex items-center justify-between group border border-gray-200 shadow-sm"
-                    >
-                      <span>{sol.name}</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </Link>
+                <div className="w-full bg-[#20409a] rounded-xl p-4 mb-6 flex items-center gap-3 text-white shadow-lg">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg text-white">
+                    {cat.icon}
                   </div>
-                ))}
+                  <h2 className="text-[18px] font-[900] text-white">{cat.name}</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {cat.subServices.map((sol) => (
+                    <div key={sol.slug} className="flex flex-col gap-3">
+                      <Link
+                        href={`/${cat.slug}/${sol.slug}`}
+                        onClick={handleLinkClick}
+                        className="bg-[#f8f9fc] hover:bg-gray-200 hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 rounded-xl p-4 font-[800] text-[14px] text-black flex items-center justify-between group border border-gray-200 shadow-sm"
+                      >
+                        <span>{sol.name}</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-black opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transform"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </>
-          ) : (
-            <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16">
-                <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <p className="font-[600] text-[15px]">Select a service category to view solutions</p>
-            </div>
-          )}
+            );
+          })}
         </div>
       </div>
 

@@ -1,5 +1,4 @@
 /* eslint-disable */
-import Navbar from '../components/Navbar';
 
 export default function ClientsPage() {
   const testimonials = [
@@ -11,7 +10,6 @@ export default function ClientsPage() {
 
   return (
     <div className="min-h-screen bg-white text-[#0a192f] font-sans pb-24">
-      <Navbar />
       {/* Header */}
       <div className="pt-24 pb-16 px-6 text-center max-w-4xl mx-auto">
         <p className="text-xs font-bold text-[#e0ac2f] uppercase tracking-[2px] mb-3">Our Clients</p>

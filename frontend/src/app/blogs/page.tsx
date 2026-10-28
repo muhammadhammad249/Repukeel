@@ -14,20 +14,14 @@ export default function BlogsPage() {
 
   // Map the raw blogs from data.ts into the format needed for the UI
   const allBlogs = rawBlogs.map((b, i) => {
-    let category = 'Reputation Management';
-    if (b.title.includes('DMCA')) category = 'DMCA';
-    else if (b.title.includes('OnlyFans') || b.title.includes('Social Media') || b.title.includes('Impersonating')) category = 'Social Media';
-    else if (b.title.includes('Brand & IP')) category = 'Brand Protection';
-    else if (b.title.includes('Review')) category = 'Reviews';
-
     return {
       id: i + 1,
       title: b.title,
       slug: b.slug,
-      category,
-      excerpt: b.meta, // Using meta description as the excerpt for the card
-      date: `Sep ${15 - i}, 2026`, // Generates some recent dates
-      tag: category
+      category: b.category,
+      excerpt: b.meta,
+      date: new Date(b.datePublished).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      tag: b.category
     };
   });
 
@@ -77,14 +71,18 @@ export default function BlogsPage() {
             <ul className="flex flex-col gap-3">
               {categories.map((cat) => (
                 <li key={cat}>
-                  <button 
-                    onClick={() => setActiveCategory(cat)}
-                    className={`text-[14px] font-[600] transition-colors ${
+                  <Link 
+                    href={cat === 'All' ? '/blogs' : `/blogs?category=${encodeURIComponent(cat)}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveCategory(cat);
+                    }}
+                    className={`text-[14px] font-[600] transition-colors block ${
                       activeCategory === cat ? 'text-[var(--gold)]' : 'text-[var(--text-body)] hover:text-[var(--gold)]'
                     }`}
                   >
                     {cat}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -94,9 +92,17 @@ export default function BlogsPage() {
             <h3 className="text-[18px] font-[800] text-[var(--text-heading)] mb-4">Popular Tags</h3>
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
-                <button key={tag} className="px-3 py-1.5 rounded-full bg-[var(--bg-soft)] text-[12px] font-[600] text-[var(--text-heading)] border border-[var(--border-light)] hover:border-[var(--gold)] transition-colors">
+                <Link
+                  key={tag}
+                  href={`/blogs?tag=${encodeURIComponent(tag)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSearchQuery(tag);
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-[var(--bg-soft)] text-[12px] font-[600] text-[var(--text-heading)] border border-[var(--border-light)] hover:border-[var(--gold)] transition-colors inline-block"
+                >
                   #{tag}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -114,7 +120,7 @@ export default function BlogsPage() {
                   <p className="text-[14px] text-[var(--text-body)] mb-4">{blog.excerpt}</p>
                   <div className="flex items-center justify-between mt-auto">
                     <span className="text-[12px] text-[var(--text-muted-navy)] font-[600]">{blog.date}</span>
-                    <Link href={`/blogs/${blog.slug}`} className="text-[13px] font-[700] text-[var(--bg-navy)] hover:text-[var(--gold)] transition-colors">Read more &rarr;</Link>
+                    <Link href={`/blogs/${blog.slug}`} className="text-[13px] font-[700] text-[var(--bg-navy)] hover:text-[var(--gold)] transition-colors" aria-label={`Read: ${blog.title}`}>Read more &rarr;</Link>
                   </div>
                 </div>
               ))}

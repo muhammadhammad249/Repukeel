@@ -2,10 +2,13 @@ import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Reputation & Brand Protection Blog',
-  description: 'Expert insights, actionable guides, and industry updates on reputation management, DMCA takedowns, and digital privacy.',
+  title: 'Online Reputation Management Blog — Guides & Expert Advice',
+  description: 'Expert guides on online reputation management, review removal, DMCA takedowns, and brand protection. Actionable advice from the RepuKeel team.',
   alternates: {
     canonical: canonicalFor('/blogs'),
+  },
+  openGraph: {
+    url: canonicalFor('/blogs'),
   },
 };
 

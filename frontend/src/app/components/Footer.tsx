@@ -102,6 +102,12 @@ export default function Footer() {
               </li>
 
               <li>
+                <Link href="/protection" className="hover:text-white transition-colors">
+                  DMCA Takedown Service
+                </Link>
+              </li>
+
+              <li>
                 <Link href="/monitoring-alerts/social-media-reputation-monitoring" className="hover:text-white transition-colors">
                   Social Media Monitoring
                 </Link>
@@ -115,18 +121,12 @@ export default function Footer() {
 
               <li>
                 <Link href="/dating-reputation/social-media-takedowns" className="hover:text-white transition-colors">
-                  Social Media Takedowns
+                  Fake Profile &amp; Impersonation Removal
                 </Link>
               </li>
 
               <li>
-                <Link href="/content-removal/fake-review-removal" className="hover:text-white transition-colors">
-                  Fake Review Removal
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/services" className="hover:text-white transition-colors">
+                <Link href="/reputation-management" className="hover:text-white transition-colors">
                   Online Reputation Management
                 </Link>
               </li>
@@ -156,6 +156,12 @@ export default function Footer() {
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
+                <Link href="/protection" className="hover:text-white transition-colors">
+                  Intellectual Property Protection
+                </Link>
+              </li>
+
+              <li>
                 <Link href="/dating-reputation/image-protection" className="hover:text-white transition-colors">
                   Stolen Image Protection
                 </Link>
@@ -164,6 +170,12 @@ export default function Footer() {
               <li>
                 <Link href="/content-removal/tiktok-content-removal" className="hover:text-white transition-colors">
                   TikTok Content Removal
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/content-removal/instagram-content-removal" className="hover:text-white transition-colors">
+                  Instagram Content Removal
                 </Link>
               </li>
 
@@ -188,12 +200,6 @@ export default function Footer() {
               <li>
                 <Link href="/search-result-cleanup/google-suppression-de-indexing" className="hover:text-white transition-colors">
                   Google De-Indexing &amp; Suppression
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/content-removal/instagram-content-removal" className="hover:text-white transition-colors">
-                  Instagram Content Removal
                 </Link>
               </li>
             </ul>
@@ -222,20 +228,32 @@ export default function Footer() {
               </li>
 
               <li>
-                <Link href="/content-removal/ripoff-report-removal" className="hover:text-white transition-colors">
-                  Ripoff Report Removal
+                <Link href="/content-removal/fake-review-removal" className="hover:text-white transition-colors">
+                  Fake Review Removal
                 </Link>
               </li>
 
               <li>
-                <Link href="/content-removal/twitter-x-content-removal" className="hover:text-white transition-colors">
-                  Twitter / X Content Removal
+                <Link href="/content-removal/bbb-review-removal" className="hover:text-white transition-colors">
+                  BBB Review Removal
                 </Link>
               </li>
 
               <li>
-                <Link href="/search-result-cleanup/reddit-forum-result-cleanup" className="hover:text-white transition-colors">
-                  Reddit &amp; Forum Cleanup
+                <Link href="/content-removal/facebook-review-removal" className="hover:text-white transition-colors">
+                  Facebook Review Removal
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/content-removal/indeed-review-removal" className="hover:text-white transition-colors">
+                  Indeed Review Removal
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/content-removal/travel-hospitality-review-removal" className="hover:text-white transition-colors">
+                  Travel &amp; Hospitality Review Removal
                 </Link>
               </li>
 
@@ -248,6 +266,12 @@ export default function Footer() {
               <li>
                 <Link href="/job-reputation/background-check-cleanup" className="hover:text-white transition-colors">
                   Background Check Cleanup
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/content-removal/ripoff-report-removal" className="hover:text-white transition-colors">
+                  Ripoff Report Removal
                 </Link>
               </li>
             </ul>
@@ -424,6 +448,13 @@ export default function Footer() {
                 className="hover:text-white transition-colors"
               >
                 FAQ
+              </Link>
+
+              <Link
+                href="/pricing"
+                className="hover:text-white transition-colors"
+              >
+                Pricing
               </Link>
             </div>
           </div>

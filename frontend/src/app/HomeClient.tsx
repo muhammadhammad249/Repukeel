@@ -28,7 +28,7 @@ export default function HomeClient() {
               WorldWide
             </h1>
             <p className="text-[17px] text-[#4b5563] mb-10 max-w-lg leading-relaxed">
-              At RepuKeel Reputation, we remove harmful online content, repair search results, and protect your reputation — fast, confidentially, and with proven results.
+              At RepuKeel Reputation, we remove harmful online content — from <Link href="/content-removal/google-review-removal" className="text-[#d4af37] hover:underline font-semibold">fake Google reviews</Link> and <Link href="/content-removal/trustpilot-review-removal" className="text-[#d4af37] hover:underline font-semibold">Trustpilot reviews</Link> to <Link href="/content-removal/mugshot-removal-suppression" className="text-[#d4af37] hover:underline font-semibold">mugshots</Link> and <Link href="/content-removal/fake-review-removal" className="text-[#d4af37] hover:underline font-semibold">fake reviews</Link> — repair search results, and protect your reputation fast, confidentially, and with proven results.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
@@ -183,7 +183,7 @@ export default function HomeClient() {
             <p className="text-[16px] text-[var(--text-body)]">Achieve comprehensive visibility of online threats with round-the-clock monitoring and enforcement.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {[
               { slug: 'content-removal', name: 'Content Removal', icon: '📄', desc: 'Remove harmful content from TikTok, Instagram, Reddit, Google and more.' },
               { slug: 'dating-reputation', name: 'Dating Reputation', icon: '🔥', desc: 'Remove damaging profiles and posts from dating sites and apps.' },
@@ -191,6 +191,8 @@ export default function HomeClient() {
               { slug: 'monitoring-alerts', name: 'Monitoring & Alerts', icon: '📊', desc: 'Real-time monitoring and alerts for threats across the internet.' },
               { slug: 'reputation-management', name: 'Reputation Management', icon: '🥇', desc: 'Comprehensive online reputation repair and enhancement.' },
               { slug: 'search-result-cleanup', name: 'Search Result Cleanup', icon: '🔍', desc: 'Remove and suppress negative search results on Google and Bing.' },
+              { slug: 'reputation-audit', name: 'Reputation Audit', icon: '🔎', desc: 'Get a comprehensive audit of your online reputation and brand visibility.' },
+              { slug: 'industries', name: 'Industries', icon: '🏢', desc: 'Tailored reputation management solutions for your specific industry.' },
             ].map((cat, i) => (
               <motion.div
                 key={i}
@@ -212,7 +214,7 @@ export default function HomeClient() {
 
           <div className="flex justify-center gap-4 mb-16">
             <Link href="/contact" className="btn btn-navy-solid uppercase text-[14px] font-[600] px-8 py-3 rounded-lg">CONTACT SALES</Link>
-            <Link href="/contact" className="btn btn-gold-solid uppercase text-[14px] font-[600] px-8 py-3 rounded-lg">REQUEST A DEMO</Link>
+            <Link href="/request-free-analysis" className="btn btn-gold-solid uppercase text-[14px] font-[600] px-8 py-3 rounded-lg">REQUEST A DEMO</Link>
           </div>
 
           {/* New Google Reviews Card */}
@@ -429,9 +431,9 @@ export default function HomeClient() {
           {/* Right Column (FAQ Cards) */}
           <div className="flex flex-col gap-4">
             {[
-              { q: 'What is a DMCA takedown?', a: 'A DMCA takedown is a formal legal notice filed with a platform or hosting provider under the Digital Millennium Copyright Act, requiring them to remove content that infringes your copyright. Most major platforms globally comply with DMCA notices.' },
+              { q: 'What is a DMCA takedown?', a: <span>A <Link href="/protection" className="text-[var(--gold)] hover:underline font-semibold">DMCA takedown</Link> is a formal legal notice filed with a platform or hosting provider under the Digital Millennium Copyright Act, requiring them to remove content that infringes your copyright. Most major platforms globally comply with DMCA notices.</span> },
               { q: 'How quickly does content get removed?', a: 'Most content is removed within 24 to 72 hours of a valid notice being filed. Search engine de-indexing takes 24 to 96 hours. We track every case until it is fully resolved.' },
-              { q: 'Do you handle reputation damage as well as copyright?', a: 'Yes. We offer full Online Reputation Management services including removal of defamatory articles, fake review campaigns, and negative content suppression alongside our copyright enforcement services.' },
+              { q: 'Do you handle reputation damage as well as copyright?', a: <span>Yes. We offer full <Link href="/reputation-management" className="text-[var(--gold)] hover:underline font-semibold">online reputation management</Link> services including removal of defamatory articles, fake review campaigns, and negative content suppression alongside our copyright enforcement services.</span> },
               { q: 'Is your service confidential?', a: 'Completely. Your identity and all case details are handled with strict confidentiality. We never share our client list publicly without explicit permission.' }
             ].map((faq, i) => (
               <div key={i} className="bg-[#f8f9fa] border border-gray-100 rounded-2xl p-8">
@@ -441,6 +443,67 @@ export default function HomeClient() {
             ))}
           </div>
 
+        </div>
+      </section>
+
+      {/* ================= LATEST ARTICLES ================= */}
+      <section className="w-full bg-[#f4f6f8] py-24">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[13px] font-[700] text-[var(--gold)] uppercase tracking-widest mb-2 block">From Our Blog</span>
+            <h2 className="text-4xl font-[800] mb-4 text-[var(--text-heading)]">Latest Articles</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Expert guides on reputation management, DMCA takedowns, and brand protection.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              { title: 'How to Remove Fake Google Reviews: A Complete Guide by RepuKeel', slug: 'remove-fake-google-reviews', category: 'Reviews', excerpt: 'Fake Google reviews hurting your business? Learn how to remove them legally and fast.' },
+              { title: 'Online Reputation Management: How RepuKeel Helps You Remove Bad Reviews and Protect Your Brand', slug: 'online-reputation-management-guide', category: 'Reputation Management', excerpt: 'A single bad review can cost you customers. Learn how online reputation management works.' },
+              { title: 'DMCA Takedown Claims Explained: How to Remove Stolen Content Online', slug: 'dmca-takedown-claims-guide', category: 'DMCA', excerpt: 'Someone using your content without permission? Learn how DMCA takedowns work.' },
+            ].map((post, i) => (
+              <Link
+                key={i}
+                href={`/blogs/${post.slug}`}
+                className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group no-underline block"
+              >
+                <div className="text-[12px] font-[700] text-[var(--gold)] uppercase tracking-wider mb-2">{post.category}</div>
+                <h3 className="text-[17px] font-[800] text-[var(--text-heading)] mb-3 group-hover:text-[var(--gold)] transition-colors">{post.title}</h3>
+                <p className="text-[14px] text-[var(--text-body)] mb-4">{post.excerpt}</p>
+                <span className="text-[13px] font-[700] text-[var(--bg-navy)] group-hover:text-[var(--gold)] transition-colors">Read article &rarr;</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/blogs" className="btn btn-outline-dark text-[14px] font-[600] px-8 py-3 rounded-lg inline-block">View All Articles</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= EXPLORE MORE ================= */}
+      <section className="w-full bg-white py-20 border-t border-[var(--border-light)]">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl font-[800] mb-4 text-[var(--text-heading)]">Explore More</h2>
+            <p className="text-[16px] text-[var(--text-body)]">Transparent pricing, proven results, and free tools to help you take control of your online presence.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Link href="/pricing" className="card-light flex flex-col items-center text-center p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 block">
+              <div className="text-3xl mb-4">💰</div>
+              <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">Pricing</h4>
+              <p className="text-[14px] text-[var(--text-body)]">Transparent, results-driven pricing with no hidden fees.</p>
+            </Link>
+            <Link href="/case-studies" className="card-light flex flex-col items-center text-center p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 block">
+              <div className="text-3xl mb-4">📊</div>
+              <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">Case Studies</h4>
+              <p className="text-[14px] text-[var(--text-body)]">Real results from real clients — see how we deliver.</p>
+            </Link>
+            <Link href="/tools" className="card-light flex flex-col items-center text-center p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 block">
+              <div className="text-3xl mb-4">🛠️</div>
+              <h4 className="text-[18px] font-[700] text-[var(--text-heading)] mb-2">Free Tools</h4>
+              <p className="text-[14px] text-[var(--text-body)]">Search tools, image fingerprinting, and more — all free.</p>
+            </Link>
+          </div>
         </div>
       </section>
 

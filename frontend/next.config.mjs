@@ -10,6 +10,51 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blogs/online-reputation-management-how-repukeel-helps-you-remove-bad-reviews-and-protect-your-brand',
+        destination: '/blogs/online-reputation-management-guide',
+        permanent: true,
+      },
+      {
+        source: '/blogs/onlyfans-content-leaked-how-to-remove-it-fast-and-protect-your-privacy',
+        destination: '/blogs/remove-leaked-onlyfans-content',
+        permanent: true,
+      },
+      {
+        source: '/blogs/brand-ip-protection-how-to-safeguard-your-business-online',
+        destination: '/blogs/brand-and-ip-protection-guide',
+        permanent: true,
+      },
+      {
+        source: '/blogs/dmca-takedown-claims-explained-how-to-remove-stolen-content-online',
+        destination: '/blogs/dmca-takedown-claims-guide',
+        permanent: true,
+      },
+      {
+        source: '/blogs/how-to-remove-fake-google-reviews-a-complete-guide-by-repukeel',
+        destination: '/blogs/remove-fake-google-reviews',
+        permanent: true,
+      },
+      {
+        source: '/blogs/how-to-report-and-remove-a-fake-impersonating-profile-online',
+        destination: '/blogs/remove-fake-impersonating-profiles',
+        permanent: true,
+      },
+      {
+        source: '/blogs/how-to-remove-your-mugshot-from-google-repukeel-s-complete-guide',
+        destination: '/blogs/remove-mugshots-from-google',
+        permanent: true,
+      },
+      {
+        source: '/blogs/social-media-takedowns-how-to-remove-harassing-or-fake-content-fast',
+        destination: '/blogs/social-media-takedowns-guide',
+        permanent: true,
+      },
+      {
+        source: '/blogs/how-to-remove-trustpilot-reviews-legally-repukeel-s-expert-guide',
+        destination: '/blogs/remove-fake-trustpilot-reviews',
+        permanent: true,
+      },
+      {
         source: '/:path*',
         has: [
           {
