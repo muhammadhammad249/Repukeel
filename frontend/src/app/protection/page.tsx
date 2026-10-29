@@ -37,7 +37,7 @@ export default function ProtectionPage() {
           
           {/* Exactly one H1 */}
           <h1 className="text-4xl md:text-5xl font-[800] tracking-tight leading-[1.15] mb-6 text-[var(--text-heading)]">
-            Remove Harmful Content About You. Protect What You Create.
+            Remove Harmful, Negative, Bad Content About You.
           </h1>
           
           {/* Intro paragraph */}
