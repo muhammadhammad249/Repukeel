@@ -36,7 +36,7 @@ export default function ProtectionPage() {
           </div>
           
           {/* Exactly one H1 */}
-          <h1 className="text-4xl md:text-5xl font-[800] tracking-tight leading-[1.15] mb-6 text-[var(--text-heading)]">
+          <h1 className="text-3xl md:text-[42px] font-[800] tracking-tight leading-[1.15] mb-6 text-[var(--text-heading)]">
             Remove Harmful, Negative, Bad Content About You.
           </h1>
           
