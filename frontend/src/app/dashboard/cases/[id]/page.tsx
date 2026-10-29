@@ -1,26 +1,20 @@
 /* eslint-disable */
 'use client';
-import { useEffect, useState, useRef } from 'react';
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { STATUS_LABELS } from '@/lib/auth';
 
-type Tab = 'timeline' | 'invoice';
-
-
 export default function CaseDetailPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const isNew = searchParams.get('new') === '1';
 
   const [caseData, setCaseData] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
-  const [invoice, setInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>('timeline');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const [replyMessage, setReplyMessage] = useState('');
@@ -34,16 +28,14 @@ export default function CaseDetailPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) setCurrentUserId(user.id);
 
-        const [{ data: c }, { data: u }, { data: inv }, { data: msgs }] = await Promise.all([
+        const [{ data: c }, { data: u }, { data: msgs }] = await Promise.all([
           supabase.from('cases').select('*').eq('id', id).single(),
           supabase.from('case_updates').select('*').eq('case_id', id).order('created_at', { ascending: true }),
-          supabase.from('invoices').select('*').eq('case_id', id).maybeSingle(),
           supabase.from('messages').select('*').eq('case_id', id).order('created_at', { ascending: true }),
         ]);
         setCaseData(c);
         setUpdates(u || []);
         setMessages(msgs || []);
-        setInvoice(inv);
       } finally {
         setLoading(false);
       }
@@ -163,7 +155,6 @@ export default function CaseDetailPage() {
             const stepStatusIndex = array.findIndex(s => s.statuses.includes(caseData.status));
             const isCompleted = stepStatusIndex > index;
             const isActive = stepStatusIndex === index;
-            const isPending = stepStatusIndex < index;
             
             return (
               <div key={step.label} className="relative z-10 flex flex-col items-center flex-1">

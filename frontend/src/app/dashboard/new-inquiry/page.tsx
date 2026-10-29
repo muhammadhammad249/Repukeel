@@ -256,7 +256,7 @@ export default function NewInquiryPage() {
             />
             <span className="text-[13px] text-gray-600 leading-relaxed">
               I confirm the information above is accurate and I authorize RepuKeel to act on my behalf regarding this matter. I have read and agree to the{' '}
-              <a href="/terms-conditions" target="_blank" className="text-[#d4af37] font-[600] hover:underline">Terms and Conditions</a>.
+              <a href="/terms-conditions" target="_blank" rel="noopener noreferrer" className="text-[#d4af37] font-[600] hover:underline">Terms and Conditions</a>.
             </span>
           </label>
         </div>

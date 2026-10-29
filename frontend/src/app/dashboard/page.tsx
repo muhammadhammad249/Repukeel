@@ -36,12 +36,6 @@ export default function DashboardOverview() {
             .order('created_at', { ascending: false });
           
           setCases(cData || []);
-
-          if (cData && cData.length > 0) {
-            const caseIds = cData.map(c => c.id);
-            
-            
-          }
         }
       } finally {
         setLoading(false);

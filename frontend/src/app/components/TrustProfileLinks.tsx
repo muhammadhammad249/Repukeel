@@ -1,4 +1,3 @@
-import React from 'react';
 import { trustProfiles } from '@/data/trustProfiles';
 
 export default function TrustProfileLinks({ className = '' }: { className?: string }) {

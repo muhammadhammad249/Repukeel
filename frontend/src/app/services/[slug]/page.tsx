@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!service) return {};
 
   return {
-    title: `${service.name} | RepuKeel`,
+    title: service.name,
     description: service.intro,
     alternates: {
       canonical: `/${service.categorySlug}/${service.slug}`,

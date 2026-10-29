@@ -57,7 +57,7 @@ function LoginContent() {
       if (role === 'admin' || role === 'super_admin') {
         window.location.href = '/dashboard/admin';
       } else {
-        window.location.href = '/dashboard';
+        window.location.href = nextUrl;
       }
     } catch (err: any) {
       console.error('Login error:', err);
@@ -91,6 +91,8 @@ function LoginContent() {
               width={140}
               height={40}
               className="h-[40px] w-auto object-contain"
+              style={{ width: 'auto' }}
+              priority
             />
           </div>
         </div>

@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://repukeel.com';
 
   // Core static pages (excluding utility/auth pages like /login and /signup)
+  const siteLastModified = new Date('2026-10-29T00:00:00Z');
+
   const routes = [
     '',
     '/about',
@@ -19,11 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blogs',
     '/case-studies',
     '/tools',
+    '/request-free-analysis',
     '/privacy-policy',
     '/terms-conditions',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    lastModified: siteLastModified,
     changeFrequency: 'weekly' as const,
     priority: route === '' ? 1.0 : 0.8,
   }));
@@ -32,23 +35,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const dynamicRoutes = categories.flatMap((cat) => {
     const catRoute = {
       url: `${baseUrl}/${cat.slug}`,
-      lastModified: new Date(),
+      lastModified: siteLastModified,
       changeFrequency: 'weekly' as const,
       priority: 0.9,
     };
     const subRoutes = cat.subServices.map((sub) => ({
       url: `${baseUrl}/${cat.slug}/${sub.slug}`,
-      lastModified: new Date(),
+      lastModified: siteLastModified,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
     return [catRoute, ...subRoutes];
   });
 
-  // Dynamic blog post pages
+  // Dynamic blog post pages with real published dates
   const blogRoutes = blogs.map((blog) => ({
     url: `${baseUrl}/blogs/${blog.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(blog.datePublished),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
@@ -58,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((tool) => tool.enabled)
     .map((tool) => ({
       url: `${baseUrl}${tool.href}`,
-      lastModified: new Date(),
+      lastModified: siteLastModified,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));

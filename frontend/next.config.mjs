@@ -1,5 +1,13 @@
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   async redirects() {
     return [
       // Redirect ALL *.vercel.app deployment URLs → canonical domain
@@ -55,6 +63,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/use-cases/:slug*',
+        destination: '/services',
+        permanent: true,
+      },
+      {
         source: '/:path*',
         has: [
           {
@@ -88,40 +101,63 @@ const nextConfig = {
     ];
   },
   async headers() {
+    const isNonProduction = process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';
+
+    const globalHeaders = [
+      {
+        key: 'X-DNS-Prefetch-Control',
+        value: 'on',
+      },
+      {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload',
+      },
+      {
+        key: 'X-XSS-Protection',
+        value: '1; mode=block',
+      },
+      {
+        key: 'X-Frame-Options',
+        value: 'SAMEORIGIN',
+      },
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+      },
+      ...(isNonProduction ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] : []),
+    ];
+
     return [
       {
         source: '/(.*)',
+        headers: globalHeaders,
+      },
+      {
+        source: '/dashboard/:path*',
         headers: [
           {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
           },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
           {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload'
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
           },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()'
-          }
-        ]
-      }
+        ],
+      },
     ];
   }
 };

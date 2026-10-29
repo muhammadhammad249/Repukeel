@@ -6,11 +6,14 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
       disallow: [
-        '/dashboard/', // Protect dashboard routes from indexing
-        '/api/',       // Protect API routes
-        '/checkout/',  // Protect checkout flows
-        '/checkout',
+        '/api/',
+        '/api',
+        '/dashboard/',
+        '/dashboard',
         '/admin/',
+        '/admin',
+        '/checkout/',
+        '/checkout',
       ],
     },
     sitemap: 'https://repukeel.com/sitemap.xml',

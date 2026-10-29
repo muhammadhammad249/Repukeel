@@ -2,7 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { STATUS_LABELS } from '@/lib/auth';
 
@@ -70,7 +70,6 @@ function DeleteModal({
 
 export default function AdminAllCasesPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
