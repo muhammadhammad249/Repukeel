@@ -134,14 +134,16 @@ export default function AccountMenu({
   return (
     <div className={`flex items-center gap-2.5 ${menuClassName}`}>
 
-      {/* Standalone Dashboard Button */}
-      <button
-        type="button"
-        className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm`}
-        onClick={() => navigateTo('/dashboard')}
-      >
-        Dashboard
-      </button>
+      {/* Client Portal Dashboard Button — shown only for regular clients, hidden for admin */}
+      {!isAdmin && (
+        <button
+          type="button"
+          className={`${onNavigate ? 'flex' : 'hidden sm:flex'} items-center justify-center px-4 py-2 bg-[#d4af37] text-white text-[14px] font-[700] rounded-xl hover:bg-[#c19b2e] transition-colors whitespace-nowrap shadow-sm`}
+          onClick={() => navigateTo('/dashboard')}
+        >
+          Dashboard
+        </button>
+      )}
 
       {/* Admin Portal Button — strictly for admin, uses existing role/email check */}
       {isAdmin && (
@@ -190,15 +192,17 @@ export default function AccountMenu({
                 <p className="text-[12px] text-gray-500 truncate">{authState.email}</p>
               </div>
               <div className="p-2">
-                {/* Dashboard — in dropdown for mobile (sm:hidden hides the button above on small screens) */}
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
-                  className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0a192f] rounded-lg hover:bg-gray-100 transition-colors sm:hidden"
-                >
-                  Dashboard
-                </button>
+                {/* Dashboard — for client in dropdown on mobile */}
+                {!isAdmin && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => { setIsOpen(false); navigateTo('/dashboard'); }}
+                    className="w-full text-left px-3 py-2 text-[14px] font-[600] text-[#0a192f] rounded-lg hover:bg-gray-100 transition-colors sm:hidden"
+                  >
+                    Dashboard
+                  </button>
+                )}
                 {isAdmin && (
                   <button
                     type="button"
