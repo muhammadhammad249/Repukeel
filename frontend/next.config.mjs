@@ -1,5 +1,13 @@
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   async redirects() {
     return [
       // Redirect ALL *.vercel.app deployment URLs → canonical domain
