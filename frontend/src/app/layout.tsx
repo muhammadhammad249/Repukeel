@@ -129,7 +129,7 @@ export default function RootLayout({
             {/* Soft huge background glow specifically for WhatsApp */}
             <div className="absolute inset-0 rounded-full bg-[#25d366] opacity-30 blur-[20px] -z-10 scale-[1.5]"></div>
             
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-[34px] h-[34px]" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-[34px] h-[34px]" aria-hidden="true" focusable="false">
               <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-3-.2-.3A8 8 0 1 1 12 20zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.9 1-.1.2-.3.2-.5.1a9 9 0 0 1-2-1.2 7.5 7.5 0 0 1-1.4-1.7c-.1-.3 0-.4.2-.5l.5-.5.3-.5.1-.5-1-2.3c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3C8.3 8.5 7.5 9.5 7.5 11s1 2.8 1.2 3 2 3.2 5 4.4c2.5 1 3 .8 3.5.8s1.7-.7 2-1.4.3-1.3.2-1.4z"/>
             </svg>
             

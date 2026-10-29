@@ -374,3 +374,114 @@ Repository: `C:\Users\Ash\Repukeel`
 | **SEO-15** | Per-page meta tags | Low | **PASS** | `20c00c3` (No keywords, dynamic OG/Twitter) |
 | **SEO-16** | Emoji in link text | Low | **PASS** | `8d0d254` (`aria-hidden` wrappers) |
 | **SEO-17** | Free-analysis index decision | Low | **PASS** | `robots: { index: false, follow: true }` |
+
+---
+
+# Phase: Footer Social Icons, Homepage ORM Focus, Trust Profiles & Review Proof
+
+Branch: `fix/footer-icons-homepage-trust`  
+Date: 29 Oct 2026  
+Status: Local Branch Staged / Ready for Review (NOT pushed to `main`)
+
+---
+
+## Part 1: Footer Social Icons in Brand Colors
+- **Status**: Completed & Verified (Committed in `10f8349`)
+- **Files Created / Modified**:
+  - `frontend/src/data/socialBrands.ts` (Central source of truth for social brands)
+  - `frontend/src/app/components/Footer.tsx` (Applied brand colors, 40px circular badges, accessibility attributes)
+  - `frontend/src/app/contact/page.tsx` (Unified WhatsApp brand color `#25D366`)
+  - `frontend/src/app/layout.tsx` (Added `focusable="false"` to floating WhatsApp SVG)
+  - `seo/footer-icons-1440.png` (Desktop screenshot)
+  - `seo/footer-icons-390.png` (Mobile screenshot)
+- **Official Brand Colors Configured**:
+  - Facebook: `#1877F2`
+  - Instagram: Gradient `#F58529`, `#DD2A7B`, `#8134AF`, `#515BD4`
+  - LinkedIn: `#0A66C2`
+  - X: `#000000`
+  - WhatsApp: `#25D366`
+- **Contrast Ratios**:
+  - Dark Footer Background: `#0A152E` (Relative Luminance: 0.0075)
+  - Light Circular Badge: `#FFFFFF` (Relative Luminance: 1.0000)
+  - Badge vs Footer Background: **18.26:1** (Passes WCAG AAA)
+  - Facebook (`#1877F2`) on Badge: **4.25:1** (Passes WCAG AA for graphical objects / UI components)
+  - LinkedIn (`#0A66C2`) on Badge: **5.74:1** (Passes WCAG AAA for graphical objects)
+  - X (`#000000`) on Badge: **21.00:1** (Maximum WCAG contrast)
+  - Instagram (Gradient `#DD2A7B`/`#8134AF`) on Badge: **~5.5:1** (Passes WCAG AA/AAA)
+  - WhatsApp (`#25D366`) on Dark Background (`#0A152E`): **8.70:1** (Passes WCAG AAA)
+- **Accessibility & Touch Target Standards**:
+  - Touch Target: 40px × 40px (`w-10 h-10 rounded-full`)
+  - Focus Ring: `focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a152e]`
+  - Hover: `hover:-translate-y-0.5 hover:shadow-md transition-all duration-150 ease-in-out` (no animation beyond 150ms)
+  - SVGs: marked `aria-hidden="true"` and `focusable="false"`
+  - Anchors: `aria-label="RepuKeel on Facebook"`, `aria-label="RepuKeel on Instagram"`, `aria-label="RepuKeel on X"`, `aria-label="RepuKeel on LinkedIn"`
+- **Verification Commands Run**:
+  - `curl -s http://localhost:3000/ | grep -o 'aria-label="RepuKeel on [A-Za-z/ ]*"'` -> Output:
+    - `aria-label="RepuKeel on Facebook"`
+    - `aria-label="RepuKeel on Instagram"`
+    - `aria-label="RepuKeel on X"`
+    - `aria-label="RepuKeel on LinkedIn"`
+
+---
+
+## Part 2: Homepage ORM Focus (Approval Gate)
+- **Status**: Audit Complete & Documented; NO copy edited pending user approval
+- **Deliverable**: `seo/homepage-orm-focus.md` (24 items audited and categorized)
+- **Summary**:
+  - Audited H1, meta title, meta description, hero, pills, service headings, Google review card, 4-step process, stats strip, testimonials, FAQ, and blog cards.
+  - Categorized each item into ORM, Copyright/DMCA/Piracy, or Mixed.
+  - Proposed concrete ORM replacements aligned with existing service page copy.
+  - Separately reported sitewide footer and template DMCA items:
+    - `Footer.tsx:468`: `"24/7 Emergency DMCA Support"`
+    - `Footer.tsx:89`: `"Brand Protection Solutions"`
+    - `contact/page.tsx:135`: `"Emergency Support: 24/7"`
+  - Retained all existing `/protection` routes and DMCA guides intact.
+
+---
+
+## Part 3: Homepage Stats Inventory & Single Source of Truth (Approval Gate)
+- **Status**: Inventory Complete; `src/data/stats.ts` created; NO visible numbers changed pending user evidence
+- **Deliverables**:
+  - `seo/stats-inventory.csv` (27 occurrences audited with columns `file,line,exact_text,page_url,same_metric_elsewhere_different_value,proposed_action`)
+  - `frontend/src/data/stats.ts` (`{ id, value, label, basis, asOf, sourceUrl?, status: 'verified' | 'unverified' }`)
+- **Key Discrepancies Cataloged in Inventory**:
+  - `500K+ Content Pieces Removed` vs `500K+ DMCA Takedowns Filed`
+  - `99% Success Rate` vs `99% Success` vs `99% Client Satisfaction` vs `99% Takedown Success Rate`
+  - `24h Response` vs `24hrs Avg Removal Time` vs `24hr Average Response Time` vs `Response Within 24h`
+  - `4.9★ Rating` vs `4.96 out 5 (25 Reviews)`
+  - Proposed softened wording added for all unverified stats pending client evidence.
+
+---
+
+## Part 4: Trust Profile Links (E-E-A-T)
+- **Status**: Implemented & Verified
+- **Files Created / Modified**:
+  - `frontend/src/data/trustProfiles.ts` (LinkedIn populated using constant; Google Reviews empty)
+  - `frontend/src/app/components/TrustProfileLinks.tsx` (Renders only profiles with non-empty URLs)
+  - `frontend/src/app/HomeClient.tsx` (Integrated into trust section)
+  - `frontend/src/app/about/page.tsx` (Integrated into Who We Are section)
+- **Verification Commands Run**:
+  - `curl -s http://localhost:3000/ | grep -c "linkedin.com/company/repukeel"` -> 4 matches (>= 2 required: footer & trust row).
+  - Verified `rel="noopener noreferrer"` and `target="_blank"` on all external trust profile links.
+  - Verified no `AggregateRating` or `Review` schema added (`curl -s http://localhost:3000/ | grep -c AggregateRating` = 0).
+
+---
+
+## Part 5: Review Removal Examples (Proof Section)
+- **Status**: Mechanism Built & Verified; Starts EMPTY
+- **Files Created / Modified**:
+  - `frontend/src/data/removalProof.ts` (Empty array `removalProofEntries = []`)
+  - `frontend/src/app/components/RemovalProofGallery.tsx` (Server Component, verifies `clientConsent`, `redacted`, and file existence on disk)
+  - `frontend/src/app/page.tsx` & `frontend/src/app/HomeClient.tsx` (Server component composition)
+  - `frontend/src/app/case-studies/page.tsx` (Full variant with responsive grid)
+  - `seo/proof-checklist.md` (6-step per-image checklist for redaction and compliance)
+  - `seo/proof-gallery-case-studies.png` (Screenshot showing rendered proof gallery during local test)
+  - `seo/proof-gallery-home.png` (Screenshot showing rendered compact proof gallery during local test)
+- **Zero Scraping & Prohibited URL Compliance**:
+  - Verified zero review platform URLs (`goo.gl`, `google.com/maps`, `trustpilot.com`) were fetched, scraped, linked, or added to codebase.
+- **Empty State Behavior**:
+  - With `removalProofEntries = []`, neither `/` nor `/case-studies` renders any proof heading, container, or placeholder card.
+- **Confidentiality Audit**:
+  - Audited all uses of "100% Confidential" across `HomeClient.tsx` (line 329, line 441), `services/page.tsx` (line 75, line 181), and `terms-conditions/page.tsx` (Section 10.1).
+  - Mechanism enforces both `clientConsent: true` and `redacted: true` to honor confidentiality commitments.
+
