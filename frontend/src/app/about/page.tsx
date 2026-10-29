@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
+import TrustProfileLinks from '@/app/components/TrustProfileLinks';
 
 export const metadata: Metadata = {
   title: 'About Us | Reputation Experts',
@@ -51,6 +52,7 @@ export default function AboutPage() {
             <p className="text-[16px] text-gray-700 leading-relaxed">
               We combine takedown expertise, copyright enforcement and search strategy in one service, so you do not have to chase platforms yourself.
             </p>
+            <TrustProfileLinks className="mt-8 !justify-start" />
           </div>
           
           <div className="bg-[#f8fafc] p-8 md:p-10 rounded-2xl border border-gray-100 shadow-sm">
