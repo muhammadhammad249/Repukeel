@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import HomeClient from './HomeClient';
+import RemovalProofGallery from './components/RemovalProofGallery';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <HomeClient />;
+  return <HomeClient proofGallery={<RemovalProofGallery variant="compact" limit={3} />} />;
 }

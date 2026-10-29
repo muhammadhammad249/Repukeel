@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import TrustProfileLinks from './components/TrustProfileLinks';
 
-export default function HomeClient() {
+export default function HomeClient({ proofGallery }: { proofGallery?: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       
@@ -246,6 +247,12 @@ export default function HomeClient() {
 
             </div>
           </div>
+
+          {/* Trust Profile Links */}
+          <TrustProfileLinks className="mt-8" />
+
+          {/* Proof Gallery Section */}
+          {proofGallery}
 
         </div>
       </section>
