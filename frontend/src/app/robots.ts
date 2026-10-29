@@ -17,6 +17,5 @@ export default function robots(): MetadataRoute.Robots {
       ],
     },
     sitemap: 'https://repukeel.com/sitemap.xml',
-    host: 'https://repukeel.com',
   };
 }
