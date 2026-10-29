@@ -374,3 +374,89 @@ Repository: `C:\Users\Ash\Repukeel`
 | **SEO-15** | Per-page meta tags | Low | **PASS** | `20c00c3` (No keywords, dynamic OG/Twitter) |
 | **SEO-16** | Emoji in link text | Low | **PASS** | `8d0d254` (`aria-hidden` wrappers) |
 | **SEO-17** | Free-analysis index decision | Low | **PASS** | `robots: { index: false, follow: true }` |
+
+---
+
+# Phase: Reposition /protection Page (Dual Focus: Harmful Content & Stolen Content)
+
+Branch: `fix/protection-page-reposition`  
+Date: 29 Oct 2026  
+Status: Local Branch Staged / Ready for Review (NOT pushed to `main`)
+
+---
+
+## Task Overview
+Repositioned the `/protection` landing page from a DMCA/copyright-only framing to an equal, balanced presentation covering:
+1. **Harmful or Negative Content About You** (reviews, articles, forum posts, search results, mugshots, reputation audits)
+2. **Stolen or Copyrighted Content** (images, video courses, social media takedowns, unauthorized brand/content reposts)
+
+## Changes Implemented
+
+### 1. Metadata & OpenGraph
+- **File**: `frontend/src/app/protection/layout.tsx`
+- **Title**: `Remove Harmful Content & Protect Your Work` (renders with layout template as `Remove Harmful Content & Protect Your Work | RepuKeel`, exactly 1 brand suffix)
+- **Description**: `Get help with negative or harmful content about you online, and with stolen or copyrighted content. Tell us what you found and see your options.`
+- OpenGraph and Twitter tags inherit identical title and description; canonical points to `https://repukeel.com/protection`.
+
+### 2. Page Content & Structure
+- **File**: `frontend/src/app/protection/page.tsx`
+- **Eyebrow**: `Content Protection`
+- **H1 (Exactly 1)**: `Remove Harmful Content About You. Protect What You Create.`
+- **Intro Paragraph**: `RepuKeel helps individuals and businesses deal with negative or harmful content online, and with copyright infringement of their own work. Tell us what you found and we will explain your options.`
+- **Two Equal Cards**:
+  - **Card A ("Harmful or negative content about you")**: Reviews, articles, posts and search results that damage your reputation. CTA: `Request a free analysis →` linking to `/request-free-analysis`.
+  - **Card B ("Stolen or copyrighted content")**: Your photos, videos, text or brand used without your permission. CTA: `Submit a copyright case →` linking to `/contact`.
+- **Disclaimer Line**: `Outcomes depend on platform policies and the facts of each case. We cannot guarantee removal.`
+- **Service Hub Grid ("What we can help with")**: Two columns linking to 12 existing verified pages:
+  - *Harmful Content Column*: Google Review Removal, Fake Review Removal, News Article Removal, Reddit & Forum Result Cleanup, Google Suppression & De-Indexing, Mugshot Removal & Suppression, Personal Reputation Audit.
+  - *Stolen Content Column*: Stolen Image Protection, Instagram Content Removal, TikTok Content Removal, Social Media Takedowns, YouTube & Video Result Suppression.
+- **Client Portal Card**: Preserved existing text and `Log in →` link to `/login`, positioned cleanly beneath the sections.
+
+### 3. Removed Elements
+- Unverified stats strip: `98% Success Rate`, `24-48h Response Time`, `280+ Cases Solved`, `4.9★ Client Rating` (removed from page body).
+- Public `"Admin access →"` link to `/login`.
+- Unverified claims: `"immediately"` and `"legal team"` removed.
+- `"DMCA"` phrasing removed completely from page body.
+
+### 4. Footer Links Consolidation
+- **File**: `frontend/src/app/components/Footer.tsx`
+- Consolidated 3 conflicting links down to **exactly 1 link**:
+  - Column 2 ("Brand Protection Solutions"): Updated anchor `Brand & IP Protection` to `Content Protection`.
+  - Column 2: Removed duplicate `DMCA Takedown Service` (`/protection`).
+  - Column 3 ("Content Protection Solutions"): Removed duplicate `Intellectual Property Protection` (`/protection`).
+- **Audit Deliverable**: `seo/protection-links.md` (documents all incoming internal links across the codebase).
+
+---
+
+## Verification Commands & Output
+
+1. **H1 Tag & Exact Match**:
+   - `curl -s http://localhost:3000/protection | grep -c '<h1'` → **1**
+   - H1 text: `Remove Harmful Content About You. Protect What You Create.`
+2. **Prohibited Terms in Page Body**:
+   - `DMCA|98%|280\+|4\.9|Admin access|immediately` in `<main>` → **0 matches (PASS)**
+   - *Note*: Footer contains separate 24/7 Emergency DMCA Support banner outside page scope.
+3. **Single Brand Suffix in Title**:
+   - `curl -s http://localhost:3000/protection | grep -io '<title>[^<]*'` → `<title>Remove Harmful Content &amp; Protect Your Work | RepuKeel`
+4. **All 12 Service Links Return HTTP 200 OK**:
+   - `/content-removal/google-review-removal` → `200`
+   - `/content-removal/fake-review-removal` → `200`
+   - `/search-result-cleanup/news-article-removal` → `200`
+   - `/search-result-cleanup/reddit-forum-result-cleanup` → `200`
+   - `/search-result-cleanup/google-suppression-de-indexing` → `200`
+   - `/content-removal/mugshot-removal-suppression` → `200`
+   - `/reputation-audit/personal-reputation-audit` → `200`
+   - `/dating-reputation/image-protection` → `200`
+   - `/content-removal/instagram-content-removal` → `200`
+   - `/content-removal/tiktok-content-removal` → `200`
+   - `/dating-reputation/social-media-takedowns` → `200`
+   - `/search-result-cleanup/youtube-video-result-suppression` → `200`
+5. **Footer Single Link Verification Across Sampled Pages**:
+   - `/` footer `/protection` count: **1**
+   - `/services` footer `/protection` count: **1**
+   - `/about` footer `/protection` count: **1**
+   - `/protection` footer `/protection` count: **1**
+6. **Screenshots Captured**:
+   - `seo/protection-1440.png` (1440px desktop view)
+   - `seo/protection-390.png` (390px mobile view)
+

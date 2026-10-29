@@ -97,13 +97,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
               <li>
                 <Link href="/protection" className="hover:text-white transition-colors">
-                  Brand &amp; IP Protection
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/protection" className="hover:text-white transition-colors">
-                  DMCA Takedown Service
+                  Content Protection
                 </Link>
               </li>
 
@@ -155,12 +149,6 @@ export default function Footer() {
             </h4>
 
             <ul className="flex flex-col gap-4 text-[14px] text-gray-300">
-              <li>
-                <Link href="/protection" className="hover:text-white transition-colors">
-                  Intellectual Property Protection
-                </Link>
-              </li>
-
               <li>
                 <Link href="/dating-reputation/image-protection" className="hover:text-white transition-colors">
                   Stolen Image Protection

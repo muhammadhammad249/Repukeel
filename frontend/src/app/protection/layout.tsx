@@ -2,10 +2,22 @@ import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Brand & IP Protection Solutions',
-  description: 'Proactive brand protection, copyright enforcement, and digital asset defense for brands and high-profile individuals.',
+  title: 'Remove Harmful Content & Protect Your Work',
+  description:
+    'Get help with negative or harmful content about you online, and with stolen or copyrighted content. Tell us what you found and see your options.',
   alternates: {
     canonical: canonicalFor('/protection'),
+  },
+  openGraph: {
+    title: 'Remove Harmful Content & Protect Your Work',
+    description:
+      'Get help with negative or harmful content about you online, and with stolen or copyrighted content. Tell us what you found and see your options.',
+    url: canonicalFor('/protection'),
+  },
+  twitter: {
+    title: 'Remove Harmful Content & Protect Your Work',
+    description:
+      'Get help with negative or harmful content about you online, and with stolen or copyrighted content. Tell us what you found and see your options.',
   },
 };
 
