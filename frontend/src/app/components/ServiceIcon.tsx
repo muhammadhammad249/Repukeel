@@ -1,4 +1,3 @@
-/* eslint-disable */
 // Server Component — no "use client" needed
 // Returns a styled icon card for each service based on its slug
 
@@ -159,7 +158,6 @@ const defaultIcon: IconDef = {
 
 export default function ServiceIcon({ slug, name }: { slug: string; name: string }) {
   const icon = iconMap[slug] ?? defaultIcon;
-  const isGradient = icon.bg.startsWith("linear-gradient");
 
   return (
     <div className="

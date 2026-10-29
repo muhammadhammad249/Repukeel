@@ -1,7 +1,7 @@
 /* eslint-disable */
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 import AccountMenu from './AccountMenu';
 import Link from 'next/link';
@@ -16,7 +16,6 @@ export default function Navbar() {
   // Always default to first category so the mega-menu shows services immediately on open
   const [servicesMenuTab, setServicesMenuTab] = useState<string | null>(categories[0]?.slug ?? null);
   const pathname = usePathname();
-  const router = useRouter();
   // Ref for the 150ms hover-close delay timer on Services dropdown
   const servicesCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -60,7 +59,7 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, [drawerOpen]);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, target: string) => {
+  const handleNavClick = (_e: React.MouseEvent<HTMLAnchorElement>, target: string) => {
     if (pathname !== target) {
       setIsNavigating(true);
     }
@@ -86,7 +85,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0" onClick={(e) => handleNavClick(e, '/')}>
-            <Image src="/logo.png" alt="RepuKeel Logo" width={180} height={52} className="object-contain w-auto h-[40px] md:h-[48px]" />
+            <Image src="/logo.png" alt="RepuKeel Logo" width={180} height={52} className="object-contain w-auto h-[40px] md:h-[48px]" style={{ width: 'auto' }} priority />
           </Link>
 
           {/* Desktop Nav */}

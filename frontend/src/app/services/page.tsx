@@ -1,6 +1,6 @@
 /* eslint-disable */
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import BlueCtaBand from '../components/BlueCtaBand';
 import ServicesMenuLayout from '../components/ServicesMenuLayout';
 import { categories } from '@/data/services';

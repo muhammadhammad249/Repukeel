@@ -151,7 +151,7 @@ export default function SignupPage() {
         <div className="max-w-md w-full mx-auto">
 
           <Link href="/" className="flex items-center gap-3 mb-10">
-            <Image src="/logo.png" alt="RepuKeel" width={140} height={40} className="h-[38px] w-auto" />
+            <Image src="/logo.png" alt="RepuKeel" width={140} height={40} className="h-[38px] w-auto object-contain" style={{ width: 'auto' }} priority />
           </Link>
 
           <h1 className="text-[32px] font-[900] text-[#0a192f] mb-2">Create your account</h1>

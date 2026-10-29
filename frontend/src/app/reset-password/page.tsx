@@ -19,7 +19,7 @@ function ResetPasswordContent() {
   // Supabase sends the user back with a session in the URL hash.
   // We need to listen for the PASSWORD_RECOVERY event to know the session is active.
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, _session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setSessionReady(true);
       }

@@ -1,36 +1,13 @@
-/* eslint-disable */
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { signOut } from '@/lib/auth';
-
-interface Profile {
-  id: string;
-  full_name: string;
-  email: string;
-  role?: string;
-}
-
-const navItems = [
-  { label: 'Overview', icon: '⬛', path: '/dashboard' },
-  { label: 'New Inquiry', icon: '➕', path: '/dashboard/new-inquiry' },
-  { label: 'My Cases', icon: '📁', path: '/dashboard/cases' },
-
-  { label: 'Invoices & Payments', icon: '💳', path: '/dashboard/invoices' },
-  { label: 'Files', icon: '🗂️', path: '/dashboard/files' },
-  { label: 'Profile & Security', icon: '👤', path: '/dashboard/profile' },
-  { label: 'Help', icon: '❓', path: '/dashboard/help' },
-];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -42,24 +19,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           return;
         }
 
-        const baseProfile: Profile = {
-          id: session.user.id,
-          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-          email: session.user.email || '',
-        };
-
         // Only query profiles if we're NOT in the admin section
         if (!pathname.startsWith('/dashboard/admin')) {
           const { data: dbProfile } = await supabase
             .from('profiles')
-            .select('full_name, role')
+            .select('role')
             .eq('id', session.user.id)
             .maybeSingle();
 
           if (dbProfile) {
-            baseProfile.full_name = dbProfile.full_name || baseProfile.full_name;
-            baseProfile.role = dbProfile.role;
-            
             // Redirect admins to their portal if they try to access the client dashboard
             if (dbProfile.role === 'admin' || dbProfile.role === 'super_admin') {
               router.push('/dashboard/admin');
@@ -67,8 +35,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             }
           }
         }
-
-        setProfile(baseProfile);
       } finally {
         setLoading(false);
       }
@@ -84,12 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut();
-    router.push('/');
-  };
+  }, [pathname, router]);
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useId, useCallback } from 'react';
+import { useState, useRef, useEffect, useId, useCallback } from 'react';
 import {
   toGray32,
   trimPlainBorders,

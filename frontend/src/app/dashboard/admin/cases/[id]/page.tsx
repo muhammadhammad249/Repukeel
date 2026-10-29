@@ -1,6 +1,6 @@
 /* eslint-disable */
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -88,20 +88,7 @@ export default function AdminCaseDetailPage() {
   const [notifyClient, setNotifyClient] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Tabs state
-  const [activeTab, setActiveTab] = useState('timeline');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
-  // Invoice state
-  const [invoice, setInvoice] = useState<any>(null);
-  const [isSavingInvoice, setIsSavingInvoice] = useState(false);
-  const [invoiceForm, setInvoiceForm] = useState({
-    amount: '',
-    status: 'pending',
-    notes: '',
-    payment_method: '',
-    payment_reference: ''
-  });
 
   // Delete state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -149,12 +136,6 @@ export default function AdminCaseDetailPage() {
         .eq('case_id', id)
         .order('created_at', { ascending: true });
 
-      const { data: inv } = await supabase
-        .from('invoices')
-        .select('*')
-        .eq('case_id', id)
-        .maybeSingle();
-
       const { data: msgs } = await supabase
         .from('messages')
         .select('*')
@@ -163,16 +144,6 @@ export default function AdminCaseDetailPage() {
 
       setUpdates(u || []);
       setMessages(msgs || []);
-      setInvoice(inv);
-      if (inv) {
-        setInvoiceForm({
-          amount: inv.amount,
-          status: inv.status,
-          notes: inv.notes || '',
-          payment_method: inv.payment_method || '',
-          payment_reference: inv.payment_reference || ''
-        });
-      }
       setLoading(false);
     }
     if (id) load();
@@ -217,29 +188,6 @@ export default function AdminCaseDetailPage() {
     }
     
     setIsUpdating(false);
-  };
-
-  const handleSaveInvoice = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSavingInvoice(true);
-    if (invoice) {
-      await supabase.from('invoices').update({
-        amount: invoiceForm.amount,
-        status: invoiceForm.status,
-        notes: invoiceForm.notes,
-        updated_at: new Date().toISOString()
-      }).eq('id', invoice.id);
-    } else {
-      await supabase.from('invoices').insert({
-        case_id: id,
-        amount: invoiceForm.amount,
-        status: invoiceForm.status,
-        notes: invoiceForm.notes
-      });
-    }
-    const { data: inv } = await supabase.from('invoices').select('*').eq('case_id', id).maybeSingle();
-    setInvoice(inv);
-    setIsSavingInvoice(false);
   };
 
   const handleDeleteConfirm = async () => {
@@ -348,7 +296,6 @@ export default function AdminCaseDetailPage() {
             const stepStatusIndex = array.findIndex(s => s.statuses.includes(caseData.status));
             const isCompleted = stepStatusIndex > index;
             const isActive = stepStatusIndex === index;
-            const isPending = stepStatusIndex < index;
             
             return (
               <div key={step.label} className="relative z-10 flex flex-col items-center flex-1">

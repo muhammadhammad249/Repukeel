@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 // ─── Confirmation Modal ───────────────────────────────────────────────────────
 function DeleteModal({
-  caseId,
+  caseId: _caseId,
   caseLabel,
   onCancel,
   onConfirm,

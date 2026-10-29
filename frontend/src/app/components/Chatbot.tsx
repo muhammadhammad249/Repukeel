@@ -256,8 +256,6 @@ export default function Chatbot() {
     });
   };
 
-  const isTextStep = currentStep?.type === 'text' || currentStep?.type === 'phone';
-
   return (
     <>
       {/* 1. CLOSED STATE (DO NOT CHANGE) */}
