@@ -48,31 +48,31 @@ export default function ProtectionPage() {
           {/* Two equal cards side by side (stacked on mobile) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-8">
             
-            {/* Card A: Harmful or negative content about you */}
+            {/* Card A: Submit a case (original layout restored, DMCA language removed) */}
             <div className="card-light text-left group flex flex-col p-8">
               <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] text-[var(--gold)] flex items-center justify-center mb-6 transition-transform group-hover:scale-110" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 5v14M5 12h14"/></svg>
               </div>
-              <h2 className="text-[22px] font-[700] text-[var(--text-heading)] mb-3">Harmful or negative content about you</h2>
+              <h2 className="text-[22px] font-[700] text-[var(--text-heading)] mb-3">Submit a case</h2>
               <p className="text-[15px] text-[var(--text-body)] mb-8 flex-1 leading-relaxed">
-                Reviews, articles, posts and search results that damage your reputation.
+                Found harmful content about you or your work being used without permission? Submit the details and we will explain your options.
               </p>
-              <Link href="/request-free-analysis" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3.5 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1.5 mt-auto self-start">
-                Request a free analysis &rarr;
+              <Link href="/contact" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3.5 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1.5 mt-auto self-start">
+                Start now &rarr;
               </Link>
             </div>
 
-            {/* Card B: Stolen or copyrighted content */}
+            {/* Card B: Client portal (unchanged from original) */}
             <div className="card-light text-left group flex flex-col p-8">
               <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] text-[var(--gold)] flex items-center justify-center mb-6 transition-transform group-hover:scale-110" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
-              <h2 className="text-[22px] font-[700] text-[var(--text-heading)] mb-3">Stolen or copyrighted content</h2>
+              <h2 className="text-[22px] font-[700] text-[var(--text-heading)] mb-3">Client portal</h2>
               <p className="text-[15px] text-[var(--text-body)] mb-8 flex-1 leading-relaxed">
-                Your photos, videos, text or brand used without your permission.
+                Log in to your secure dashboard to view live updates on your active takedown requests and manage your account.
               </p>
-              <Link href="/contact" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3.5 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1.5 mt-auto self-start">
-                Submit a copyright case &rarr;
+              <Link href="/login" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3.5 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1.5 mt-auto self-start">
+                Log in &rarr;
               </Link>
             </div>
 
@@ -124,24 +124,6 @@ export default function ProtectionPage() {
                 </ul>
               </div>
             </div>
-          </div>
-
-          {/* Client portal card placed below the sections */}
-          <div className="card-light text-left group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 w-full p-8 border border-gray-200">
-            <div className="flex items-start gap-5">
-              <div className="w-12 h-12 rounded-xl bg-[rgba(217,165,43,0.1)] text-[var(--gold)] flex items-center justify-center shrink-0" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </div>
-              <div>
-                <h3 className="text-[20px] font-[700] text-[var(--text-heading)] mb-2">Client portal</h3>
-                <p className="text-[15px] text-[var(--text-body)] max-w-xl leading-relaxed">
-                  Log in to your secure dashboard to view live updates on your active takedown requests and manage your account.
-                </p>
-              </div>
-            </div>
-            <Link href="/login" className="bg-[var(--gold)] text-white font-[700] text-[15px] px-6 py-3 rounded-lg hover:bg-[#c99a2b] transition-colors flex items-center justify-center gap-1 shrink-0 self-start md:self-auto">
-              Log in &rarr;
-            </Link>
           </div>
 
         </div>
