@@ -200,7 +200,7 @@ const rawCategories: Category[] = [
         heading: "AWDTSG Checker & Search",
         intro: "Before you can address a harmful post, you need to know it exists. We search across regional and national groups to find out whether you've been named.",
         bodySections: [
-          { heading: "What Our Search Covers", text: "We check public and private groups across major platforms, along with associated forums and screenshot-sharing sites, to give you a full picture of your exposure before deciding on next steps." }
+          { heading: "What Our Search Covers", text: "We check public and private groups across major platforms, along with associated forums and screenshot-sharing sites, to give you a full picture of your exposure before deciding on next steps. If you find a thread, we can [remove AWDTSG posts](/dating-reputation/awdtsg-removal)." }
         ],
         bulletPoints: ["Cross-platform group search", "Screenshot and forum tracking", "Full exposure report", "Recommended next steps"],
         image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=800&q=80"
@@ -224,7 +224,7 @@ const rawCategories: Category[] = [
         heading: "Social Media Takedowns",
         intro: "Dating-related callouts often spread from one platform to several, turning a single post into a coordinated pile-on across Instagram, TikTok, and X.",
         bodySections: [
-          { heading: "Coordinated Multi-Platform Removal", text: "We track where a post has spread and file simultaneous takedown requests across every platform it appears on, rather than addressing one post at a time while others continue circulating." }
+          { heading: "Coordinated Multi-Platform Removal", text: "We track where a post has spread and file simultaneous takedown requests across every platform it appears on, rather than addressing one post at a time while others continue circulating. We also assist with [removing AWDTSG posts](/dating-reputation/awdtsg-removal) when callouts spread to private groups." }
         ],
         bulletPoints: ["Multi-platform tracking", "Simultaneous takedown filing", "Harassment-policy escalation", "Cross-platform monitoring"],
         image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80"
@@ -260,7 +260,7 @@ const rawCategories: Category[] = [
         heading: "Tea App Checker & Removal",
         intro: "The Tea app allows users to post reviews and warnings about people they've dated, which can include unverified or exaggerated claims with real reputational consequences.",
         bodySections: [
-          { heading: "Checking and Removing Tea App Content", text: "We search the app for mentions of your name, then submit removal requests based on the app's content policies for content that is false, unverifiable, or violates their posting guidelines." }
+          { heading: "Checking and Removing Tea App Content", text: "We search the app for mentions of your name, then submit removal requests based on the app's content policies for content that is false, unverifiable, or violates their posting guidelines. If you were posted in groups, see [AWDTSG removal](/dating-reputation/awdtsg-removal)." }
         ],
         bulletPoints: ["Full Tea app search", "Policy-based removal requests", "False claim documentation", "Ongoing re-post monitoring"],
         image: "https://images.unsplash.com/photo-1499750310107-5766b524b439?auto=format&fit=crop&w=800&q=80"
@@ -346,7 +346,7 @@ const rawCategories: Category[] = [
         heading: "AWDTSG Monitoring & Scan Alerts",
         intro: "New posts on dating-callout groups can appear at any time. Continuous scanning means you find out immediately rather than by accident.",
         bodySections: [
-          { heading: "Real-Time Scanning", text: "We run recurring scans across relevant groups and forums, sending instant alerts with direct links whenever your name or photos are mentioned." }
+          { heading: "Real-Time Scanning", text: "We run recurring scans across relevant groups and forums, sending instant alerts with direct links whenever your name or photos are mentioned. We also offer [AWDTSG post removal](/dating-reputation/awdtsg-removal) when you need a post taken down." }
         ],
         bulletPoints: ["Recurring group scans", "Instant mention alerts", "Direct link to flagged content", "Fast-track removal option"],
         image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
@@ -607,7 +607,7 @@ const rawCategories: Category[] = [
         heading: "Personal Reputation Audit",
         intro: "Before building a reputation strategy, it helps to know exactly what's out there — a full audit gives you a clear, honest picture.",
         bodySections: [
-          { heading: "What's Included in Your Audit", text: "We search your name across search engines, social platforms, news archives, and relevant databases, compiling a complete report of what currently exists online about you and where the biggest risks lie." }
+          { heading: "What's Included in Your Audit", text: "We search your name across search engines, social platforms, news archives, and relevant databases, compiling a complete report of what currently exists online about you and where the biggest risks lie. If your exposure includes dating groups, our [AWDTSG post removal](/dating-reputation/awdtsg-removal) service can help." }
         ],
         bulletPoints: ["Full-name search across platforms", "News and archive review", "Risk-prioritized findings report", "Recommended action plan"],
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
