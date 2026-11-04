@@ -6,12 +6,61 @@ import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import { canonicalFor } from "@/lib/seo";
 import Link from "next/link";
+import AwdtsgRemovalContent from "./AwdtsgRemovalContent";
+
+function renderBodyText(text: string) {
+  if (!text.includes('[')) return text;
+  const parts: (string | React.ReactNode)[] = [];
+  const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    parts.push(
+      <Link
+        key={match.index}
+        href={match[2]}
+        className="text-[#20409a] underline hover:text-[#d4af37] transition-colors font-medium"
+      >
+        {match[1]}
+      </Link>
+    );
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+  return <>{parts}</>;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }): Promise<Metadata> {
   const { category: categorySlug, slug } = await params;
   const category = categories.find((c) => c.slug === categorySlug);
   const service = category?.subServices.find((s) => s.slug === slug);
   if (!category || !service) return {};
+
+  if (categorySlug === 'dating-reputation' && slug === 'awdtsg-removal') {
+    const title = "Remove AWDTSG Posts About You";
+    const description = "Want to remove an AWDTSG post about you? RepuKeel files privacy, harassment and copyright reports and watches for reposts. Request a free analysis.";
+    return {
+      title,
+      description,
+      alternates: {
+        canonical: canonicalFor(`/${category.slug}/${service.slug}`),
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalFor(`/${category.slug}/${service.slug}`),
+      },
+      twitter: {
+        title,
+        description,
+      },
+    };
+  }
 
   return {
     title: service.name,
@@ -46,6 +95,58 @@ export default async function SubServicePage({
     );
   }).slice(0, 3);
   const finalRelatedBlogs = relatedBlogs.length > 0 ? relatedBlogs : blogs.slice(0, 3);
+
+  // Dedicated layout for AWDTSG removal
+  if (service.slug === 'awdtsg-removal') {
+    return (
+      <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
+        <AwdtsgRemovalContent
+          categoryName={category.name}
+          serviceName={service.name}
+          ctaText={service.ctaText}
+          modalTitle={service.modalTitle}
+          modalSubtitle={service.modalSubtitle}
+          inputPlaceholder={service.inputPlaceholder}
+        />
+
+        {/* Related Guides & Insights */}
+        {finalRelatedBlogs.length > 0 && (
+          <section className="border-t border-gray-200 py-16 sm:py-20 lg:py-24 bg-white">
+            <div className="max-w-[1280px] mx-auto px-6">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <span className="text-xs font-bold text-[#e0ac2f] uppercase tracking-[2px] block mb-1">Expert Advice</span>
+                  <h2 className="text-2xl font-extrabold text-[#0a192f]">Related Guides &amp; Insights</h2>
+                </div>
+                <Link href="/blogs" className="text-sm font-bold text-[#20409a] hover:text-[#d4af37] transition-colors hidden sm:block">
+                  View all articles &rarr;
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {finalRelatedBlogs.map((b) => (
+                  <Link
+                    key={b.slug}
+                    href={`/blogs/${b.slug}`}
+                    className="bg-[#f8fafc] border border-gray-200 rounded-2xl p-6 hover:border-[#e0ac2f] hover:shadow-md transition-all group block no-underline"
+                  >
+                    <span className="text-xs font-bold text-[#e0ac2f] uppercase tracking-wider block mb-2">{b.category}</span>
+                    <h3 className="text-[15px] font-bold text-[#0a192f] mb-2 group-hover:text-[#20409a] transition-colors line-clamp-2">
+                      {b.title}
+                    </h3>
+                    <p className="text-[13px] text-gray-500 line-clamp-2">{b.meta}</p>
+                    <span className="text-[12px] font-bold text-[#20409a] group-hover:text-[#d4af37] transition-colors mt-4 inline-block">
+                      Read guide &rarr;
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
@@ -85,7 +186,7 @@ export default async function SubServicePage({
                   {section.heading}
                 </h2>
                 <p style={{ fontFamily: 'Poppins, sans-serif', color: '#374151', fontSize: '14px', lineHeight: 1.8 }}>
-                  {section.text}
+                  {renderBodyText(section.text)}
                 </p>
               </div>
             ))}
