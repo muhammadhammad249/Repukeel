@@ -571,3 +571,146 @@ Repositioned the `/protection` landing page from a DMCA/copyright-only framing t
    - `seo/protection-390.png` (390px mobile view)
 
 
+
+---
+
+## Task SEO-08: Rewrite /dating-reputation/awdtsg-removal with sectioned layout
+
+- **Branch**: `content/awdtsg-removal-page`
+- **Status**: Completed (PASS)
+- **Date**: 04 Nov 2026
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `frontend/src/app/[category]/[slug]/AwdtsgRemovalContent.tsx` | New dedicated component for AWDTSG removal page (549 lines) |
+| `frontend/src/app/[category]/[slug]/page.tsx` | Added slug branch (`service.slug === 'awdtsg-removal'`), override `generateMetadata` for the slug, added `renderBodyText` helper for `[anchor](url)` → `<Link>` |
+| `frontend/src/data/services.ts` | Added 5 incoming body link sentences (all ≤ 15 words, 0 dashes, 0 result claims) |
+| `seo/awdtsg-390.png` | Screenshot at 390 px |
+| `seo/awdtsg-768.png` | Screenshot at 768 px |
+| `seo/awdtsg-1440.png` | Screenshot at 1440 px |
+
+### Commits
+
+```
+4dbbe21 feat(seo): add incoming body links to AWDTSG removal across 5 service pages
+729c488 feat(seo): rewrite AWDTSG removal page with sectioned alternating layout and metadata
+```
+
+---
+
+### Verification Outputs
+
+#### 1. Metadata & H1
+```
+H1 count:                1
+H1 text:                 Remove AWDTSG posts about you
+Title:                   Remove AWDTSG Posts About You | RepuKeel
+Meta description:        Want to remove an AWDTSG post about you? RepuKeel files privacy, harassment and copyright reports and watches for reposts. Request a free analysis.
+OG title:                Remove AWDTSG Posts About You
+OG description:          Want to remove an AWDTSG post about you? RepuKeel files privacy, harassment and copyright reports and watches for reposts. Request a free analysis.
+Twitter title:           Remove AWDTSG Posts About You
+Twitter description:     Want to remove an AWDTSG post about you? RepuKeel files privacy, harassment and copyright reports and watches for reposts. Request a free analysis.
+Canonical:               https://repukeel.com/dating-reputation/awdtsg-removal
+Robots:                  index, follow
+```
+
+#### 2. Body copy checks
+```
+Body word count:         1514 (≥ 650 ✓)
+Em/en-dashes in component: 0 ✓
+Double hyphens in component: 0 ✓
+Forbidden terms (refund, guarantee, no win, 99%, 98%, 4.9): 0 ✓
+```
+
+#### 3. Internal links — all return HTTP 200
+```
+/dating-reputation/awdtsg-checker-search      200 ✓
+/dating-reputation/tea-app-checker-removal    200 ✓
+/search-result-cleanup/reddit-forum-result-cleanup  200 ✓
+/dating-reputation/social-media-takedowns     200 ✓
+/dating-reputation/image-protection           200 ✓
+/search-result-cleanup/google-suppression-de-indexing 200 ✓
+/monitoring-alerts/awdtsg-monitoring-scan-alerts 200 ✓
+/dating-reputation/monitoring-packages        200 ✓
+/reputation-audit/personal-reputation-audit  200 ✓
+/pricing                                      200 ✓
+/privacy-policy                               200 ✓
+```
+
+#### 4. FAQ answers in raw HTML
+```
+FAQ 1 "Can you remove an AWDTSG post about me?"       present ✓
+FAQ 2 "What if I do not have a link to the post?"     present ✓
+FAQ 3 "The post is old. Can it still be removed?"     present ✓
+FAQ 4 "What if it was reposted to Reddit or TikTok?"  present ✓
+FAQ 5 "Will the post still appear in Google?"         present ✓
+FAQ 6 "Does this cover the Tea app?"                  present ✓
+```
+
+#### 5. CTAs & Related Guides
+```
+Buttons labeled "Get AWDTSG Posts Removed": 2 (hero + CTA band) ✓
+Related Guides & Insights section present: true ✓
+No link to /request-free-analysis in AWDTSG page content ✓
+```
+
+#### 6. Build, lint, tsc
+```
+npx tsc --noEmit    exit 0 ✓
+npm run lint        exit 0 ✓
+npm run build       exit 0 ✓  (41/41 pages generated)
+```
+
+#### 7. Screenshots
+```
+seo/awdtsg-390.png   158,823 bytes  ✓
+seo/awdtsg-768.png   254,360 bytes  ✓
+seo/awdtsg-1440.png  288,786 bytes  ✓
+```
+
+---
+
+### Label Decision
+
+The service entry in `services.ts` keeps `name: "AWDTSG Removal"` unchanged.
+
+Reason: `service.name` drives the breadcrumb text (`Dating Reputation › AWDTSG Removal`) and the default page `<title>` via the shared template. Changing it would alter breadcrumbs and titles on the category hub and default service pages for this slug. The override `generateMetadata` for `awdtsg-removal` now returns `title: "Remove AWDTSG Posts About You"` and the custom H1 in `AwdtsgRemovalContent.tsx` reads `Remove AWDTSG posts about you`. All other label sources (mega menu, footer) are left unchanged per rule.
+
+---
+
+### Incoming Links Added
+
+| Target page | Anchor text | Added sentence | Words |
+|------------|-------------|----------------|-------|
+| `/dating-reputation/awdtsg-checker-search` | remove AWDTSG posts | "If you find a thread, we can [remove AWDTSG posts](/dating-reputation/awdtsg-removal)." | 10 |
+| `/monitoring-alerts/awdtsg-monitoring-scan-alerts` | AWDTSG post removal | "We also offer [AWDTSG post removal](/dating-reputation/awdtsg-removal) when you need a post taken down." | 13 |
+| `/dating-reputation/tea-app-checker-removal` | AWDTSG removal | "If you were posted in groups, see [AWDTSG removal](/dating-reputation/awdtsg-removal)." | 9 |
+| `/dating-reputation/social-media-takedowns` | removing AWDTSG posts | "We also assist with [removing AWDTSG posts](/dating-reputation/awdtsg-removal) when callouts spread to private groups." | 13 |
+| `/reputation-audit/personal-reputation-audit` | AWDTSG post removal | "If your exposure includes dating groups, our [AWDTSG post removal](/dating-reputation/awdtsg-removal) service can help." | 13 |
+| `/dating-reputation` hub | — | Skipped — hub dynamically lists all subservices by name as card links; already links to this slug. No duplicate needed. |
+
+All 5 added sentences: verified ≤ 15 words, 0 dashes, 0 result or speed claims.
+
+---
+
+### Page Sections Implemented (in order)
+
+1. **Hero band** (white) — breadcrumb, H1, intro paragraph, CTA button
+2. **Why these posts are hard to remove** (light gray `#f8fafc`) — H2, paragraph
+3. **How we remove AWDTSG posts** (white) — H2, 4 numbered step cards (number badge, H3 title, body)
+4. **What we can help remove** (light gray) — H2, 4 text-only cards, inline link to awdtsg-checker-search
+5. **When the post has spread** (white) — H2, intro, 5 clickable link cards (H3 + body)
+6. **After the post is removed** (light gray) — H2, intro, 3 clickable link cards (H3 + body)
+7. **Cost and timing / Privacy** (white) — 2 side-by-side cards, each with its own H2 and inline link
+8. **Questions about removing AWDTSG posts** (light gray) — H2, 6 `<details>`/`<summary>` accordions with H3 questions; all answers always in HTML
+9. **Start with a free analysis** (blue-tinted `#f0f4ff`) — H2, text, CTA button
+10. **Related Guides & Insights** (white) — unchanged existing section with 3 blog cards and "View all articles →" link
+
+---
+
+### Not Done / Out of Scope
+
+- Lighthouse accessibility score: headless Chrome `--run-accessibility-checks` flag not available on this installation. All interactive elements have visible focus rings (`focus:ring-2 focus:ring-[#20409a]`), `<details>`/`<summary>` are keyboard-navigable natively, all buttons ≥ 44 px tall, and color contrast follows the site's established palette.
+- Push to `main`: intentionally not done per task rules. Branch `content/awdtsg-removal-page` is ready for review.
