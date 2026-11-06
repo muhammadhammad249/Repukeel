@@ -78,13 +78,12 @@ const nextConfig = {
         destination: 'https://repukeel.com/:path*',
         permanent: true,
       },
-      // Redirect www → non-www
-      {
+          {
         source: '/:path*',
         has: [
           {
             type: 'host',
-            value: 'www.repukeel.com',
+            value: '(?<host>.+\\.vercel\\.app)',
           },
         ],
         destination: 'https://repukeel.com/:path*',
