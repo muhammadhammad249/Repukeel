@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/tools'),
   },
+  openGraph: {
+    title: 'Free Brand Protection Tools | RepuKeel',
+    description: 'Free browser-based brand protection utilities to help you investigate copyright infringement, impersonation, and digital exposure online.',
+    url: canonicalFor('/tools'),
+  },
 };
 
 export default function ToolsHubPage() {

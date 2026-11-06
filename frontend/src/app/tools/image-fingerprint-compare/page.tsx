@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/tools/image-fingerprint-compare'),
   },
+  openGraph: {
+    title: 'Image Fingerprint Comparison | RepuKeel',
+    description: 'Compare two images in your browser to check perceptual similarity. Free, private, and processes entirely on your device.',
+    url: canonicalFor('/tools/image-fingerprint-compare'),
+  },
 };
 
 export default function ImageFingerprintComparePage() {

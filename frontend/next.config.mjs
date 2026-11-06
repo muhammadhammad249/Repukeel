@@ -1,7 +1,12 @@
+import fs from 'node:fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const serviceRedirects = JSON.parse(
+  fs.readFileSync(new URL('./src/data/serviceRedirects.json', import.meta.url), 'utf8')
+);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -67,6 +72,8 @@ const nextConfig = {
         destination: '/services',
         permanent: true,
       },
+      // Redirect /services/[slug] directly to canonical /[category]/[slug]
+      ...serviceRedirects,
       {
         source: '/:path*',
         has: [
@@ -78,12 +85,13 @@ const nextConfig = {
         destination: 'https://repukeel.com/:path*',
         permanent: true,
       },
-          {
+      // Redirect www → non-www
+      {
         source: '/:path*',
         has: [
           {
             type: 'host',
-            value: '(?<host>.+\\.vercel\\.app)',
+            value: 'www.repukeel.com',
           },
         ],
         destination: 'https://repukeel.com/:path*',

@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/contact'),
   },
+  openGraph: {
+    title: 'Contact Us | RepuKeel',
+    description: 'Get in touch with RepuKeel for a free, confidential reputation analysis and consultation.',
+    url: canonicalFor('/contact'),
+  },
 };
 
 export default function ContactLayout({

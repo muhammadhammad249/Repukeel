@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/tools/reverse-image-search'),
   },
+  openGraph: {
+    title: 'Reverse Image Search Launcher | RepuKeel',
+    description: 'Paste an image link or upload a file from your device to search it across Google Lens, TinEye, Bing Visual Search and Yandex Images. Free, private, runs in your browser.',
+    url: canonicalFor('/tools/reverse-image-search'),
+  },
 };
 
 export default function ReverseImageSearchPage() {

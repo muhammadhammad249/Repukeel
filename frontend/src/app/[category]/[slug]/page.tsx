@@ -35,6 +35,15 @@ function renderBodyText(text: string) {
   return <>{parts}</>;
 }
 
+export async function generateStaticParams() {
+  return categories.flatMap((cat) =>
+    cat.subServices.map((sub) => ({
+      category: cat.slug,
+      slug: sub.slug,
+    }))
+  );
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ category: string; slug: string }> }): Promise<Metadata> {
   const { category: categorySlug, slug } = await params;
   const category = categories.find((c) => c.slug === categorySlug);
@@ -62,11 +71,18 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     };
   }
 
+  const canonicalUrl = canonicalFor(`/${category.slug}/${service.slug}`);
+
   return {
     title: service.name,
     description: service.intro,
     alternates: {
-      canonical: canonicalFor(`/${category.slug}/${service.slug}`),
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${service.name} | RepuKeel`,
+      description: service.intro,
+      url: canonicalUrl,
     },
   };
 }

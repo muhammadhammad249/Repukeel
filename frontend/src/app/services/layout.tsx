@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/services'),
   },
+  openGraph: {
+    title: 'Services & Takedowns | RepuKeel',
+    description: 'Comprehensive reputation management services including DMCA takedowns, review removals, and search engine suppression.',
+    url: canonicalFor('/services'),
+  },
 };
 
 export default function ServicesLayout({

@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/'),
   },
+  openGraph: {
+    title: 'RepuKeel | Online Reputation Management Company Worldwide',
+    description: 'At RepuKeel Reputation, we remove harmful online content, repair search results, and protect your reputation — fast, confidentially, and with proven results.',
+    url: canonicalFor('/'),
+  },
 };
 
 export default function Home() {

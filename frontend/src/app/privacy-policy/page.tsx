@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/privacy-policy'),
   },
+  openGraph: {
+    title: 'Privacy Policy | RepuKeel',
+    description: 'RepuKeel Privacy Policy. Learn how we handle, protect, and process client information and case data.',
+    url: canonicalFor('/privacy-policy'),
+  },
 };
 
 export default function PrivacyPolicyPage() {

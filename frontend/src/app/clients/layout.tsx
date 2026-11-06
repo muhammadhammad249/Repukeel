@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/clients'),
   },
+  openGraph: {
+    title: 'Our Clients & Testimonials | RepuKeel',
+    description: 'See how RepuKeel helps creators, executives, and businesses protect their brand and reputation worldwide.',
+    url: canonicalFor('/clients'),
+  },
 };
 
 export default function ClientsLayout({

@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/case-studies'),
   },
+  openGraph: {
+    title: 'Case Studies & Results | RepuKeel',
+    description: 'Explore real reputation management and content removal case studies from RepuKeel.',
+    url: canonicalFor('/case-studies'),
+  },
 };
 
 export default function CaseStudiesLayout({

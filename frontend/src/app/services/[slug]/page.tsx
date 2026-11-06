@@ -1,6 +1,7 @@
 import { permanentRedirect, notFound } from 'next/navigation';
 import { categories } from '@/data/services';
 import { Metadata } from 'next';
+import { canonicalFor } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -8,11 +9,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const service = allSubServices.find(s => s.slug === slug);
   if (!service) return {};
 
+  const canonicalUrl = canonicalFor(`/${service.categorySlug}/${service.slug}`);
+
   return {
     title: service.name,
     description: service.intro,
     alternates: {
-      canonical: `/${service.categorySlug}/${service.slug}`,
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${service.name} | RepuKeel`,
+      description: service.intro,
+      url: canonicalUrl,
     },
   };
 }

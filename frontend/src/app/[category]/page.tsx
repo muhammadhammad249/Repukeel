@@ -4,16 +4,29 @@ import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import { canonicalFor } from '@/lib/seo';
 
+export async function generateStaticParams() {
+  return categories.map((cat) => ({
+    category: cat.slug,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category: categorySlug } = await params;
   const category = categories.find((c) => c.slug === categorySlug);
   if (!category) return {};
 
+  const canonicalUrl = canonicalFor(`/${category.slug}`);
+
   return {
     title: category.name,
     description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
     alternates: {
-      canonical: canonicalFor(`/${category.slug}`),
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${category.name} | RepuKeel`,
+      description: `Explore our professional ${category.name} solutions. RepuKeel provides specialized services for ${category.name.toLowerCase()}.`,
+      url: canonicalUrl,
     },
   };
 }

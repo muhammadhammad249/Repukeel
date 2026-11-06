@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: canonicalFor('/tools/search-query-builder'),
   },
+  openGraph: {
+    title: 'Search Query Builder | RepuKeel',
+    description: 'Build focused search engine queries with operators and platform filters to investigate potential brand, trademark, or content misuse online.',
+    url: canonicalFor('/tools/search-query-builder'),
+  },
 };
 
 export default function SearchQueryBuilderPage() {

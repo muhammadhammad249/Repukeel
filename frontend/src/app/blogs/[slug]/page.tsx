@@ -4,6 +4,12 @@ import { Metadata } from 'next';
 import { canonicalFor, SITE_URL } from '@/lib/seo';
 import Link from 'next/link';
 
+export async function generateStaticParams() {
+  return blogs.map((blog) => ({
+    slug: blog.slug,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const decodedSlug = decodeURIComponent(resolvedParams.slug);
