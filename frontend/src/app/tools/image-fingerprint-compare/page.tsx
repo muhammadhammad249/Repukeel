@@ -240,6 +240,12 @@ export default function ImageFingerprintComparePage() {
                 Instagram Content Removal
               </Link>
               <Link
+                href="/content-removal/facebook-review-removal"
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 text-[#0c1940] hover:bg-[#0c1940] hover:text-white transition-colors"
+              >
+                Facebook review removal
+              </Link>
+              <Link
                 href="/content-removal/fake-review-removal"
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 text-[#0c1940] hover:bg-[#0c1940] hover:text-white transition-colors"
               >

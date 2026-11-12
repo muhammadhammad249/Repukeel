@@ -1,5 +1,6 @@
 /* eslint-disable */
 'use client';
+import Link from 'next/link';
 import { useState } from 'react';
 import BlueCtaBand from '../components/BlueCtaBand';
 import ServicesMenuLayout from '../components/ServicesMenuLayout';
@@ -46,6 +47,11 @@ export default function ServicesPage() {
               <div className="text-5xl mb-6 text-blue-600 font-bold">f</div>
               <h3 className="text-2xl font-[800] mb-3">Facebook</h3>
               <p className="text-[15px] text-gray-600">Instant removal of stolen images, videos, and impersonator pages via direct legal channels.</p>
+              <div className="mt-3">
+                <Link href="/content-removal/facebook-review-removal" className="text-sm font-semibold text-[#20409a] hover:text-[#d4af37] underline">
+                  Facebook review removal
+                </Link>
+              </div>
             </div>
             {/* Instagram */}
             <div className="rounded-2xl p-8 flex flex-col text-[#0a192f] shadow-xl bg-white border border-gray-200 transition-transform hover:-translate-y-2">

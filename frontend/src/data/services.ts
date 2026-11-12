@@ -85,7 +85,7 @@ const rawCategories: Category[] = [
         heading: "Instagram Content Removal",
         intro: "Harmful posts, comments, or Story content on Instagram can spread quickly through shares and reposts, making early action essential to limiting the damage.",
         bodySections: [
-          { heading: "Fast-Track Takedowns", text: "We use Instagram's reporting tools alongside copyright and impersonation claims where relevant, and escalate through Meta's formal legal request process for content that standard reporting doesn't resolve." }
+          { heading: "Fast-Track Takedowns", text: "We use Instagram's reporting tools alongside copyright and impersonation claims where relevant, and escalate through Meta's formal legal request process for content that standard reporting doesn't resolve. For business pages suffering from bad-faith recommendations, we also manage [Facebook review removal](/content-removal/facebook-review-removal) across Meta systems." }
         ],
         bulletPoints: ["Community Guidelines and impersonation reporting", "Copyright-based takedown requests", "Story and Reel content removal", "Repost tracking after takedown"],
         image: "https://images.unsplash.com/photo-1499750310107-5766b524b439?auto=format&fit=crop&w=800&q=80"
@@ -97,7 +97,7 @@ const rawCategories: Category[] = [
         heading: "Fake Review Removal",
         intro: "Fabricated reviews — whether from competitors, bots, or people with no real experience with your business — distort your reputation and violate nearly every platform's content policy.",
         bodySections: [
-          { heading: "Proving a Review Is Fake", text: "We investigate reviewer history, posting patterns, and platform-specific red flags to build a case that a review violates authenticity guidelines, then file the appropriate takedown request with the platform." }
+          { heading: "Proving a Review Is Fake", text: "We investigate reviewer history, posting patterns, and platform-specific red flags to build a case that a review violates authenticity guidelines, then file the appropriate takedown request with the platform. Our team provides dedicated [Facebook review removal](/content-removal/facebook-review-removal) and platform escalations to protect your business ratings." }
         ],
         bulletPoints: ["Cross-platform fake review investigation", "Authenticity-violation reporting", "Competitor attack identification", "Platform-specific escalation paths"],
         image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=800&q=80"
@@ -169,7 +169,7 @@ const rawCategories: Category[] = [
         heading: "Google Review Removal",
         intro: "Google reviews are often the first thing a potential customer sees, and a small number of fake or malicious reviews can significantly drag down your average rating.",
         bodySections: [
-          { heading: "Google Business Profile Disputes", text: "We flag reviews that violate Google's policies — including conflict-of-interest reviews, fake accounts, and off-topic rants — through Google Business Profile support, escalating persistent cases through Google's official appeal process." }
+          { heading: "Google Business Profile Disputes", text: "We flag reviews that violate Google's policies — including conflict-of-interest reviews, fake accounts, and off-topic rants — through Google Business Profile support, escalating persistent cases through Google's official appeal process. If your brand also faces unfair attacks on Meta platforms, explore our [Facebook review removal](/content-removal/facebook-review-removal) service." }
         ],
         bulletPoints: ["Google policy-violation flagging", "Fake account identification", "Formal appeal escalation", "Rating recovery tracking"],
         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80"
