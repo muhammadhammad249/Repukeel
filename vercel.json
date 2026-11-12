@@ -1,0 +1,26 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.repukeel.com"
+        }
+      ],
+      "destination": "https://repukeel.com/$1",
+      "statusCode": 301
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "repukeel.vercel.app"
+        }
+      ],
+      "destination": "https://repukeel.com/$1",
+      "statusCode": 301
+    }
+  ]
+}

@@ -2,17 +2,6 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  // Canonical host redirect: redirect *.vercel.app deployments and www.repukeel.com to https://repukeel.com.
-  // Uses 301 (Moved Permanently) — the standard canonical-consolidation signal for search engines.
-  // Catches the production alias (repukeel.vercel.app) and all preview deployment subdomains.
-  const host = request.headers.get('host')?.toLowerCase() || '';
-  const isVercelDeploy = host.endsWith('.vercel.app');
-  const isWww = host === 'www.repukeel.com';
-  if (isVercelDeploy || isWww) {
-    const destination = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://repukeel.com');
-    return NextResponse.redirect(destination, 301);
-  }
-
   let supabaseResponse = NextResponse.next({
     request,
   });
