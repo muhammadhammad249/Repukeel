@@ -7,6 +7,7 @@ import { Metadata } from 'next';
 import { canonicalFor } from "@/lib/seo";
 import Link from "next/link";
 import AwdtsgRemovalContent from "./AwdtsgRemovalContent";
+import MugshotRemovalContent from "./MugshotRemovalContent";
 
 function renderBodyText(text: string) {
   if (!text.includes('[')) return text;
@@ -63,6 +64,30 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
         title,
         description,
         url: canonicalFor(`/${category.slug}/${service.slug}`),
+      },
+      twitter: {
+        title,
+        description,
+      },
+    };
+  }
+
+  if (categorySlug === 'content-removal' && slug === 'mugshot-removal-suppression') {
+    const title = "Mugshot Removal Service | Discreet Takedown & Suppression | RepuKeel";
+    const description = "Confidential mugshot removal service. We pursue takedowns, legal requests, and Google suppression where eligible. Request a private case review.";
+    const canonicalUrl = canonicalFor(`/${category.slug}/${service.slug}`);
+    return {
+      title: {
+        absolute: title,
+      },
+      description,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
       },
       twitter: {
         title,
@@ -160,6 +185,28 @@ export default async function SubServicePage({
             </div>
           </section>
         )}
+      </div>
+    );
+  }
+
+  // Dedicated layout for Mugshot Removal & Suppression
+  if (service.slug === 'mugshot-removal-suppression') {
+    const mugshotBlogSlugs = [
+      'remove-mugshots-from-google',
+      'online-reputation-management-guide',
+      'remove-fake-impersonating-profiles',
+    ];
+    const mugshotRelatedBlogs = mugshotBlogSlugs
+      .map((blogSlug) => blogs.find((b) => b.slug === blogSlug))
+      .filter((b): b is NonNullable<typeof b> => Boolean(b));
+
+    return (
+      <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
+        <MugshotRemovalContent
+          categoryName={category.name}
+          serviceName={service.name}
+          relatedBlogs={mugshotRelatedBlogs}
+        />
       </div>
     );
   }

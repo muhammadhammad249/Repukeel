@@ -41,7 +41,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
     const subRoutes = cat.subServices.map((sub) => ({
       url: `${baseUrl}/${cat.slug}/${sub.slug}`,
-      lastModified: siteLastModified,
+      lastModified: (cat.slug === 'content-removal' && sub.slug === 'mugshot-removal-suppression')
+        ? new Date('2026-11-17T00:00:00Z')
+        : siteLastModified,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
