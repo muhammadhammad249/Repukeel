@@ -187,7 +187,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           <span className="text-gray-800 font-medium truncate max-w-[300px]">{blog.title}</span>
         </nav>
 
-        <h1 className="text-4xl font-extrabold mb-6 text-black leading-tight">{blog.title}</h1>
+        <h1 className="text-4xl font-extrabold mb-6 text-black leading-tight">{blog.h1 || blog.title}</h1>
 
         <div className="flex items-start gap-4 mb-10 border-b border-gray-200 pb-6">
           <div className="w-10 h-10 bg-[#e0ac2f] rounded-full flex items-center justify-center text-black font-bold shrink-0">R</div>
