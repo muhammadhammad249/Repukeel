@@ -3,7 +3,15 @@ export interface BlogPost {
   slug: string;
   category: string;
   datePublished: string;
+  dateModified?: string;
   meta: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  author?: string;
+  reviewedBy?: string;
+  reviewedByTitle?: string;
+  relatedSlugs?: string[];
+  faqJsonLd?: Array<{ question: string; answer: string }>;
   content: string;
 }
 

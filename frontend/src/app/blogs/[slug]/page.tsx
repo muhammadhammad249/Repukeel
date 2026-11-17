@@ -1,4 +1,4 @@
-import { blogs } from "../data";
+import { blogs, BlogPost } from "../data";
 import { notFound } from "next/navigation";
 import { Metadata } from 'next';
 import { canonicalFor, SITE_URL } from '@/lib/seo';
@@ -17,22 +17,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!blog) return {};
 
   const canonicalUrl = canonicalFor(`/blogs/${blog.slug}`);
+  const title = blog.ogTitle || blog.title;
+  const description = blog.ogDescription || blog.meta || blog.title;
 
   return {
-    title: blog.title,
+    title,
     description: blog.meta || blog.title,
-    authors: [{ name: 'RepuKeel Team' }],
+    authors: [{ name: blog.author || 'RepuKeel Team' }],
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       type: 'article',
-      title: blog.title,
-      description: blog.meta || blog.title,
+      title,
+      description,
       url: canonicalUrl,
       publishedTime: blog.datePublished,
-      authors: ['RepuKeel Team'],
+      modifiedTime: blog.dateModified,
+      authors: [blog.author || 'RepuKeel Team'],
       siteName: 'RepuKeel',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   };
 }
@@ -48,17 +56,24 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
   const canonicalUrl = canonicalFor(`/blogs/${blog.slug}`);
 
-  // Related posts: same category, excluding current, max 3
-  const relatedPosts = blogs
-    .filter((b) => b.category === blog.category && b.slug !== blog.slug)
-    .slice(0, 3);
-  // If not enough same-category posts, fill with recent from other categories
-  if (relatedPosts.length < 3) {
-    const needed = 3 - relatedPosts.length;
-    const extras = blogs
-      .filter((b) => b.slug !== blog.slug && !relatedPosts.find(r => r.slug === b.slug))
-      .slice(0, needed);
-    relatedPosts.push(...extras);
+  // Related posts: custom slugs if provided, otherwise same category, max 3
+  let relatedPosts: BlogPost[];
+  if (blog.relatedSlugs && blog.relatedSlugs.length > 0) {
+    relatedPosts = blog.relatedSlugs
+      .map((s) => blogs.find((b) => b.slug === s))
+      .filter((b): b is NonNullable<typeof b> => Boolean(b))
+      .slice(0, 3);
+  } else {
+    relatedPosts = blogs
+      .filter((b) => b.category === blog.category && b.slug !== blog.slug)
+      .slice(0, 3);
+    if (relatedPosts.length < 3) {
+      const needed = 3 - relatedPosts.length;
+      const extras = blogs
+        .filter((b) => b.slug !== blog.slug && !relatedPosts.find((r) => r.slug === b.slug))
+        .slice(0, needed);
+      relatedPosts.push(...extras);
+    }
   }
 
   // BreadcrumbList JSON-LD
@@ -94,10 +109,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     "headline": blog.title,
     "description": blog.meta,
     "datePublished": blog.datePublished,
-    "dateModified": blog.datePublished,
+    "dateModified": blog.dateModified || blog.datePublished,
     "author": {
       "@type": "Organization",
-      "name": "RepuKeel Team",
+      "name": blog.author || "RepuKeel Team",
       "url": SITE_URL,
     },
     "publisher": {
@@ -115,6 +130,35 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     },
   };
 
+  // FAQPage JSON-LD (optional, only if blog.faqJsonLd is set)
+  const faqJsonLd = blog.faqJsonLd && blog.faqJsonLd.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": blog.faqJsonLd.map((item) => ({
+          "@type": "Question",
+          "name": item.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": item.answer,
+          },
+        })),
+      }
+    : null;
+
+  const displayDate = new Date(blog.datePublished).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const displayModified = blog.dateModified
+    ? new Date(blog.dateModified).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null;
+
   return (
     <div className="min-h-screen bg-white">
       {/* JSON-LD */}
@@ -126,6 +170,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       <div className="container mx-auto px-4 py-24 max-w-3xl">
         {/* Breadcrumbs */}
@@ -139,17 +189,25 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
         <h1 className="text-4xl font-extrabold mb-6 text-black leading-tight">{blog.title}</h1>
 
-        <div className="flex items-center gap-4 mb-10 border-b border-gray-200 pb-6">
-          <div className="w-10 h-10 bg-[#e0ac2f] rounded-full flex items-center justify-center text-black font-bold">R</div>
-          <div>
-            <p className="text-black font-semibold">RepuKeel Team</p>
-            <p className="text-gray-500 text-sm">
-              {new Date(blog.datePublished).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        <div className="flex items-start gap-4 mb-10 border-b border-gray-200 pb-6">
+          <div className="w-10 h-10 bg-[#e0ac2f] rounded-full flex items-center justify-center text-black font-bold shrink-0">R</div>
+          <div className="text-sm">
+            <p className="text-black font-semibold">{blog.author || 'RepuKeel Team'}</p>
+            <p className="text-gray-500">
+              Published {displayDate}
+              {displayModified && displayModified !== displayDate && (
+                <> &middot; Last updated {displayModified}</>
+              )}
             </p>
+            {blog.reviewedBy && (
+              <p className="text-gray-500 mt-0.5">
+                Reviewed by {blog.reviewedBy}{blog.reviewedByTitle ? `, ${blog.reviewedByTitle}` : ''}
+              </p>
+            )}
           </div>
         </div>
-      
-        <article 
+
+        <article
           className="prose prose-lg max-w-none text-gray-700 prose-headings:text-black prose-a:text-[#e0ac2f]"
           dangerouslySetInnerHTML={{ __html: blog!.content }}
         />

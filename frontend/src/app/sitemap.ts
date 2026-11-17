@@ -53,7 +53,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic blog post pages with real published dates
   const blogRoutes = blogs.map((blog) => ({
     url: `${baseUrl}/blogs/${blog.slug}`,
-    lastModified: new Date(blog.datePublished),
+    lastModified: blog.slug === 'remove-mugshots-from-google'
+      ? new Date('2026-11-18T00:00:00Z')
+      : new Date(blog.datePublished),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
