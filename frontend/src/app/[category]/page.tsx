@@ -74,6 +74,22 @@ export default async function CategoryPage({
           </p>
         </div>
       )}
+
+      {category.slug === 'dating-reputation' && (
+        <div className="mt-10 p-6 bg-slate-50 border border-slate-200 rounded-xl">
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Featured guide</h2>
+          <p className="text-sm text-gray-600">
+            Found in an AWDTSG group? Read our walkthrough on{" "}
+            <Link
+              href="/blogs/remove-awdtsg"
+              className="text-[#20409a] font-semibold hover:underline"
+            >
+              how to remove AWDTSG posts
+            </Link>{" "}
+            and what your options are.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

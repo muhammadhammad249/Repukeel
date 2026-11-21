@@ -34,8 +34,12 @@ export default function AwdtsgRemovalContent({
             Remove AWDTSG posts about you
           </h1>
 
-          <p className="text-[16px] sm:text-[18px] text-[#374151] leading-relaxed max-w-[70ch] mb-8">
+          <p className="text-[16px] sm:text-[18px] text-[#374151] leading-relaxed max-w-[70ch] mb-4">
             If you want to remove an AWDTSG post about you, RepuKeel can help. AWDTSG stands for &quot;Are We Dating The Same Guy?&quot;, a network of local Facebook groups where members share photos, screenshots and stories about men they have dated. A post about you can reach thousands of members, and you usually get no chance to reply. Tell us what you found and we will explain what can realistically be done.
+          </p>
+          <p className="text-gray-600 text-sm mb-8">
+            For a step-by-step walkthrough, read our guide on{' '}
+            <Link href="/blogs/remove-awdtsg" className="text-[#20409a] font-semibold underline hover:text-[#d4af37] transition-colors">how to remove AWDTSG posts</Link>.
           </p>
 
           <div>

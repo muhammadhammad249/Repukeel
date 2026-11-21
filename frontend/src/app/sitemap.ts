@@ -55,7 +55,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}/blogs/${blog.slug}`,
     lastModified: blog.slug === 'remove-mugshots-from-google'
       ? new Date('2026-11-18T00:00:00Z')
-      : new Date(blog.datePublished),
+      : blog.slug === 'remove-awdtsg'
+        ? new Date('2026-11-22T00:00:00Z')
+        : new Date(blog.datePublished),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
