@@ -57,7 +57,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ? new Date('2026-11-18T00:00:00Z')
       : blog.slug === 'remove-awdtsg'
         ? new Date('2026-11-22T00:00:00Z')
-        : new Date(blog.datePublished),
+        : blog.slug === 'remove-leaked-onlyfans-content'
+          ? new Date('2026-11-22T00:00:00Z')
+          : new Date(blog.datePublished),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));

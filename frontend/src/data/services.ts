@@ -212,7 +212,7 @@ const rawCategories: Category[] = [
         heading: "Image Protection",
         intro: "Photos shared in dating contexts can end up reposted without consent across forums, group chats, and social platforms. We help you regain control.",
         bodySections: [
-          { heading: "Protecting Your Photos", text: "We use reverse image search to locate unauthorized reposts, file takedown requests based on privacy and consent violations, and set up ongoing monitoring to catch new instances early." }
+          { heading: "Protecting Your Photos", text: "We use reverse image search to locate unauthorized reposts, file takedown requests based on privacy and consent violations, and set up ongoing monitoring to catch new instances early. For subscription creators, read our guide on [how to remove leaked OnlyFans content](/blogs/remove-leaked-onlyfans-content)." }
         ],
         bulletPoints: ["Reverse image search across the web", "Consent-violation takedown requests", "Ongoing reupload monitoring", "Platform-specific privacy reporting"],
         image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80"

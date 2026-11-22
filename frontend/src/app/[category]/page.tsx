@@ -60,18 +60,31 @@ export default async function CategoryPage({
       </div>
 
       {category.slug === 'content-removal' && (
-        <div className="mt-10 p-6 bg-slate-50 border border-slate-200 rounded-xl">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">Featured Guide</h2>
-          <p className="text-sm text-gray-600">
-            Dealing with an online booking photo or arrest record? Read our walkthrough on{" "}
-            <Link
-              href="/blogs/remove-mugshots-from-google"
-              className="text-[#20409a] font-semibold hover:underline"
-            >
-              how to remove mugshots from Google
-            </Link>{" "}
-            and the internet.
-          </p>
+        <div className="mt-10 p-6 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Featured Guide</h2>
+            <p className="text-sm text-gray-600">
+              Dealing with an online booking photo or arrest record? Read our walkthrough on{" "}
+              <Link
+                href="/blogs/remove-mugshots-from-google"
+                className="text-[#20409a] font-semibold hover:underline"
+              >
+                how to remove mugshots from Google
+              </Link>{" "}
+              and the internet.
+            </p>
+          </div>
+          <div className="pt-3 border-t border-slate-200">
+            <p className="text-sm text-gray-600">
+              Dealing with unauthorized subscription media? Read our walkthrough on{" "}
+              <Link
+                href="/blogs/remove-leaked-onlyfans-content"
+                className="text-[#20409a] font-semibold hover:underline"
+              >
+                how to remove leaked OnlyFans content
+              </Link>.
+            </p>
+          </div>
         </div>
       )}
 
