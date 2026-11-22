@@ -33,8 +33,6 @@ export const blogs: BlogPost[] = [
     datePublished: "2026-09-14T08:00:00Z",
     dateModified: "2026-11-22T00:00:00Z",
     author: "RepuKeel Team",
-    reviewedBy: "[Legal Reviewer Name]",
-    reviewedByTitle: "[Title / Credentials]",
     meta: "How to remove leaked OnlyFans content: DMCA notices, Google requests, Telegram and Reddit reports, and monitoring. What works and what does not.",
     ogTitle: "Remove Leaked OnlyFans Content: Step-by-Step Guide (2026)",
     ogDescription: "How to remove leaked OnlyFans content: DMCA notices, Google requests, Telegram and Reddit reports, and monitoring. What works and what does not.",

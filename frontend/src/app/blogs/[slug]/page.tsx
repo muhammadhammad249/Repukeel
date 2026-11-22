@@ -199,9 +199,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 <> &middot; Last updated {displayModified}</>
               )}
             </p>
-            {blog.reviewedBy && (
+            {blog.reviewedBy && !blog.reviewedBy.includes('[') && (
               <p className="text-gray-500 mt-0.5">
-                Reviewed by {blog.reviewedBy}{blog.reviewedByTitle ? `, ${blog.reviewedByTitle}` : ''}
+                Reviewed by {blog.reviewedBy}{blog.reviewedByTitle && !blog.reviewedByTitle.includes('[') ? `, ${blog.reviewedByTitle}` : ''}
               </p>
             )}
           </div>
