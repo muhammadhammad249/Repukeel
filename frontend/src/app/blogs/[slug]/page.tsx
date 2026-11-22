@@ -85,7 +85,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": SITE_URL,
+        "item": `${SITE_URL}/`,
       },
       {
         "@type": "ListItem",
@@ -113,12 +113,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     "author": {
       "@type": "Organization",
       "name": blog.author || "RepuKeel Team",
-      "url": SITE_URL,
+      "url": `${SITE_URL}/`,
     },
     "publisher": {
       "@type": "Organization",
       "name": "RepuKeel",
-      "url": SITE_URL,
+      "url": `${SITE_URL}/`,
       "logo": {
         "@type": "ImageObject",
         "url": `${SITE_URL}/icon.jpg`,

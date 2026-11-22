@@ -22,45 +22,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Canonical host and protocol redirects (301 Moved Permanently)
-      // 1. Redirect http → https
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'header',
-            key: 'x-forwarded-proto',
-            value: 'http',
-          },
-        ],
-        destination: 'https://repukeel.com/:path*',
-        statusCode: 301,
-      },
-      // 2. Redirect www → non-www
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.repukeel.com',
-          },
-        ],
-        destination: 'https://repukeel.com/:path*',
-        statusCode: 301,
-      },
-      // 3. Redirect ALL *.vercel.app deployment URLs → canonical domain
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: '(?<host>.+\\.vercel\\.app)',
-          },
-        ],
-        destination: 'https://repukeel.com/:path*',
-        statusCode: 301,
-      },
-
       // Route / Content redirects (301 Moved Permanently)
       {
         source: '/scanner',

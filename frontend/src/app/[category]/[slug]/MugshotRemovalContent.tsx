@@ -19,7 +19,7 @@ export default function MugshotRemovalContent({
     "provider": {
       "@type": "Organization",
       "name": "RepuKeel",
-      "url": "https://repukeel.com",
+      "url": "https://repukeel.com/",
     },
     "areaServed": ["US", "GB", "AU", "DE"],
     "serviceType": "Mugshot removal and search suppression",
@@ -96,7 +96,7 @@ export default function MugshotRemovalContent({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://repukeel.com",
+        "item": "https://repukeel.com/",
       },
       {
         "@type": "ListItem",

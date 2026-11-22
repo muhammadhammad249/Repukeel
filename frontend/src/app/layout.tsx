@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://repukeel.com",
+    url: "https://repukeel.com/",
     siteName: "RepuKeel",
     images: [
       {
@@ -80,7 +80,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "RepuKeel",
               "alternateName": ["RepuKeel", "RepuKeel Reputation"],
-              "url": "https://repukeel.com",
+              "url": "https://repukeel.com/",
               "logo": "https://repukeel.com/icon.jpg",
               "description": "RepuKeel specializes in online reputation management, DMCA takedowns, and global brand protection.",
               "contactPoint": {

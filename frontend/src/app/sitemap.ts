@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const siteLastModified = new Date('2026-10-29T00:00:00Z');
 
   const routes = [
-    '',
+    '/',
     '/about',
     '/services',
     '/pricing',
@@ -25,10 +25,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/privacy-policy',
     '/terms-conditions',
   ].map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: route === '/' ? `${baseUrl}/` : `${baseUrl}${route}`,
     lastModified: siteLastModified,
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1.0 : 0.8,
+    priority: route === '/' ? 1.0 : 0.8,
   }));
 
   // Dynamic category and subservice pages
